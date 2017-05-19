@@ -1,0 +1,12 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
+[packages]
+ipdb = "*"
+ipython = "*"
+Django = "*"
+pypugjs = "*"
+django-secrets = "*"
+django-undeletable = "*"
+django-extensions = "*"
