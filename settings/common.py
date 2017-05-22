@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     # our own stuff
     'users',
 
+
     # Django
     'django.contrib.admin',
     'django.contrib.auth',
@@ -35,11 +36,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # debugging
+    'debug_toolbar',
+
     # 3rd party apps
-    'livereload',
-    'django_secrets',
-    'django_extensions',
+    'axes',
     'compressor',
+    'django_extensions',
+    'django_secrets',
+    'livereload',
 ]
 
 MIDDLEWARE = [
@@ -74,7 +79,10 @@ TEMPLATES = [
                     'django.template.loaders.app_directories.Loader',
                 ))
             ],
-            'builtins': ['pypugjs.ext.django.templatetags'],  # Remove this line for Django 1.8
+            'builtins': [
+                'pypugjs.ext.django.templatetags',
+                'debugtools.templatetags.debugtools_tags',
+            ],
         },
     },
 ]
@@ -125,3 +133,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+AXES_LOGIN_FAILURE_LIMIT = 2
