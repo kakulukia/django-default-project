@@ -2,6 +2,11 @@
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 
+[dev-packages]
+pep8 = "*"
+django-debug-toolbar = "*"
+django-livereload-server = "*"
+
 [packages]
 ipdb = "*"
 ipython = "*"
@@ -11,7 +16,5 @@ django-secrets = "*"
 django-undeletable = "*"
 django-extensions = "*"
 dj-static = "*"
-django-livereload-server = "*"
 django_compressor = "*"
 django-axes = "*"
-django-debug-toolbar = "*"
