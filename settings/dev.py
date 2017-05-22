@@ -23,7 +23,8 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.redirects.RedirectsPanel',
 )
 
-MIDDLEWARE += [
+MIDDLEWARE += [  # noqa
+    'livereload.middleware.LiveReloadScript',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 

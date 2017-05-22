@@ -17,11 +17,11 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 
-from testerei.views import dings
+from sample_app.views import index
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', dings),
+    url(r'^$', index),
 ]
 
 if settings.DEBUG:
