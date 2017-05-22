@@ -6,6 +6,7 @@ verify_ssl = true
 pep8 = "*"
 django-debug-toolbar = "*"
 django-livereload-server = "*"
+flake8 = "*"
 
 [packages]
 ipdb = "*"
