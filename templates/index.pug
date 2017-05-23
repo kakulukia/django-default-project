@@ -1,34 +1,32 @@
+extends 'base.pug'
 -load static compress
-!!!5
-html(lang='de')
-  head
-    meta(charset='utf-8')
-    meta(http-equiv='X-UA-Compatible', content='IE=edge')
-    meta(name='viewport', content='initial-scale=1.0')
-    //link(rel="shortcut icon", href="{% static 'img/favicon.ico' %}")
-    title
-      block title
-        | Give me a title
-    meta(name="viewport", content="initial-scale=1.0")
-    link(href="https://fonts.googleapis.com/css?family=Barrio", rel="stylesheet")
 
-    -compress css
-      link(rel="stylesheet", href="{% static 'css/bootstrap.min.css' %}")
-      link(rel="stylesheet", href="{% static 'css/font-awesome.css' %}")
-      link(rel='stylesheet', type='text/x-sass', href='{% static "sass/styles.sass" %}')
+block title
+  | Hello Django
 
-body
-  header
-  main
-    .container
-      block content
-        .hello-world Hello Django!
-  footer
-    .container
-      | to hit rock bottom ...
+block content
+  .hello-world Hello&nbsp;
+    span(v-text='who')
+    | !
+
+block footer
+  .container
+    input(v-model='who', @click="click")
+    span.blinking-cursor
+    |  is awesome!
 
 
-  -compress js
-    script(src="{% static 'js/jquery-3.1.1.js' %}")
-    script(src="{% static 'js/tether.min.js' %}")
-    script(src="{% static 'js/bootstrap.min.js' %}")
+block extra_js
+  script.
+    app = new Vue({
+        el: '#app',
+        data: {
+          who: "Django"
+        },
+      methods: {
+        click: function(event){
+          $('.blinking-cursor').remove();
+          $(event.target).select()
+        }
+      }
+    });

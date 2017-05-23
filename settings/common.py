@@ -79,7 +79,6 @@ TEMPLATES = [
             ],
             'builtins': [
                 'pypugjs.ext.django.templatetags',
-                'debugtools.templatetags.debugtools_tags',
             ],
         },
     },

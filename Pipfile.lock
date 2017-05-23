@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2df33441b6d75aedf9164f1c2d96a8dc17dcd38dee50c2c1e2f6b4f840348b90"
+            "sha256": "43328576fb07eaab73903bb672976d5cbdf3dbbf2ffa19d91b80c049353ab852"
         },
         "requires": {},
         "sources": [
@@ -48,6 +48,10 @@
             "hash": "sha256:a6b97ec77657e4fd43d508d6a134c799f188e868717f7499d05213b4669b44b6",
             "version": "==1.7.9"
         },
+        "django-libsass": {
+            "hash": "sha256:49db3334b87e1f7955c4f9fb9945bc296f8bfd27a14d6d89706e4b0e5dc5de1c",
+            "version": "==0.7"
+        },
         "django-secrets": {
             "hash": "sha256:442eee042e0009a4d3e390e4254f81742db78d6a89d073c846cf6affb2e60590",
             "version": "==0.2.3"
@@ -75,6 +79,10 @@
         "jedi": {
             "hash": "sha256:96678411f2ffa444da3a5e7fdd4adc513b728a4a4617b30308be5c950722424b",
             "version": "==0.10.2"
+        },
+        "libsass": {
+            "hash": "sha256:c3ea0cbb36745b6cc10278539e0bf93a426f2f497306181fc6214193f493b8d5",
+            "version": "==0.12.3"
         },
         "packaging": {
             "hash": "sha256:99276dc6e3a7851f32027a68f1095cd3f77c148091b092ea867a351811cfe388",
@@ -158,9 +166,21 @@
             "hash": "sha256:9450af6e0ad1866a1b5b787f98f9354fa2e4ceb38e135405019f630798b294cf",
             "version": "==0.2.3"
         },
-        "pep8": {
-            "hash": "sha256:4fc2e478addcf17016657dff30b2d8d611e8341fac19ccf2768802f6635d7b8a",
-            "version": "==1.7.0"
+        "flake8": {
+            "hash": "sha256:83905eadba99f73fbfe966598aaf1682b3eb6755d2263c5b33a4e8367d60b0d1",
+            "version": "==3.3.0"
+        },
+        "mccabe": {
+            "hash": "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42",
+            "version": "==0.6.1"
+        },
+        "pycodestyle": {
+            "hash": "sha256:6c4245ade1edfad79c3446fadfc96b0de2759662dc29d07d80a6f27ad1ca6ba9",
+            "version": "==2.3.1"
+        },
+        "pyflakes": {
+            "hash": "sha256:cc5eadfb38041f8366128786b4ca12700ed05bbf1403d808e89d57d67a3875a7",
+            "version": "==1.5.0"
         },
         "pytz": {
             "hash": "sha256:d1d6729c85acea5423671382868627129432fba9a89ecbb248d8d1c7a9f01c67",
