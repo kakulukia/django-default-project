@@ -20,22 +20,6 @@ input
   width: 142px
   text-align: right
   border: none
-  padding: 0 5px 0 0
   border-bottom: 1px solid darkgray
   &:focus
     outline: none
-
-.blinking-cursor
-  animation: 1s blink step-end infinite
-  width: 6px
-  display: inline-block
-  margin-right: -2px
-  margin-left: -4px
-  &:after
-    content: "|"
-
-@keyframes blink
-  from, to
-    color: transparent
-  50%
-    color: black

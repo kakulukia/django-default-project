@@ -11,22 +11,16 @@ block content
 
 block footer
   .container
-    input(v-model='who', @click="click")
-    span.blinking-cursor
+    input#who(v-model='who')
     |  is awesome!
 
 
 block extra_js
   script.
     app = new Vue({
-        el: '#app',
-        data: {
-          who: "Django"
-        },
-      methods: {
-        click: function(event){
-          $('.blinking-cursor').remove();
-          $(event.target).select()
-        }
+      el: '#app',
+      data: {
+        who: "Django"
       }
     });
+    $('#who').focus();

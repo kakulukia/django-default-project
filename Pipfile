@@ -6,6 +6,7 @@ verify_ssl = true
 django-debug-toolbar = "*"
 django-livereload-server = "*"
 flake8 = "*"
+Fabric3 = "*"
 
 [packages]
 ipdb = "*"
@@ -19,3 +20,4 @@ dj-static = "*"
 django_compressor = "*"
 django-axes = "*"
 django-libsass = "*"
+raven = "*"

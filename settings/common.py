@@ -1,5 +1,8 @@
 
 import os
+
+import raven
+
 from secrets import secrets
 
 # import pug loader for translations to work
@@ -44,6 +47,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_secrets',
     'livereload',
+    'raven.contrib.django.raven_compat',
 ]
 
 
@@ -141,3 +145,9 @@ AXES_LOGIN_FAILURE_LIMIT = 2
 COMPRESS_PRECOMPILERS = (
     ('text/x-sass', 'django_libsass.SassCompiler'),
 )
+
+
+RAVEN_CONFIG = {
+    'dsn': 'https://{}@sentry.io/{}'.format(secrets.SENTRY_PROJECT_KEY, secrets.SENTRY_PROJECT_ID),
+    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+}
