@@ -27,7 +27,6 @@ def restart():
 
 def deploy():
     deploy_only()
-
     restart()
 
 

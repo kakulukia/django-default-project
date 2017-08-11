@@ -145,6 +145,7 @@ AXES_LOGIN_FAILURE_LIMIT = 2
 COMPRESS_PRECOMPILERS = (
     ('text/x-sass', 'django_libsass.SassCompiler'),
 )
+COMPRESS_ENABLED = True
 
 
 RAVEN_CONFIG = {
