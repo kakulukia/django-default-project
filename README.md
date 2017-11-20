@@ -2,18 +2,18 @@
 
 
 This is meant as a base template for new Django projects wich uses pipenv to manage its 3rd party packages. 
-the project comes preconfigured for those packages:
+The project comes preconfigured for those packages:
   
     [dev-packages]
     django-debug-toolbar = "*"
     django-livereload-server = "*"
     flake8 = "*"
     Fabric3 = "*"
+    ipdb = "*"
+    ipython = "*"
     
     [packages]
     Django = "*"
-    ipdb = "*"
-    ipython = "*"
     pypugjs = "*"
     django-secrets = "*"
     django-undeletable = "*"
@@ -33,7 +33,7 @@ jQuery and FontAwesome are also included for convenience. The project has a flat
  project and automatically using em without the need to remember to activate "<project_name>.settings.whatever" 
  (influenced by the really cool TwoScoops of Django)
  
- Django-secrets will keep your secrets really secret and help you with your deployment so that you anly need to initialize 
+ Django-secrets will keep your secrets really secret and help you with your deployment so that you only need to initialize 
  your secret environment variables. Also works super easy with i.e. Travis CI.
  
  Django-axes is not working under 1.11, but i kept it anyways, hoping the functionality will return. :)
@@ -44,7 +44,7 @@ jQuery and FontAwesome are also included for convenience. The project has a flat
  The styles.sass in compiled on the fly and thanks to the wonderful livereload-server changes will be visible right away in
  you browser (as well as code changes to python files).
  
- Once the settings file ist fed with the needed credentials all errors (python and javascript) will be catched by 
+ Once the settings file is fed with the needed credentials all errors (python and javascript) will be catched by 
  Sentry.io for error handling. 
  
  misc/setup_repo.sh will setup the current repo with a flake8 commit hook to always commit clean code only. :D
@@ -53,7 +53,7 @@ jQuery and FontAwesome are also included for convenience. The project has a flat
  
  Because pipenv didnt work that well in its early stages, there is still a requirements.txt. Have to play a little 
  more with pipenv to be a little more confident to completely switch, but installing a lot of stuff is still a 
- lot using plain pip. The Pipfile is a lot better to manage tho. So for now i partly use both.
+ lot faster using plain pip. The Pipfile is a lot better to manage tho. So for now i partly use both.
  
  One more thing: The project template features a ready to use fabfile which will grant you some basic tasks like:
  
@@ -62,3 +62,9 @@ jQuery and FontAwesome are also included for convenience. The project has a flat
    static files and finally restart the server for you.
    
  Hope i didnt forget any gem inside .. have fun with this project template!
+ 
+# Installation
+
+    django-admin.py startproject \
+    --template=https://github.com/kakulukia/django-default-project/zipball/master \
+    <new project name here>
