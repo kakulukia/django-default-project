@@ -1,29 +1,32 @@
 # django-default-project
 
 
-This is meant as a base template for new Django projects wich uses pipenv to manage its 3rd party packages. 
+This is meant as a base template for new Django projects which uses pipenv to manage its 3rd party packages. 
 The project comes preconfigured for those packages:
   
-    [dev-packages]
-    django-debug-toolbar = "*"
-    django-livereload-server = "*"
-    flake8 = "*"
-    Fabric3 = "*"
-    ipdb = "*"
-    ipython = "*"
-    
     [packages]
-    Django = "*"
-    pypugjs = "*"
+    
+    django = "*"
     django-secrets = "*"
     django-undeletable = "*"
     django-extensions = "*"
     dj-static = "*"
-    django_compressor = "*"
+    django-compressor = "*"
     django-axes = "*"
     django-libsass = "*"
     raven = "*"
-  
+    pypugjs = {git = "https://github.com/kakulukia/pypugjs.git"}
+    
+    
+    [dev-packages]
+    
+    django-debug-toolbar = "*"
+    django-livereload-server = "*"
+    "flake8" = "*"
+    "fabric3" = "*"
+    ipdb = "*"
+    
+      
 Furthermore it inclueds a hello world with PUG template, SASS styles and VueJS. 
 jQuery and FontAwesome are also included for convenience. The project has a flat settings hirachy so you can do the following:
 
