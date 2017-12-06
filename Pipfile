@@ -10,14 +10,12 @@ django-debug-toolbar = "*"
 django-livereload-server = "*"
 "flake8" = "*"
 "fabric3" = "*"
+ipdb = "*"
 
 
 [packages]
 
-ipdb = "*"
-ipython = "*"
 django = "*"
-pypugjs = "*"
 django-secrets = "*"
 django-undeletable = "*"
 django-extensions = "*"
@@ -26,3 +24,4 @@ django-compressor = "*"
 django-axes = "*"
 django-libsass = "*"
 raven = "*"
+pypugjs = {git = "https://github.com/kakulukia/pypugjs.git"}

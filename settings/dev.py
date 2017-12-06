@@ -8,6 +8,12 @@ ALLOWED_HOSTS = [
     '0.0.0.0',
 ]
 
+INSTALLED_APPS += [  # noqa
+    # debugging
+    'debug_toolbar',
+    'livereload',
+]
+
 DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.versions.VersionsPanel',
     'debug_toolbar.panels.timer.TimerPanel',
@@ -42,8 +48,11 @@ DEBUG_TOOLBAR_CONFIG = {
 }
 
 MIDDLEWARE += [  # noqa
-    'livereload.middleware.LiveReloadScript',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'livereload.middleware.LiveReloadScript',
 ]
 
 INTERNAL_IPS = ALLOWED_HOSTS
+
+# unset raven config to not not flood it while developing
+RAVEN_CONFIG = {}

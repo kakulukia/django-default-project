@@ -6,7 +6,6 @@ import raven
 from secrets import secrets
 
 # import pug loader for translations to work
-import pypugjs.ext.django  # noqa
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -38,15 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # debugging
-    'debug_toolbar',
-
     # 3rd party apps
     'axes',
     'compressor',
     'django_extensions',
     'django_secrets',
-    'livereload',
     'raven.contrib.django.raven_compat',
 ]
 
