@@ -71,3 +71,10 @@ jQuery and FontAwesome are also included for convenience. The project has a flat
     django-admin.py startproject \
     --template=https://github.com/kakulukia/django-default-project/zipball/master \
     <new project name here>
+    
+    
+# Preview
+![Preview](http://raw.github.com/kakulukia/pypugjs/master/misc/preview.png)
+
+
+
