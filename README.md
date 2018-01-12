@@ -74,7 +74,7 @@ jQuery and FontAwesome are also included for convenience. The project has a flat
     
     
 # Preview
-![Preview](http://raw.github.com/kakulukia/pypugjs/master/misc/preview.png)
+![Preview](https://github.com/kakulukia/django-default-project/raw/master/misc/preview.png)
 
 
 
