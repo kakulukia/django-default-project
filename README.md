@@ -15,8 +15,7 @@ The project comes preconfigured for those packages:
     django-axes = "*"
     django-libsass = "*"
     raven = "*"
-    pypugjs = {git = "https://github.com/kakulukia/pypugjs.git"}
-    
+    pypugjs = "*"
     
     [dev-packages]
     
@@ -25,6 +24,7 @@ The project comes preconfigured for those packages:
     "flake8" = "*"
     "fabric3" = "*"
     ipdb = "*"
+
     
       
 Furthermore it inclueds a hello world with PUG template, SASS styles and VueJS. 

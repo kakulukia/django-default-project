@@ -24,4 +24,4 @@ django-compressor = "*"
 django-axes = "*"
 django-libsass = "*"
 raven = "*"
-pypugjs = {git = "https://github.com/kakulukia/pypugjs.git"}
+pypugjs = "*"

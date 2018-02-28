@@ -147,3 +147,15 @@ RAVEN_CONFIG = {
     'dsn': 'https://{}@sentry.io/{}'.format(secrets.SENTRY_PROJECT_KEY, secrets.SENTRY_PROJECT_ID),
     'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'axes_cache': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+AXES_CACHE = 'axes_cache'
+AXES_USE_USER_AGENT = True
+AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
