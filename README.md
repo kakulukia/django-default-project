@@ -27,7 +27,7 @@ The project comes preconfigured for those packages:
 
 
 Furthermore this project template includes a hello world with PUG templates, SASS styles and VueJS
-showing off a minimal reactive page featuring chuck norris facts which made me click reload a few dozen 
+showing off a minimal reactive page featuring [chuck norris facts](https://api.chucknorris.io) which made me click reload a few dozen 
 times while coding this example app. :P
 
 Here is a list of whats installed for the frontend:
