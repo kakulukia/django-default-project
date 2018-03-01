@@ -3,7 +3,7 @@ import os
 
 import raven
 
-from secrets import secrets
+from my_secrets import secrets
 
 # import pug loader for translations to work
 

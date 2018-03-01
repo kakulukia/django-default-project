@@ -8,4 +8,6 @@
 SECRET_KEYS = [
     # start with your Django secret key like this:
     "SECRET_KEY",
+    "SENTRY_PROJECT_KEY",
+    "SENTRY_PROJECT_ID",
 ]
