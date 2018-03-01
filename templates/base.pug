@@ -28,11 +28,23 @@ body
       block footer
 
 
-  script(src="https://cdn.ravenjs.com/3.15.0/vue/raven.min.js", crossorigin="anonymous")
+  script(src="https://unpkg.com/vue@2.5.13/dist/vue.min.js")
+
+  // error reporting for the frontend
+  script(src="https://cdn.ravenjs.com/3.20.0/vue/raven.min.js", crossorigin="anonymous")
   script Raven.config('{% sentry_public_dsn %}').install();
+
+  // the missing javascript functions
+  script(src="https://unpkg.com/lodash@4.13.1/lodash.min.js")
+
+  // ajax calls
+  script(src="https://unpkg.com/axios@0.18.0/dist/axios.min.js")
+
+  // Buefy UI framework
+  link(rel="stylesheet", href="https://unpkg.com/buefy/lib/buefy.min.css")
+  script(src="https://unpkg.com/buefy")
+  link(rel="stylesheet", href="//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css")
+  Vue.use(Buefy.default)
+
   -compress js
-    script(src="{% static 'js/jquery-3.1.1.js' %}")
-    script(src="{% static 'js/tether.min.js' %}")
-    script(src="{% static 'js/bootstrap.min.js' %}")
-    script(src="{% static 'js/vue.js' %}")
-    block extra_js
+     block extra_js

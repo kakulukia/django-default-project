@@ -5,22 +5,40 @@ block title
   | Hello Django
 
 block content
-  .hello-world Hello&nbsp;
-    span(v-text='who')
-    | !
+  .hello-world
+    span(v-text='intro')
+  .joke(v-text="joke")
+
 
 block footer
   .container
-    input#who(v-model='who')
-    |  is awesome!
+    input#who(v-model='intro')
+    a.button.is-small(:class="{'is-loading': isLoading}",
+      @click="loadJoke()") get me another joke
 
 
 block extra_js
   script.
-    app = new Vue({
+    let app = new Vue({
       el: '#app',
       data: {
-        who: "Django"
+        intro: "Django + VueJs = ❤",
+        joke: '',
+        isLoading: false
+      },
+      methods: {
+        loadJoke: function () {
+          this.isLoading = true
+          axios.get('https://api.chucknorris.io/jokes/random')
+              .then(function (response) {
+                app.joke = response.data.value
+                console.log(app.joke)
+                app.isLoading = false
+              })
+        }
+      },
+      created () {
+        this.loadJoke()
       }
     });
-    $('#who').focus();
+    who.focus();

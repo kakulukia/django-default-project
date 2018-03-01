@@ -25,10 +25,22 @@ The project comes preconfigured for those packages:
     "fabric3" = "*"
     ipdb = "*"
 
-    
-      
-Furthermore it inclueds a hello world with PUG template, SASS styles and VueJS. 
-jQuery and FontAwesome are also included for convenience. The project has a flat settings hirachy so you can do the following:
+
+Furthermore this project template includes a hello world with PUG templates, SASS styles and VueJS
+showing off a minimal reactive page featuring chuck norris facts which made me click reload a few dozen 
+times while coding this example app. :P
+
+Here is a list of whats installed for the frontend (the link point to their docs):
+
+  - [VueJS](https://vuejs.org/v2/guide/) - the base JS framework  
+  - [ravenJS](https://docs.sentry.io/quickstart/) - error reporting for the frontend
+  - [lodash](https://lodash.com/docs/4.17.5) - the missing javascript functions
+  - [axios](https://github.com/axios/axios) - AJAX calls
+  - [Buefy](https://buefy.github.io/#/documentation/start) - VueJs UI framework 
+  mirroring all [Bulma](https://bulma.io/documentation/columns/basics/) features including 
+  [Material Design Icons](https://materialdesignicons.com/)
+  
+Contrary to Django the project has a flat settings hierarchy so you can do the following:
 
  1. Alice and Bob set an environment var pointing to their own settings like "settings.bob"
  2. When starting a new project they just have to copy setting/dev.py and change it to their liking
@@ -36,14 +48,12 @@ jQuery and FontAwesome are also included for convenience. The project has a flat
  project and automatically using em without the need to remember to activate "<project_name>.settings.whatever" 
  (influenced by the really cool TwoScoops of Django)
  
- Django-secrets will keep your secrets really secret and help you with your deployment so that you only need to initialize 
- your secret environment variables. Also works super easy with i.e. Travis CI.
- 
- Django-axes is not working under 1.11, but i kept it anyways, hoping the functionality will return. :)
+ Django-secrets will keep your secrets really secret and help you with your deployment so that you only 
+ need to initialize your secret environment variables. Also works super easy with i.e. Travis CI.
  
  All assets and templates are stored in their top level folders .. yes i know its not portable that way, but most of 
- the times i dont build portable apps. I create projects that are meant to be be running at customers and never 
- see the public light and thus they shall be clean without the need to remember which assets are hiden in which subfolders.
+ the times i don't build portable apps. I create projects that are meant to be be running at customers and never 
+ see the public light and thus they shall be clean without the need to remember which assets are hidden in which subfolders.
  The styles.sass in compiled on the fly and thanks to the wonderful livereload-server changes will be visible right away in
  you browser (as well as code changes to python files).
  
@@ -51,10 +61,10 @@ jQuery and FontAwesome are also included for convenience. The project has a flat
  Sentry.io for error handling. 
  
  misc/setup_repo.sh will setup the current repo with a flake8 commit hook to always commit clean code only. :D
- wsgi.py is patched with the awesome dj-static lib so you dont neccessarily need to remember to serve static 
+ wsgi.py is patched with the awesome dj-static lib so you don't necessarily need to remember to serve static 
  files separately unless you really want to.
  
- Because pipenv didnt work that well in its early stages, there is still a requirements.txt. Have to play a little 
+ Because pipenv didn't work that well in its early stages, there is still a requirements.txt. Have to play a little 
  more with pipenv to be a little more confident to completely switch, but installing a lot of stuff is still a 
  lot faster using plain pip. The Pipfile is a lot better to manage tho. So for now i partly use both.
  
@@ -64,7 +74,7 @@ jQuery and FontAwesome are also included for convenience. The project has a flat
    - _fab migrate_ which will push updates, updating packages, migrating the DB, compressing files, collecting 
    static files and finally restart the server for you.
    
- Hope i didnt forget any gem inside .. have fun with this project template!
+ Hope i didn't forget any gem inside .. have fun with this project template!
  
 # Installation
 
