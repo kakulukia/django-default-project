@@ -6,6 +6,8 @@ import raven
 from my_secrets import secrets
 
 # import pug loader for translations to work
+import pypugjs.ext.django  # noqa
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
