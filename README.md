@@ -30,7 +30,7 @@ Furthermore this project template includes a hello world with PUG templates, SAS
 showing off a minimal reactive page featuring chuck norris facts which made me click reload a few dozen 
 times while coding this example app. :P
 
-Here is a list of whats installed for the frontend (the link point to their docs):
+Here is a list of whats installed for the frontend:
 
   - [VueJS](https://vuejs.org/v2/guide/) - the base JS framework  
   - [ravenJS](https://docs.sentry.io/quickstart/) - error reporting for the frontend
