@@ -39,7 +39,7 @@ def migrate():
     deploy_only()
     with cd(PROJECT_PATH):
         print(green('updating packages ..'))
-        run('/home/andy/.virtualenvs/bda/bin/pip install -r requirements.txt --upgrade')
+        run('pipenv sync')
 
         print(green('migrating database ..'))
         manage('migrate --noinput')

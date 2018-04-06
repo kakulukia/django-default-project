@@ -8,6 +8,7 @@ django-livereload-server = "*"
 "flake8" = "*"
 "fabric3" = "*"
 ipdb = "*"
+djdt-flamegraph = "*"
 
 [packages]
 django = "*"
@@ -21,3 +22,5 @@ django-libsass = "*"
 raven = "*"
 pypugjs = "*"
 huepy = "*"
+django-post-office = "*"
+uwsgidecorators = "*"

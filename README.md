@@ -16,6 +16,9 @@ The project comes preconfigured for those packages:
     django-libsass = "*"
     raven = "*"
     pypugjs = "*"
+    django-post-office = "*"
+    uwsgidecorators = "*"
+
     
     [dev-packages]
     
@@ -24,6 +27,8 @@ The project comes preconfigured for those packages:
     "flake8" = "*"
     "fabric3" = "*"
     ipdb = "*"
+    djdt-flamegraph = "*"
+
 
 
 Furthermore this project template includes a hello world with PUG templates, SASS styles and VueJS
@@ -63,10 +68,6 @@ Contrary to Django the project has a flat settings hierarchy so you can do the f
  misc/setup_repo.sh will setup the current repo with a flake8 commit hook to always commit clean code only. :D
  wsgi.py is patched with the awesome dj-static lib so you don't necessarily need to remember to serve static 
  files separately unless you really want to.
- 
- Because pipenv didn't work that well in its early stages, there is still a requirements.txt. Have to play a little 
- more with pipenv to be a little more confident to completely switch, but installing a lot of stuff is still a 
- lot faster using plain pip. The Pipfile is a lot better to manage tho. So for now i partly use both.
  
  One more thing: The project template features a ready to use fabfile which will grant you some basic tasks like:
  

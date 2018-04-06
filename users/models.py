@@ -1,12 +1,13 @@
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+from django.contrib.sites.models import Site
 from django.core import validators
-from django.core.mail import send_mail
 from django.db import models
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, activate
 from django_undeletable.models import BaseModel, UserDataManager
+from post_office import mail
 
 
 class User(AbstractBaseUser, BaseModel, PermissionsMixin):
@@ -42,7 +43,7 @@ class User(AbstractBaseUser, BaseModel, PermissionsMixin):
         """ Returns the short name for the user. """
         return self.first_name
 
-    def email_user(self, subject, message, from_email=settings.DEFAULT_FROM_EMAIL, **kwargs):
+    def email_user(self, template_name, context=None):
         """
          Sends an email to this User.
          If settings.EMAIL_OVERRIDE_ADDRESS is set, this mail will be redirected to the alternate mail address.
@@ -52,4 +53,18 @@ class User(AbstractBaseUser, BaseModel, PermissionsMixin):
         if settings.EMAIL_OVERRIDE_ADDRESS:
             receiver = settings.EMAIL_OVERRIDE_ADDRESS
 
-        send_mail(subject, message, from_email, [receiver], **kwargs)
+        if not context:
+            context = {}
+        context['user'] = self
+        context['base_url'] = 'http://{}'.format(
+            Site.objects.get_current()
+        )
+        context['footer'] = settings.EMAIL_FOOTER
+
+        activate('de')
+        mail.send(
+            receiver,
+            settings.DEFAULT_FROM_EMAIL,
+            template=template_name,
+            context=context,
+        )
