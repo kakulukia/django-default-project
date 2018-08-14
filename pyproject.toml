@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django_default_project"
-version = "0.6.1"
+version = "0.6.2"
 description = "Its not always good to start from scratch .. lets have some sane defaults .."
 authors = ["Andy Grabow <andy@freilandkiwis.de>"]
 license = "MIT"
