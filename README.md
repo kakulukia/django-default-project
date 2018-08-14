@@ -5,7 +5,6 @@ This is meant as a base template for new Django projects which uses pipenv to ma
 The project comes preconfigured for those packages:
   
     [packages]
-    
     django = "*"
     django-secrets = "*"
     django-undeletable = "*"
@@ -18,10 +17,11 @@ The project comes preconfigured for those packages:
     pypugjs = "*"
     django-post-office = "*"
     uwsgidecorators = "*"
-
+    requests = "*"
+    pendulum = "*"
+    djangorestframework = "*"
     
     [dev-packages]
-    
     django-debug-toolbar = "*"
     django-livereload-server = "*"
     "flake8" = "*"
@@ -82,3 +82,8 @@ Contrary to Django the project has a flat settings hierarchy so you can do the f
     django-admin.py startproject \
     --template=https://github.com/kakulukia/django-default-project/zipball/master \
     <new project name here>
+    
+    poetry install
+
+PS: You need [poetry](https://github.com/sdispater/poetry) to install this projects requirements.
+You can `pip install poetry` if yo dont have it already.

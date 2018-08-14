@@ -1,0 +1,37 @@
+[tool.poetry]
+name = "django_default_project"
+version = "0.5.0"
+description = "Its not always good to start from scratch .. lets have some sane defaults .."
+authors = ["Andy Grabow <andy@freilandkiwis.de>"]
+license = "MIT"
+readme = 'README.md'
+
+repository = "https://github.com/kakulukia/django-default-project"
+homepage = "https://github.com/kakulukia/django-default-project"
+
+[tool.poetry.dependencies]
+python = "3.6"
+django = "^2.1"
+django-secrets = "^1.0"
+django-undeletable = "^1.0"
+django-extensions = "^2.1"
+dj-static = "^0.0.6"
+django-compressor = "^2.2"
+django-axes = "^4.4"
+django-libsass = "^0.7.0"
+raven = "^6.9"
+pypugjs = "^5.6"
+django-post-office = "^3.1"
+uwsgidecorators = "^1.1"
+huepy = "^0.9.8"
+djangorestframework = "^3.8"
+requests = "^2.19"
+pendulum = "^2.0"
+
+[tool.poetry.dev-dependencies]
+django-debug-toolbar = "^1.9"
+django-livereload-server = "^0.3.2"
+flake8 = "^3.5"
+fabric3 = "^1.14"
+ipdb = "^0.11.0"
+djdt-flamegraph = "^0.2.12"
