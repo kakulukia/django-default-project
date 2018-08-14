@@ -53,3 +53,9 @@ INTERNAL_IPS = ALLOWED_HOSTS
 
 # unset raven config to not not flood it while developing
 RAVEN_CONFIG = {}
+
+POST_OFFICE = {
+    'BACKENDS': {
+        'default': 'django.core.mail.backends.console.EmailBackend',
+    }
+}

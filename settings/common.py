@@ -2,12 +2,11 @@
 import os
 
 import raven
+from pypugjs.ext.django.compiler import enable_pug_translations
 
 from my_secrets import secrets
 
-# import pug loader for translations to work
-import pypugjs.ext.django  # noqa
-
+enable_pug_translations()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -149,3 +148,4 @@ RAVEN_CONFIG = {
 
 EMAIL_OVERRIDE_ADDRESS = None
 EMAIL_FOOTER = ""
+EMAIL_BACKEND = 'post_office.EmailBackend'
