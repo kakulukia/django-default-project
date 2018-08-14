@@ -4,7 +4,7 @@ from fabric.state import env
 from fabric.operations import run
 from huepy import green
 
-PROJECT_PATH = '/project/path/here'
+PROJECT_PATH = "/project/path/here"
 env.hosts = [
     # 'host.here.com'
 ]
@@ -15,14 +15,14 @@ env.hosts = [
 def deploy_only():
     """ Pull all updates from the remote repository. """
     with cd(PROJECT_PATH):
-        print(green('updating from repository ..'))
-        run('git pull')
+        print(green("updating from repository .."))
+        run("git pull")
 
 
 def restart():
     """ Restart nginx and the backend worker. """
-    print(green('restarting server ..'))
-    run('sudo service uwsgi restart')
+    print(green("restarting server .."))
+    run("sudo service uwsgi restart")
 
 
 def deploy():
@@ -38,20 +38,20 @@ def migrate():
     """
     deploy_only()
     with cd(PROJECT_PATH):
-        print(green('updating packages ..'))
-        run('pipenv sync')
+        print(green("updating packages .."))
+        run("pipenv sync")
 
-        print(green('migrating database ..'))
-        manage('migrate --noinput')
+        print(green("migrating database .."))
+        manage("migrate --noinput")
 
-        print(green('compressing files ..'))
-        manage('compress --force -e pug')
+        print(green("compressing files .."))
+        manage("compress --force -e pug")
 
-        print(green('collecting static files ..'))
-        manage('collectstatic --noinput')
+        print(green("collecting static files .."))
+        manage("collectstatic --noinput")
 
     restart()
 
 
 def manage(command):
-    run('pipenv run manage.py ' + command)
+    run("pipenv run manage.py " + command)

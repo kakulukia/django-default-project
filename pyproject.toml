@@ -27,6 +27,7 @@ huepy = "^0.9.8"
 djangorestframework = "^3.8"
 requests = "^2.19"
 pendulum = "^2.0"
+black = "^18.3-alpha.0"
 
 [tool.poetry.dev-dependencies]
 django-debug-toolbar = "^1.9"

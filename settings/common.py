@@ -20,70 +20,68 @@ ALLOWED_HOSTS = [
 ]
 INSTALLED_APPS = [
     # our own stuff
-    'users',
-
+    "users",
     # Django
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.sites',
-    'django.contrib.staticfiles',
-
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.sites",
+    "django.contrib.staticfiles",
     # 3rd party apps
-    'axes',
-    'compressor',
-    'django_extensions',
-    'django_secrets',
-    'post_office',
-    'raven.contrib.django.raven_compat',
+    "axes",
+    "compressor",
+    "django_extensions",
+    "django_secrets",
+    "post_office",
+    "raven.contrib.django.raven_compat",
 ]
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
-            'loaders': [
+            "loaders": [
                 # PyPugJS part:   ##############################
-                ('pypugjs.ext.django.Loader', (
-                    'django.template.loaders.filesystem.Loader',
-                    'django.template.loaders.app_directories.Loader',
-                ))
+                (
+                    "pypugjs.ext.django.Loader",
+                    (
+                        "django.template.loaders.filesystem.Loader",
+                        "django.template.loaders.app_directories.Loader",
+                    ),
+                )
             ],
-            'builtins': [
-                'pypugjs.ext.django.templatetags',
-            ],
+            "builtins": ["pypugjs.ext.django.templatetags"],
         },
-    },
+    }
 ]
 
-AUTH_USER_MODEL = 'users.User'
-ROOT_URLCONF = 'settings.urls'
-WSGI_APPLICATION = 'settings.wsgi.application'
+AUTH_USER_MODEL = "users.User"
+ROOT_URLCONF = "settings.urls"
+WSGI_APPLICATION = "settings.wsgi.application"
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
-
     # PLEASE as soon as the project gets a lil more serious => use Postgres!
     # https://duckduckgo.com/?q=postgres+vs+mysql&atb=v101-6&iax=videos&ia=videos&iai=emgJtr9tIME
     #############################################################################################
@@ -98,59 +96,55 @@ DATABASES = {
     # }
 }
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-    },
-    'axes_cache': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-    }
+    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
+    "axes_cache": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
 }
 
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 AXES_LOGIN_FAILURE_LIMIT = 2
-AXES_CACHE = 'axes_cache'
+AXES_CACHE = "axes_cache"
 AXES_USE_USER_AGENT = True
 AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
 
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
-LANGUAGE_CODE = 'de-de'
-TIME_ZONE = 'CET'
+LANGUAGE_CODE = "de-de"
+TIME_ZONE = "CET"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'assets'),
-]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "assets")]
 STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
 ]
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-COMPRESS_PRECOMPILERS = (
-    ('text/x-sass', 'django_libsass.SassCompiler'),
-)
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+COMPRESS_PRECOMPILERS = (("text/x-sass", "django_libsass.SassCompiler"),)
 COMPRESS_ENABLED = True
 
 
 RAVEN_CONFIG = {
-    'dsn': 'https://{}@sentry.io/{}'.format(secrets.SENTRY_PROJECT_KEY, secrets.SENTRY_PROJECT_ID),
-    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+    "dsn": "https://{}@sentry.io/{}".format(
+        secrets.SENTRY_PROJECT_KEY, secrets.SENTRY_PROJECT_ID
+    ),
+    "release": raven.fetch_git_sha(os.path.dirname(os.pardir)),
 }
 
 EMAIL_OVERRIDE_ADDRESS = None

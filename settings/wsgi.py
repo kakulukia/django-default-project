@@ -21,9 +21,9 @@ try:
     @uwsgidecorators.timer(10)
     def send_queued_mail(num):
         """Send queued mail every 10 seconds"""
-        call_command('send_queued_mail', processes=1)
+        call_command("send_queued_mail", processes=1)
 
-    print(green('background mail queue activated'))
+    print(green("background mail queue activated"))
 
 except ImportError:
     print(red("uwsgidecorators not found - background mails are unavailable!"))
