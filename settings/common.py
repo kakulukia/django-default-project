@@ -148,4 +148,4 @@ RAVEN_CONFIG = {
 
 EMAIL_OVERRIDE_ADDRESS = None
 EMAIL_FOOTER = ""
-EMAIL_BACKEND = 'post_office.EmailBackend'
+EMAIL_BACKEND = "post_office.EmailBackend"

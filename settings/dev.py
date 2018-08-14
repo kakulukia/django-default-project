@@ -55,7 +55,5 @@ INTERNAL_IPS = ALLOWED_HOSTS
 RAVEN_CONFIG = {}
 
 POST_OFFICE = {
-    'BACKENDS': {
-        'default': 'django.core.mail.backends.console.EmailBackend',
-    }
+    "BACKENDS": {"default": "django.core.mail.backends.console.EmailBackend"}
 }
