@@ -1,5 +1,6 @@
 # django-default-project
 
+#### Django
 
 This is meant as a base template for new Django projects which uses pipenv to manage its 3rd party packages. 
 The project comes preconfigured for those packages:
@@ -29,11 +30,11 @@ The project comes preconfigured for those packages:
     ipdb = "*"
     djdt-flamegraph = "*"
 
-
-
 Furthermore this project template includes a hello world with PUG templates, SASS styles and VueJS
 showing off a minimal reactive page featuring [chuck norris facts](https://api.chucknorris.io) which made me click reload a few dozen 
 times while coding this example app. :P
+
+#### Frontend
 
 Here is a list of whats installed for the frontend:
 
@@ -44,6 +45,15 @@ Here is a list of whats installed for the frontend:
   - [Buefy](https://buefy.github.io/#/documentation/start) - VueJs UI framework 
   mirroring all [Bulma](https://bulma.io/documentation/columns/basics/) features including 
   [Material Design Icons](https://materialdesignicons.com/)
+  
+This is only recommended as long as you only want to spice up your pages with a lil reactivity, tho. 
+In case you want to build a more complex frontend, please consider using the Django rest framework and
+and start building a dedicated frontend with `vue ui` ([more detailed instructions here](https://cli.vuejs.org/)).
+For smaller projects it has proven to be more efficient to have the frontend checked in as a subfolder in the
+backend repo so that you always have the matching backend and frontend code together without messing with 
+version conflicts
+
+#### Settings
   
 Contrary to Django the project has a flat settings hierarchy so you can do the following:
 
@@ -62,14 +72,21 @@ Contrary to Django the project has a flat settings hierarchy so you can do the f
  The styles.sass in compiled on the fly and thanks to the wonderful livereload-server changes will be visible right away in
  you browser (as well as code changes to python files).
  
- Once the settings file is fed with the needed credentials all errors (python and javascript) will be catched by 
+ Once the settings file is fed with the needed credentials all errors (python and javascript) will be caught by 
  Sentry.io for error handling. 
  
+ #### Clean Code
+ 
  misc/setup_repo.sh will setup the current repo with a flake8 commit hook to always commit clean code only. :D
+ 
+ #### Static Files
+ 
  wsgi.py is patched with the awesome dj-static lib so you don't necessarily need to remember to serve static 
  files separately unless you really want to.
  
- One more thing: The project template features a ready to use fabfile which will grant you some basic tasks like:
+ #### One more thing: fabfile
+  
+The project template features a ready to use fabfile which will grant you some basic tasks like:
  
    - _fab deploy_ which will push your content and restart uwsgi
    - _fab migrate_ which will push updates, updating packages, migrating the DB, compressing files, collecting 
@@ -77,7 +94,7 @@ Contrary to Django the project has a flat settings hierarchy so you can do the f
    
  Hope i didn't forget any gem inside .. have fun with this project template!
  
-# Installation
+## Installation
 
     django-admin.py startproject \
     --template=https://github.com/kakulukia/django-default-project/zipball/master \
