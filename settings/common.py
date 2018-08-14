@@ -1,5 +1,6 @@
 
 import os
+from pathlib import Path
 
 import raven
 from pypugjs.ext.django.compiler import enable_pug_translations
@@ -8,8 +9,7 @@ from my_secrets import secrets
 
 enable_pug_translations()
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path.cwd()
 SECRET_KEY = secrets.SECRET_KEY
 SITE_ID = 1
 
@@ -48,7 +48,7 @@ MIDDLEWARE = [
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [BASE_DIR / "templates"],
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
@@ -79,7 +79,7 @@ WSGI_APPLICATION = "settings.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "NAME": str(BASE_DIR / "db.sqlite3"),
     }
     # PLEASE as soon as the project gets a lil more serious => use Postgres!
     # https://duckduckgo.com/?q=postgres+vs+mysql&atb=v101-6&iax=videos&ia=videos&iai=emgJtr9tIME
@@ -125,7 +125,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "assets")]
+STATICFILES_DIRS = [BASE_DIR / "assets"]
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
@@ -133,8 +133,8 @@ STATICFILES_FINDERS = [
 ]
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+STATIC_ROOT = BASE_DIR / "static"
+MEDIA_ROOT = BASE_DIR / "media"
 COMPRESS_PRECOMPILERS = (("text/x-sass", "django_libsass.SassCompiler"),)
 COMPRESS_ENABLED = True
 
