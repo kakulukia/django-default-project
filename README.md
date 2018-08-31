@@ -100,6 +100,8 @@ The project template features a ready to use fabfile which will grant you some b
     --template=https://github.com/kakulukia/django-default-project/zipball/master \
     <new project name here>
     
+    cd <repeat the new project name>
+    
     poetry install
 
 PS: You need [poetry](https://github.com/sdispater/poetry) to install this projects requirements.
