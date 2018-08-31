@@ -2,7 +2,7 @@
 
 #### Django
 
-This is meant as a base template for new Django projects which uses pipenv to manage its 3rd party packages. 
+This is meant as a base template for new Django projects which uses poetry to manage its 3rd party packages. 
 The project comes preconfigured for those packages:
   
     [packages]
