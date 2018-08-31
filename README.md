@@ -105,4 +105,4 @@ The project template features a ready to use fabfile which will grant you some b
     poetry install
 
 PS: You need [poetry](https://github.com/sdispater/poetry) to install this projects requirements.
-You can `pip install poetry` if yo dont have it already.
+You can `pip install poetry` if yo dont have it already. I really tried pipenv, but it let me down so many times now.
