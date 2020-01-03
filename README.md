@@ -23,10 +23,11 @@ The project comes preconfigured for those packages:
     djangorestframework = "*"
     
     [dev-packages]
+    black = "*"
     django-debug-toolbar = "*"
     django-livereload-server = "*"
     "flake8" = "*"
-    "fabric3" = "*"
+    fabric = "*"
     ipdb = "*"
     djdt-flamegraph = "*"
 
