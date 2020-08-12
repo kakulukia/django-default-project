@@ -38,3 +38,6 @@ flake8 = "^3.7.9"
 fabric = "^2.5.0"
 ipdb = "^0.12.3"
 djdt-flamegraph = "^0.2.12"
+
+[tool.black]
+line-length = 90

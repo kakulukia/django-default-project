@@ -44,6 +44,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'axes.middleware.AxesMiddleware',
+]
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'axes.backends.AxesBackend',
 ]
 TEMPLATES = [
     {
@@ -74,7 +79,6 @@ TEMPLATES = [
 AUTH_USER_MODEL = "users.User"
 ROOT_URLCONF = "settings.urls"
 WSGI_APPLICATION = "settings.wsgi.application"
-
 
 DATABASES = {
     "default": {
