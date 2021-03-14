@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django_default_project"
-version = "0.7.0"
+version = "0.8.0"
 description = "Its not always good to start from scratch .. lets have some sane defaults .."
 authors = ["Andy Grabow <andy@freilandkiwis.de>"]
 license = "MIT"
@@ -10,15 +10,14 @@ repository = "https://github.com/kakulukia/django-default-project"
 homepage = "https://github.com/kakulukia/django-default-project"
 
 [tool.poetry.dependencies]
-python = "^3.6"
 django = "^3.0"
 django-secrets = "^1.0.2"
 django-undeletable = "^1.1.0"
-django-extensions = "^2.2.5"
+django-extensions = "^3.1.1"
 dj-static = "^0.0.6"
 django-compressor = "^2.4"
 django-axes = "^5.2.0"
-django-libsass = "^0.7"
+django-libsass = "^0.8"
 raven = "^6.10.0"
 pypugjs = "^5.8.1"
 django-post-office = "^3.2.1"
@@ -27,17 +26,22 @@ huepy = "^1.2.1"
 djangorestframework = "^3.11.0"
 requests = "^2.22.0"
 pendulum = "^2.0.5"
-pillow = "^7.0.0"
-libsass = "0.19.4"
+Pillow = "^8.1.2"
+libsass = "^0.20.1"
+python = "^3.9"
 
 [tool.poetry.dev-dependencies]
 black = "^19.10b0"
-django-debug-toolbar = "^2.1"
+django-debug-toolbar = "^3.2"
 django-livereload-server = "^0.3.2"
 flake8 = "^3.7.9"
 fabric = "^2.5.0"
-ipdb = "^0.12.3"
+ipdb = "^0.13.6"
 djdt-flamegraph = "^0.2.12"
 
 [tool.black]
 line-length = 90
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

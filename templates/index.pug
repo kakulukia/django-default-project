@@ -13,8 +13,8 @@ block content
 block footer
   .container
     input#who(v-model='intro')
-    a.button.is-small(:class="{'is-loading': isLoading}",
-      @click="loadJoke()") get me another joke
+    a.button.is-small(:class="{'is-loading': isLoading}"
+      @click="loadJoke()" href="#") get me another joke
 
 
 block extra_js
