@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 
 from pypugjs.ext.django.compiler import enable_pug_translations
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 from my_secrets import secrets
 
@@ -149,8 +151,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 COMPRESS_PRECOMPILERS = (("text/x-sass", "sass {infile} {outfile}"),)
 COMPRESS_ENABLED = True
 
-# import sentry_sdk
-# from sentry_sdk.integrations.django import DjangoIntegration
+
 # sentry_sdk.init(
 #     dsn=secrets.SENTRY_DSN,  # salat live
 #
@@ -177,3 +178,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 EMAIL_OVERRIDE_ADDRESS = None
 EMAIL_FOOTER = ""
 EMAIL_BACKEND = "post_office.EmailBackend"
+
+SILENCED_SYSTEM_CHECKS = ["debug_toolbar.W006"]

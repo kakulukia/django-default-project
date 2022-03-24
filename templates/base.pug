@@ -1,4 +1,4 @@
--load static compress raven
+-load static compress
 
 !!!5
 html(lang='de')
@@ -10,7 +10,6 @@ html(lang='de')
     title
       block title
         | Give me a title
-    meta(name="viewport", content="initial-scale=1.0")
     link(href="https://fonts.googleapis.com/css?family=Barrio", rel="stylesheet")
 
     -compress css
@@ -28,21 +27,30 @@ body
       block footer
 
 
-  script(src="https://unpkg.com/vue@2.5.13/dist/vue.min.js")
+  script(src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js")
 
   // error reporting for the frontend
-  script(src="https://cdn.ravenjs.com/3.20.0/vue/raven.min.js", crossorigin="anonymous")
-  script Raven.config('{% sentry_public_dsn %}').install();
+  script(src="https://browser.sentry-cdn.com/6.19.1/bundle.min.js" integrity="sha384-GRagWAKYasaEEyhq5NqRz9Hs7zZOXt+DwzY/WGbWZBkpvt5+lZxITNyU3bD7SFk5" crossorigin="anonymous")
+  script.
+    // user this to enable frontend debugging
+    // Sentry.init({
+    //   dsn: "SENTRY_DSN_HERE",
+    //   release: "my-project-name@X",
+    //
+    //   // We recommend adjusting this value in production, or using tracesSampler
+    //   // for finer control
+    //   tracesSampleRate: 1.0,
+    // });
 
   // the missing javascript functions
-  script(src="https://unpkg.com/lodash@4.13.1/lodash.min.js")
+  script(src="https://unpkg.com/lodash@4.17.21/lodash.min.js")
 
   // ajax calls
-  script(src="https://unpkg.com/axios@0.18.0/dist/axios.min.js")
+  script(src="https://unpkg.com/axios@0.26.1/dist/axios.min.js")
 
   // Buefy UI framework
-  link(rel="stylesheet", href="https://unpkg.com/buefy/lib/buefy.min.css")
-  script(src="https://unpkg.com/buefy")
+  script(src="https://unpkg.com/buefy@0.9.19/dist/buefy.min.js")
+  link(rel="stylesheet", href="https://unpkg.com/buefy@0.9.19/dist/buefy.min.css")
   link(rel="stylesheet", href="//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css")
   Vue.use(Buefy.default)
 

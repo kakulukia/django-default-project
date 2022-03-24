@@ -32,7 +32,6 @@ block extra_js
           axios.get('https://api.chucknorris.io/jokes/random')
               .then(function (response) {
                 app.joke = response.data.value
-                console.log(app.joke)
                 app.isLoading = false
               })
         }

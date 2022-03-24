@@ -13,8 +13,7 @@ The project comes preconfigured for those packages:
     dj-static = "*"
     django-compressor = "*"
     django-axes = "*"
-    django-libsass = "*"
-    raven = "*"
+    sentry-sdk = "*"
     pypugjs = "*"
     django-post-office = "*"
     uwsgidecorators = "*"
@@ -31,16 +30,16 @@ The project comes preconfigured for those packages:
     ipdb = "*"
     djdt-flamegraph = "*"
 
-Furthermore this project template includes a hello world with PUG templates, SASS styles and VueJS
+Furthermore, this project template includes a hello world with PUG templates, SASS styles and VueJS
 showing off a minimal reactive page featuring [chuck norris facts](https://api.chucknorris.io) which made me click reload a few dozen 
 times while coding this example app. :P
 
 #### Frontend
 
-Here is a list of whats installed for the frontend:
+Here is a list of what's installed for the frontend:
 
   - [VueJS](https://vuejs.org/v2/guide/) - the base JS framework  
-  - [ravenJS](https://docs.sentry.io/quickstart/) - error reporting for the frontend
+  - [sentry](https://docs.sentry.io/quickstart/) - error reporting for the frontend
   - [lodash](https://lodash.com/docs/4.17.5) - the missing javascript functions
   - [axios](https://github.com/axios/axios) - AJAX calls
   - [Buefy](https://buefy.github.io/#/documentation/start) - VueJs UI framework 
@@ -67,11 +66,11 @@ Contrary to Django the project has a flat settings hierarchy so you can do the f
  Django-secrets will keep your secrets really secret and help you with your deployment so that you only 
  need to initialize your secret environment variables. Also works super easy with i.e. Travis CI.
  
- All assets and templates are stored in their top level folders .. yes i know its not portable that way, but most of 
- the times i don't build portable apps. I create projects that are meant to be be running at customers and never 
- see the public light and thus they shall be clean without the need to remember which assets are hidden in which subfolders.
+ All assets and templates are stored in their top level folders .. yes i know it's not portable that way, but most of the time 
+ I don't build portable apps. I create projects that are meant to be running at customers and never 
+ see the public light, and thus they shall be clean without the need to remember which assets are hidden in which sub folders.
  The styles.sass in compiled on the fly and thanks to the wonderful livereload-server changes will be visible right away in
- you browser (as well as code changes to python files).
+ your browser (as well as code changes to python files).
  
  Once the settings file is fed with the needed credentials all errors (python and javascript) will be caught by 
  Sentry.io for error handling. 
@@ -82,7 +81,7 @@ Contrary to Django the project has a flat settings hierarchy so you can do the f
  
  #### Static Files
  
- wsgi.py is patched with the awesome dj-static lib so you don't necessarily need to remember to serve static 
+ wsgi.py is patched with the awesome dj-static lib, so you don't necessarily need to remember to serve static 
  files separately unless you really want to.
  
  #### One more thing: fabfile
@@ -106,4 +105,4 @@ The project template features a ready to use fabfile which will grant you some b
     poetry install
 
 PS: You need [poetry](https://github.com/sdispater/poetry) to install this projects requirements.
-You can `pip install poetry` if yo dont have it already. I really tried pipenv, but it let me down so many times now.
+You can `pip install poetry` if you don't have it already. I really tried pipenv, but it let me down so many times now.
