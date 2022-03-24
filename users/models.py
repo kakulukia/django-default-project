@@ -5,7 +5,7 @@ from django.contrib.sites.models import Site
 from django.core import validators
 from django.db import models
 from django.utils.timezone import now
-from django.utils.translation import ugettext_lazy as _, activate
+from django.utils.translation import gettext_lazy as _, activate
 from django_undeletable.models import BaseModel, UserDataManager
 from post_office import mail
 

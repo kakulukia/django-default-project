@@ -12,7 +12,7 @@ homepage = "https://github.com/kakulukia/django-default-project"
 [tool.poetry.dependencies]
 django = "^4.0"
 django-secrets = "^1.0.2"
-django-undeletable = "1.1.0"
+django-undeletable = "1.1.2"
 django-extensions = "^3.1.1"
 dj-static = "^0.0.6"
 django-compressor = "^3.1"
@@ -27,6 +27,7 @@ requests = "^2.22.0"
 pendulum = "^2.0.5"
 Pillow = "^9.0.1"
 python = "^3.9.9"
+sentry-sdk = "^1.5.7"
 
 [tool.poetry.dev-dependencies]
 black = "^22.1.0"

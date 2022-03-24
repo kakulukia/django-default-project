@@ -51,8 +51,8 @@ MIDDLEWARE += [  # noqa
 
 INTERNAL_IPS = ALLOWED_HOSTS
 
-# unset raven config to not not flood it while developing
-RAVEN_CONFIG = {}
+# unset sentry configuration for development
+sentry_sdk.init()
 
 POST_OFFICE = {
     "BACKENDS": {"default": "django.core.mail.backends.console.EmailBackend"}

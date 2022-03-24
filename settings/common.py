@@ -3,7 +3,9 @@ import os
 from pathlib import Path
 
 import raven
+import sentry_sdk
 from pypugjs.ext.django.compiler import enable_pug_translations
+from sentry_sdk.integrations.django import DjangoIntegration
 
 from my_secrets import secrets
 
@@ -139,16 +141,33 @@ STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
 STATIC_ROOT = BASE_DIR / "static"
 MEDIA_ROOT = BASE_DIR / "media"
-COMPRESS_PRECOMPILERS = (("text/x-sass", "django_libsass.SassCompiler"),)
+COMPRESS_PRECOMPILERS = (
+    ('text/x-sass', 'sass {infile} {outfile}'),
+)
 COMPRESS_ENABLED = True
 
+# sentry_sdk.init(
+#     dsn=secrets.SENTRY_DSN,  # salat live
+#
+#     integrations=[DjangoIntegration()],
+#
+#     # Set traces_sample_rate to 1.0 to capture 100%
+#     # of transactions for performance monitoring.
+#     # We recommend adjusting this value in production,
+#     traces_sample_rate=1.0,
+#
+#     # If you wish to associate users to errors (assuming you are using
+#     # django.contrib.auth) you may enable sending PII data.
+#     send_default_pii=True,
+#
+#     # By default the SDK will try to use the SENTRY_RELEASE
+#     # environment variable, or infer a git commit
+#     # SHA as release, however you may want to set
+#     # something more human-readable.
+#     # release="myapp@1.0.0",
+# )
 
-RAVEN_CONFIG = {
-    "dsn": "https://{}@sentry.io/{}".format(
-        secrets.SENTRY_PROJECT_KEY, secrets.SENTRY_PROJECT_ID
-    ),
-    "release": raven.fetch_git_sha(os.path.dirname(os.pardir)),
-}
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 EMAIL_OVERRIDE_ADDRESS = None
 EMAIL_FOOTER = ""
