@@ -54,6 +54,4 @@ INTERNAL_IPS = ALLOWED_HOSTS
 # unset sentry configuration for development
 sentry_sdk.init()
 
-POST_OFFICE = {
-    "BACKENDS": {"default": "django.core.mail.backends.console.EmailBackend"}
-}
+POST_OFFICE = {"BACKENDS": {"default": "django.core.mail.backends.console.EmailBackend"}}

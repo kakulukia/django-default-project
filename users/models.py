@@ -5,7 +5,8 @@ from django.contrib.sites.models import Site
 from django.core import validators
 from django.db import models
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _, activate
+from django.utils.translation import activate
+from django.utils.translation import gettext_lazy as _
 from django_undeletable.models import BaseModel, UserDataManager
 from post_office import mail
 
@@ -52,18 +53,18 @@ class User(AbstractBaseUser, BaseModel, PermissionsMixin):
         verbose_name_plural = _("users")
 
     def get_full_name(self):
-        """ Returns the first_name plus the last_name, with a space in between. """
+        """Returns the first_name plus the last_name, with a space in between."""
         full_name = "%s %s" % (self.first_name, self.last_name)
         return full_name.strip()
 
     def get_short_name(self):
-        """ Returns the short name for the user. """
+        """Returns the short name for the user."""
         return self.first_name
 
     def email_user(self, template_name, context=None):
         """
-         Sends an email to this User.
-         If settings.EMAIL_OVERRIDE_ADDRESS is set, this mail will be redirected to the alternate mail address.
+        Sends an email to this User.
+        If settings.EMAIL_OVERRIDE_ADDRESS is set, this mail will be redirected to the alternate mail address.
 
         """
         receiver = self.email

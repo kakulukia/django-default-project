@@ -1,15 +1,15 @@
 # coding=utf-8
-from fabric.context_managers import cd
-from fabric.state import env
-from fabric.operations import run, local
 from fabric.colors import green
+from fabric.context_managers import cd
+from fabric.operations import local, run
+from fabric.state import env
 
 env.shell = "/bin/zsh -c"
 
 APP_NAME = "app_name"
 
 env.path = f"/opt/www/{APP_NAME}"
-env.hosts = ['servername']
+env.hosts = ["servername"]
 
 
 # # DEPLOYMENT TARGETS
@@ -27,7 +27,7 @@ env.hosts = ['servername']
 # T A S K S
 # ###########
 def deploy_only():
-    """ Pull all updates from the remote repository. """
+    """Pull all updates from the remote repository."""
     with cd(env.path):
         print(green("updating from repository .."))
         run("git pull")
@@ -41,7 +41,7 @@ def clear_cache():
 
 
 def restart():
-    """ Restart nginx and the backend worker. """
+    """Restart nginx and the backend worker."""
     print(green("restarting server .."))
     run(f"pm2 restart {APP_NAME}")
 
@@ -66,7 +66,7 @@ def migrate():
     with cd(env.path):
         print(green("updating packages .."))
         # this might cause some trouble: https://github.com/python-poetry/poetry/issues/732
-        run('poetry run pip install --upgrade pip setuptools')
+        run("poetry run pip install --upgrade pip setuptools")
         run("poetry install")
 
         print(green("migrating database .."))
@@ -89,4 +89,4 @@ def update_static():
 
 
 def manage(command):
-    run('poetry run ./manage.py ' + command)
+    run("poetry run ./manage.py " + command)
