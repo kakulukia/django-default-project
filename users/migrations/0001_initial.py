@@ -3,9 +3,9 @@
 from __future__ import unicode_literals
 
 import django.core.validators
-from django.db import migrations, models
 import django.utils.timezone
 import django_undeletable.models
+from django.db import migrations, models
 
 
 class Migration(migrations.Migration):

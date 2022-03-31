@@ -10,8 +10,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
-from pypugjs.ext.django.compiler import enable_pug_translations
 import sentry_sdk
+from pypugjs.ext.django.compiler import enable_pug_translations
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from my_secrets import secrets
