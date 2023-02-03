@@ -10,7 +10,7 @@ repository = "https://github.com/kakulukia/django-default-project"
 homepage = "https://github.com/kakulukia/django-default-project"
 
 [tool.poetry.dependencies]
-django = "^4.0"
+django = "^4.1"
 django-secrets = "^1.0.2"
 django-undeletable = "1.1.2"
 django-extensions = "^3.1.1"
