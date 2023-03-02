@@ -24,11 +24,12 @@ The project comes preconfigured for those packages:
     [dev-packages]
     black = "*"
     django-debug-toolbar = "*"
-    django-livereload-server = "*"
+    django-browser-reload = "*"
     "flake8" = "*"
     fabric = "*"
     ipdb = "*"
     djdt-flamegraph = "*"
+    icecream = "*"
 
 Furthermore, this project template includes a hello world with PUG templates, SASS styles and VueJS
 showing off a minimal reactive page featuring [chuck norris facts](https://api.chucknorris.io) which made me click reload a few dozen 
@@ -69,7 +70,7 @@ Contrary to Django the project has a flat settings hierarchy so you can do the f
  All assets and templates are stored in their top level folders .. yes i know it's not portable that way, but most of the time 
  I don't build portable apps. I create projects that are meant to be running at customers and never 
  see the public light, and thus they shall be clean without the need to remember which assets are hidden in which sub folders.
- The styles.sass in compiled on the fly and thanks to the wonderful livereload-server changes will be visible right away in
+ The styles.sass in compiled on the fly and thanks to the wonderful django-browser-reload changes will be visible right away in
  your browser (as well as code changes to python files).
  
  Once the settings file is fed with the needed credentials all errors (python and javascript) will be caught by 

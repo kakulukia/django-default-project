@@ -7,6 +7,7 @@ from sample_app.views import index
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", index),
+    path("__reload__/", include("django_browser_reload.urls")),
 ]
 
 if settings.DEBUG:
