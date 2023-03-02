@@ -15,6 +15,8 @@ from pypugjs.ext.django.compiler import enable_pug_translations
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from my_secrets import secrets
+from icecream import install
+install()
 
 enable_pug_translations()
 
