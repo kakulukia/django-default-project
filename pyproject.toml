@@ -59,3 +59,12 @@ exclude = [
     "node_modules",
     ".venv",
 ]
+select = [
+    # Pyflakes
+    "F",
+    # Pycodestyle
+    "E",
+    "W",
+    # isort
+    "I001"
+]

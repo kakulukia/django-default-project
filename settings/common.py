@@ -10,14 +10,14 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
+from icecream import install
 from pypugjs.ext.django.compiler import enable_pug_translations
 
 from my_secrets import secrets
-from icecream import install
-
-install()
 
 enable_pug_translations()
+install()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path.cwd()
