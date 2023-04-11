@@ -64,7 +64,8 @@ class User(AbstractBaseUser, BaseModel, PermissionsMixin):
     def email_user(self, template_name, context=None):
         """
         Sends an email to this User.
-        If settings.EMAIL_OVERRIDE_ADDRESS is set, this mail will be redirected to the alternate mail address.
+        If settings.EMAIL_OVERRIDE_ADDRESS is set, this mail will be
+        redirected to the alternate mail address.
 
         """
         receiver = self.email

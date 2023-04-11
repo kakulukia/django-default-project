@@ -1,7 +1,7 @@
 # coding=utf-8
 from fabric.colors import green
 from fabric.context_managers import cd
-from fabric.operations import local, run
+from fabric.operations import run
 from fabric.state import env
 
 env.shell = "/bin/zsh -c"

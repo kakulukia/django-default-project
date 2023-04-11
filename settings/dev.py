@@ -52,6 +52,6 @@ MIDDLEWARE += [  # noqa
 INTERNAL_IPS = ALLOWED_HOSTS
 
 # unset sentry configuration for development
-sentry_sdk.init()
+sentry_sdk.init()  # noqa
 
 POST_OFFICE = {"BACKENDS": {"default": "django.core.mail.backends.console.EmailBackend"}}
