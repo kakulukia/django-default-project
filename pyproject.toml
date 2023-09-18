@@ -37,7 +37,7 @@ black = "^23.1.0"
 django-debug-toolbar = "^4.0.0"
 ipdb = "^0.13.6"
 djdt-flamegraph = "^0.2.12"
-fabric = "^3.0.0"
+fabric = "<2"
 django-browser-reload = "^1.7.0"
 
 
