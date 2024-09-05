@@ -6,15 +6,15 @@ block title
 
 block content
   .hello-world
-    span(v-text='intro')
+    span(v-text='title')
   .joke(v-text="joke")
 
 
 block footer
   .container
     .v-row
-      .v-col-4
-        v-text-field#title(v-model='intro' density="compact")
+      .v-col-3
+        v-text-field#title(v-model='title' density="compact")
       .v-col-auto
         v-btn(:loading="isLoading" color="primary"
           @click="loadJoke()" href="#") get me another joke
@@ -27,7 +27,7 @@ block vue
       el: '#app',
       data() {
         return {
-          intro: "Django + VueJs = ❤",
+          title: "Django + VueJs = ❤",
           joke: '',
           isLoading: false
         }

@@ -625,17 +625,6 @@ files = [
 django = ">=4.2"
 
 [[package]]
-name = "djdt-flamegraph"
-version = "0.2.13"
-description = "Flamegraphs for Django Debug Toolbar"
-optional = false
-python-versions = "*"
-files = [
-    {file = "djdt_flamegraph-0.2.13-py2.py3-none-any.whl", hash = "sha256:b3252b8cc9b586829166cc158b26952626cd6f41a3ffa92dceef2f5dbe5b99a0"},
-    {file = "djdt_flamegraph-0.2.13.tar.gz", hash = "sha256:c07a71be58484636e021d4c49b129fd819f24c9128849cb59558e5141192dbf3"},
-]
-
-[[package]]
 name = "exceptiongroup"
 version = "1.2.2"
 description = "Backport of PEP 654 (exception groups)"
@@ -1351,21 +1340,6 @@ files = [
 ]
 
 [[package]]
-name = "raven"
-version = "6.10.0"
-description = "Raven is a client for Sentry (https://getsentry.com)"
-optional = false
-python-versions = "*"
-files = [
-    {file = "raven-6.10.0-py2.py3-none-any.whl", hash = "sha256:44a13f87670836e153951af9a3c80405d36b43097db869a36e92809673692ce4"},
-    {file = "raven-6.10.0.tar.gz", hash = "sha256:3fa6de6efa2493a7c827472e984ce9b020797d0da16f1db67197bcc23c8fae54"},
-]
-
-[package.extras]
-flask = ["Flask (>=0.8)", "blinker (>=1.1)"]
-tests = ["Flask (>=0.8)", "Flask-Login (>=0.2.0)", "ZConfig", "aiohttp", "anyjson", "blinker (>=1.1)", "blinker (>=1.1)", "bottle", "celery (>=2.5)", "coverage (<4)", "exam (>=0.5.2)", "flake8 (==3.5.0)", "logbook", "mock", "nose", "pytest (>=3.2.0,<3.3.0)", "pytest-cov (==2.5.1)", "pytest-flake8 (==1.0.0)", "pytest-pythonpath (==0.7.2)", "pytest-timeout (==1.2.1)", "pytest-xdist (==1.18.2)", "pytz", "requests", "sanic (>=0.7.0)", "tornado (>=4.1,<5.0)", "tox", "webob", "webtest", "wheel"]
-
-[[package]]
 name = "rcssmin"
 version = "1.1.2"
 description = "CSS Minifier"
@@ -1773,4 +1747,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "ac5d50faac94d8a0603eea1f099d94256d6af57bf97c5e9c786f478cfafe52b3"
+content-hash = "5b75b5d7b58bbb19b5161b4ce918b4b7673392031a46b8b2081c873b11f3c3f5"

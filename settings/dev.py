@@ -44,6 +44,7 @@ DEBUG_TOOLBAR_CONFIG = {
 
 MIDDLEWARE += [  # noqa
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 INTERNAL_IPS = ALLOWED_HOSTS
