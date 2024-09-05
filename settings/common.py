@@ -110,6 +110,7 @@ DATABASES = {
         },
     }
     # PLEASE, as soon as the project gets a lil more serious => use Postgres!
+    # BUT the new WAL mode of SQLite should be good enough for small to medium projects
     #############################################################################################
     #  'default': {
     #     'ENGINE': 'django.db.backends.postgresql',

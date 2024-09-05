@@ -1,8 +1,8 @@
 # coding=utf-8
 from fabric.colors import green
-from fabric.operations import get, local, run
-from fabric.state import env
 from fabric.context_managers import cd
+from fabric.operations import get, run
+from fabric.state import env
 
 env.shell = "/bin/zsh -c"
 
@@ -94,19 +94,33 @@ def manage(command):
     run("poetry run ./manage.py " + command)
 
 
+# # Postgres version
+# def get_new_db():
+#     users = local('psql -c "\\du"', capture=True)
+#     if APP_NAME not in users:
+#         local(f"psql -c \"CREATE USER {APP_NAME} WITH CREATEDB PASSWORD '{APP_NAME}';\"")
+#
+#     dbs = local('psql -c "\\l"', capture=True)
+#     if {APP_NAME} in dbs:
+#         local(f'psql -U {APP_NAME} postgres -c "DROP DATABASE {APP_NAME};"')
+#
+#     local(f'psql -U {APP_NAME} postgres -c "CREATE DATABASE {APP_NAME};"')
+#
+#     with cd(env.path):
+#         run(f"pg_dump -h localhost -U {APP_NAME} --disable-triggers {APP_NAME} >! dump")
+#         get("dump", "dump")
+#
+#     local(f"psql -U {APP_NAME} {APP_NAME} -f dump")
+
+
+# SQLite version
 def get_new_db():
-    users = local('psql -c "\\du"', capture=True)
-    if APP_NAME not in users:
-        local(f"psql -c \"CREATE USER {APP_NAME} WITH CREATEDB PASSWORD '{APP_NAME}';\"")
-
-    dbs = local('psql -c "\\l"', capture=True)
-    if {APP_NAME} in dbs:
-        local(f'psql -U {APP_NAME} postgres -c "DROP DATABASE {APP_NAME};"')
-
-    local(f'psql -U {APP_NAME} postgres -c "CREATE DATABASE {APP_NAME};"')
-
     with cd(env.path):
-        run(f"pg_dump -h localhost -U {APP_NAME} --disable-triggers {APP_NAME} >! dump")
-        get("dump", "dump")
+        # Create a new Checkpoint in TRUNCATE mode to ensure all data is written to the main file
+        run('sqlite3 db.sqlite3 "PRAGMA wal_checkpoint(TRUNCATE);"')
 
-    local(f"psql -U {APP_NAME} {APP_NAME} -f dump")
+        # Step 2: Copy the database file to the local machine
+        get("db.sqlite3", "db.sqlite3")
+
+    # Optional: Verify or log that the database has been successfully copied
+    green("Database copied!")
