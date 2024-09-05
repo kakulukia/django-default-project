@@ -97,9 +97,19 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+        "OPTIONS": {
+            "transaction_mode": "IMMEDIATE",
+            "timeout": 5,  # seconds
+            "init_command": """
+                        PRAGMA journal_mode=WAL;
+                        PRAGMA synchronous=NORMAL;
+                        PRAGMA mmap_size = 134217728;
+                        PRAGMA journal_size_limit = 27103364;
+                        PRAGMA cache_size=2000;
+                    """,
+        },
     }
     # PLEASE, as soon as the project gets a lil more serious => use Postgres!
-    # https://duckduckgo.com/?q=postgres+vs+mysql&atb=v101-6&iax=videos&ia=videos&iai=emgJtr9tIME
     #############################################################################################
     #  'default': {
     #     'ENGINE': 'django.db.backends.postgresql',

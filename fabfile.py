@@ -1,12 +1,14 @@
 # coding=utf-8
 from fabric.colors import green
 from fabric.context_managers import cd
-from fabric.operations import run
+from fabric.operations import get, local, run
 from fabric.state import env
 
 env.shell = "/bin/zsh -c"
 
 APP_NAME = "app_name"
+# APP_NAME is also used as user and
+# password for the database for local systems - get_new_db task
 
 env.path = f"/opt/www/{APP_NAME}"
 env.hosts = ["servername"]
@@ -17,6 +19,7 @@ env.hosts = ["servername"]
 # def stage():
 #     env.environment = "stage"
 #     env.hosts = ["servername"]
+#     env.gateway = "andy@mamasystems.de"  # if needed
 
 
 # def live():
@@ -89,3 +92,21 @@ def update_static():
 
 def manage(command):
     run("poetry run ./manage.py " + command)
+
+
+def get_new_db():
+    users = local('psql -c "\\du"', capture=True)
+    if APP_NAME not in users:
+        local(f"psql -c \"CREATE USER {APP_NAME} WITH CREATEDB PASSWORD '{APP_NAME}';\"")
+
+    dbs = local('psql -c "\\l"', capture=True)
+    if {APP_NAME} in dbs:
+        local(f'psql -U {APP_NAME} postgres -c "DROP DATABASE {APP_NAME};"')
+
+    local(f'psql -U {APP_NAME} postgres -c "CREATE DATABASE {APP_NAME};"')
+
+    with cd(env.path):
+        run(f"pg_dump -h localhost -U {APP_NAME} --disable-triggers {APP_NAME} >! dump")
+        get("dump", "dump")
+
+    local(f"psql -U {APP_NAME} {APP_NAME} -f dump")
