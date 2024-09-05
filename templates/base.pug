@@ -22,12 +22,13 @@ html(lang='de')
 
 body
   #app
-    header
-      block header
-    main
-      block content
-    footer
-      block footer
+    v-app(dark v-cloak)
+      header
+        block header
+      main
+        block content
+      footer
+        block footer
 
   block all_scripts
     script.

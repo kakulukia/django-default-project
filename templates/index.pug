@@ -12,9 +12,12 @@ block content
 
 block footer
   .container
-    input#who(v-model='intro')
-    a.button.is-small(:class="{'is-loading': isLoading}"
-      @click="loadJoke()" href="#") get me another joke
+    .v-row
+      .v-col-4
+        v-text-field#title(v-model='intro' density="compact")
+      .v-col-auto
+        v-btn(:loading="isLoading" color="primary"
+          @click="loadJoke()" href="#") get me another joke
 
 
 block vue
@@ -46,7 +49,7 @@ block vue
       created() {
         this.loadJoke()
         setTimeout(() => {
-          who.focus();
+          title.focus();
         }, 500);
       }
     })
