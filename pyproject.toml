@@ -1,16 +1,17 @@
 [tool.poetry]
 name = "django_default_project"
-version = "0.8.0"
+version = "0.9.0"
 description = "Its not always good to start from scratch .. lets have some sane defaults .."
 authors = ["Andy Grabow <andy@freilandkiwis.de>"]
 license = "MIT"
 readme = 'README.md'
+package-mode = false
 
 repository = "https://github.com/kakulukia/django-default-project"
 homepage = "https://github.com/kakulukia/django-default-project"
 
 [tool.poetry.dependencies]
-django = "^4.0"
+django = "^5.1.1"
 django-secrets = "^1.0.2"
 django-undeletable = "1.1.2"
 django-extensions = "^3.1.1"
@@ -24,16 +25,16 @@ uwsgidecorators = "^1.1.0"
 huepy = "^1.2.1"
 djangorestframework = "^3.11.0"
 requests = "^2.22.0"
-pendulum = "^2.0.5"
+pendulum = "^3.0.0"
 Pillow = "^10.0.1"
-python = "^3.9.9"
-sentry-sdk = "^1.5.7"
+python = "^3.10"
+sentry-sdk = "^2.13.0"
 
 [tool.poetry.group.dev.dependencies]
-ruff = "^0.0.290"
+ruff = "^0.6.3"
 pre-commit = "^3.2.2"
 icecream = "^2.1.3"
-black = "^23.1.0"
+black = "^24.8.0"
 django-debug-toolbar = "^4.0.0"
 ipdb = "^0.13.6"
 djdt-flamegraph = "^0.2.12"
@@ -59,6 +60,8 @@ exclude = [
     "node_modules",
     ".venv",
 ]
+
+[tool.ruff.lint]
 select = [
     # Pyflakes
     "F",
