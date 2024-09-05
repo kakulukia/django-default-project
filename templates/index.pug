@@ -17,27 +17,36 @@ block footer
       @click="loadJoke()" href="#") get me another joke
 
 
-block extra_js
+block vue
   script.
-    let app = new Vue({
+    const app = createApp({
+      delimiters: ['[[', ']]'],
       el: '#app',
-      data: {
-        intro: "Django + VueJs = ❤",
-        joke: '',
-        isLoading: false
+      data() {
+        return {
+          intro: "Django + VueJs = ❤",
+          joke: '',
+          isLoading: false
+        }
       },
       methods: {
         loadJoke: function () {
           this.isLoading = true
           axios.get('https://api.chucknorris.io/jokes/random')
-              .then(function (response) {
-                app.joke = response.data.value
-                app.isLoading = false
-              })
+            .then((response) => { // Arrow function
+              this.joke = response.data.value // properly updates this.joke
+              this.isLoading = false
+            })
+            .catch((error) => {
+              console.error('Error loading joke:', error)
+              this.isLoading = false
+            })
         }
       },
-      created () {
+      created() {
         this.loadJoke()
+        setTimeout(() => {
+          who.focus();
+        }, 500);
       }
-    });
-    who.focus();
+    })

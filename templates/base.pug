@@ -1,21 +1,24 @@
--load static compress
+- load static compress
+!!! 5
 
-!!!5
 html(lang='de')
   head
-    meta(charset='utf-8')
-    meta(http-equiv='X-UA-Compatible', content='IE=edge')
-    meta(name='viewport', content='initial-scale=1.0')
-    //link(rel="shortcut icon", href="{% static 'img/favicon.ico' %}")
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui")
     title
       block title
         | Give me a title
     link(href="https://fonts.googleapis.com/css?family=Barrio", rel="stylesheet")
+    script(src="{% static 'js/vue.global.js' %}")
+    script(src="{% static 'js/vuetify.min.js' %}")
+    script(src="{% static 'js/axios.min.js' %}")
+    script(src="{% static 'js/moment.min.js' %}")
+
+    link(href='{% static "css/vuetify.min.css" %}', rel="stylesheet", type="text/css")
+    link(href='{% static "css/materialdesignicons.min.css" %}', rel="stylesheet", type="text/css")
 
     -compress css
-      link(rel="stylesheet", href="{% static 'css/bootstrap.min.css' %}")
-      link(rel="stylesheet", href="{% static 'css/font-awesome.css' %}")
-      link(rel='stylesheet', type='text/x-sass', href='{% static "sass/styles.sass" %}')
+      link(href='{% static "sass/styles.sass" %}', rel="stylesheet", type="text/x-sass")
 
 body
   #app
@@ -26,33 +29,44 @@ body
     footer
       block footer
 
+  block all_scripts
+    script.
+      const {createApp} = Vue
+      const {createVuetify} = Vuetify
 
-  script(src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js")
+      const vuetify = createVuetify({
+        theme: {
+          themes: {
+            light: {
+              dark: false,
+              colors: {
+                primary: "#0D2575",
+                secondary: "#383D3F"
+              }
+            },
+          },
+        },
+      })
 
-  // error reporting for the frontend
-  script(src="https://browser.sentry-cdn.com/6.19.1/bundle.min.js" integrity="sha384-GRagWAKYasaEEyhq5NqRz9Hs7zZOXt+DwzY/WGbWZBkpvt5+lZxITNyU3bD7SFk5" crossorigin="anonymous")
-  script.
-    // user this to enable frontend debugging
-    // Sentry.init({
-    //   dsn: "SENTRY_DSN_HERE",
-    //   release: "my-project-name@X",
-    //
-    //   // We recommend adjusting this value in production, or using tracesSampler
-    //   // for finer control
-    //   tracesSampleRate: 1.0,
-    // });
+      // if the current domain is pss-stage.hbt-group.com, add class caution to div.stage
+      if (window.location.hostname === 'pss-stage.hbt-group.com') {
+        document.querySelector('.stage').classList.add('caution')
+      }
 
-  // the missing javascript functions
-  script(src="https://unpkg.com/lodash@4.17.21/lodash.min.js")
+    block vue
+      script.
+        const app = createApp({
+          delimiters: ['[[', ']]'],
+          data() {
+            return {
+            }
+          },
+          created() {
+          },
+          methods: {
+          }
+        })
 
-  // ajax calls
-  script(src="https://unpkg.com/axios@0.26.1/dist/axios.min.js")
-
-  // Buefy UI framework
-  script(src="https://unpkg.com/buefy@0.9.19/dist/buefy.min.js")
-  link(rel="stylesheet", href="https://unpkg.com/buefy@0.9.19/dist/buefy.min.css")
-  link(rel="stylesheet", href="//cdn.materialdesignicons.com/2.0.46/css/materialdesignicons.min.css")
-  Vue.use(Buefy.default)
-
-  -compress js
-     block extra_js
+    script.
+      app.use(vuetify)
+      app.mount('#app')

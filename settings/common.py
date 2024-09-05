@@ -128,8 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 AXES_LOGIN_FAILURE_LIMIT = 2
 AXES_CACHE = "axes_cache"
-AXES_USE_USER_AGENT = True
-AXES_LOCK_OUT_BY_COMBINATION_USER_AND_IP = True
+AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 
 
 # Internationalization
@@ -156,7 +155,7 @@ COMPRESS_ENABLED = True
 
 
 # sentry_sdk.init(
-#     dsn=secrets.SENTRY_DSN,  # salat live
+#     dsn=secrets.SENTRY_DSN,
 #
 #     integrations=[DjangoIntegration()],
 #
