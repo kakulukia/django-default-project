@@ -24,7 +24,6 @@ block vue
   script.
     const app = createApp({
       delimiters: ['[[', ']]'],
-      el: '#app',
       data() {
         return {
           title: "Django + VueJs = ❤",
@@ -37,11 +36,13 @@ block vue
           this.isLoading = true
           axios.get('https://api.chucknorris.io/jokes/random')
             .then((response) => { // Arrow function
-              this.joke = response.data.value // properly updates this.joke
+              this.joke = response.data.value
+              this.displayMessage(this.joke, 'success')
               this.isLoading = false
             })
             .catch((error) => {
               console.error('Error loading joke:', error)
+              this.displayMessage(error, 'error')
               this.isLoading = false
             })
         }

@@ -23,6 +23,7 @@ html(lang='de')
 body
   #app
     v-app(dark v-cloak)
+      v-snackbar(v-model="snackbar" timeout="3000" :color="snackbarColor") [[ message ]]
       header
         block header
       main
@@ -49,8 +50,8 @@ body
         },
       })
 
-      // if the current domain is pss-stage.hbt-group.com, add class caution to div.stage
-      if (window.location.hostname === 'pss-stage.hbt-group.com') {
+      // if the current domain is from the staging system, add class caution to div.stage
+      if (window.location.hostname === 'stage.something.com') {
         document.querySelector('.stage').classList.add('caution')
       }
 
@@ -68,6 +69,8 @@ body
           }
         })
 
-    script.
+    script(type="module").
+      import BaseApp from '{% static "js/BaseApp.js" %}';
       app.use(vuetify)
+      app.use(BaseApp)
       app.mount('#app')
