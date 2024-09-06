@@ -15,6 +15,9 @@ export default {
           this.snackbarColor = color
           this.snackbar = true
         },
+        moment(value) {
+          return moment(value).format('YYYY-MM-DD HH:mm')
+        },
       },
       computed: {
       },

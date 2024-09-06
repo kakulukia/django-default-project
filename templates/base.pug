@@ -23,7 +23,7 @@ html(lang='de')
 body
   #app
     v-app(dark v-cloak)
-      v-snackbar(v-model="snackbar" timeout="3000" :color="snackbarColor") [[ message ]]
+      v-snackbar(v-model="snackbar" timeout="3000" :color="snackbarColor" location="top") [[ message ]]
       header
         block header
       main
@@ -36,13 +36,14 @@ body
       const {createApp} = Vue
       const {createVuetify} = Vuetify
 
+      // customise the vuetify theme here
       const vuetify = createVuetify({
         theme: {
           themes: {
             light: {
               dark: false,
               colors: {
-                primary: "#0D2575",
+                primary: "#3F51B5",
                 secondary: "#383D3F"
               }
             },

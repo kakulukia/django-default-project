@@ -37,7 +37,8 @@ block vue
           axios.get('https://api.chucknorris.io/jokes/random')
             .then((response) => { // Arrow function
               this.joke = response.data.value
-              this.displayMessage(this.joke, 'success')
+              const now = this.moment(new Date())
+              this.displayMessage(`${now}: Joke loaded!`, 'success')
               this.isLoading = false
             })
             .catch((error) => {
