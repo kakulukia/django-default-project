@@ -1,0 +1,26 @@
+uwsgi:
+        project: project  # change me
+        base: opt/www
+
+        master: true
+        processes: 5
+        enable-threads: true
+        vaccum: true
+        chmod-socket: 666
+        #plugin: python
+        die-on-term: true
+        uid: www-data
+        gid: www-data
+        thunder-lock: true
+        socket: /tmp/%(project).sock
+        chdir: /opt/www/%(project)
+        pythonpath: /opt/www/%(project)
+        home: /opt/www/%(project)/.venv/
+        #http: 0.0.0.0:8080
+        # maybe use different settings for stage or other systems
+        # env: DJANGO_SETTINGS_MODULE=settings.stage
+        module: settings.wsgi:application
+        #umask: 660
+        #        env: LANG=en_US.UTF-8
+        harakiri: 30  # respawn processes taking more than 30 seconds
+        max-requests: 5000  # respawn processes after serving 5000 requests

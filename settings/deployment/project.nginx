@@ -1,0 +1,30 @@
+server {
+  server_name <domain>;
+  listen 80;
+
+  # Redirect to https if needed
+  location / {
+    rewrite ^(.*) https://<domain>$1 permanent;
+  }
+}
+
+server {
+  server_name <domain>;
+  listen [::]:443 ssl;
+  listen 443 ssl; # managed by Certbot
+  ssl_certificate /etc/letsencrypt/live/*.pem; # managed by Certbot
+  ssl_certificate_key /etc/letsencrypt/live/*/privkey.pem; # managed by Certbot
+  include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+  ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+  client_max_body_size 5M;
+
+  location / {
+    include         uwsgi_params;
+    uwsgi_pass      unix:/tmp/<project>.sock;
+  }
+
+  access_log /opt/www/logs/<project>-access.log;
+  error_log /opt/www/logs/<project>-error.log;
+
+}

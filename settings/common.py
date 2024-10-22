@@ -162,6 +162,7 @@ STATIC_ROOT = BASE_DIR / "static"
 MEDIA_ROOT = BASE_DIR / "media"
 COMPRESS_PRECOMPILERS = (("text/x-sass", "sass {infile} {outfile}"),)
 COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
 
 
 # sentry_sdk.init(

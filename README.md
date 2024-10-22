@@ -107,3 +107,91 @@ The project template features a ready to use fabfile which will grant you some b
 
 PS: You need [poetry](https://github.com/sdispater/poetry) to install this projects requirements.
 You can `pip install poetry` if you don't have it already. I really tried pipenv, but it let me down so many times now.
+
+## 1st time deployment
+
+Needed components:
+
+- recent ubuntu or similar server
+- nginx
+```bash
+    sudo apt install nginx
+```
+- nodejs with the latest lts
+```bash
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+    nvm install --lts
+```
+- pm2 (runs the webservice)
+```bash
+    npm install pm2 -g
+```
+- I usually put websited under /opt/www/<project name> and create a virtualenv there
+```bash
+    sudo mkdir -p /opt/www/<project name>
+    sudo chown -R $USER:$USER /opt/www/<project name>
+    cd /opt/www/<project name>
+```
+- install pyenv to manage python versions
+```bash
+    curl https://pyenv.run | bash
+    echo 'export PATH="/home/<your user>/.pyenv/bin:$PATH"' >> ~/.bashrc
+    echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+    echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
+    source ~/.bashrc
+```
+-install the needed build requirements for python
+```bash
+    sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev libffi-dev liblzma-dev python-openssl
+```
+- install the need python version and set it to be used globally (update it and install poetry)
+```bash
+    pyenv install 3.12.7
+    pyenv global 3.12.7
+    pip install -U pip setuptools poetry
+```
+- direnv will take care of the needed python environment
+```bash
+    sudo apt install direnv
+    echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
+    direnv allow
+```
+- alter the supplied nginx config to your needs and link it to your sites-enabled and restart nginx
+```bash
+    sudo ln -s /opt/www/<project>/settings/<your config> /etc/nginx/sites-enabled/
+    sudo systemctl restart nginx
+```
+- execute a local dev server to init local secrets (SECRET_KEY, OPEN_AI_API_KEY, etc.)
+```bash
+    manage.py runserver
+```
+- test the uwsgi config
+```bash
+    uwsgi settings/deployment/project.yml
+```
+- if everything is fine, start the pm2 job and save it as well installing the pm2 startup job
+```bash
+    cd settings/deployment
+    pm2 start project.sh
+    pm2 save
+    pm2 startup
+    cd -
+```
+- install sass for (offline compression only)
+```bash
+    npm install -g sass
+```
+- prepare the django static files
+```bash
+    manage.py compress -e pug,html --force
+    manage.py collectstatic --noinput
+```
+Now your project should be up and running. If you want to deploy updates to a server, you can use the fabfile.
+
+- optionally deploy an SSL certificate via certbot
+```bash
+    sudo apt install certbot python3-certbot-nginx
+    sudo certbot --nginx
+```
