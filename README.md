@@ -78,7 +78,7 @@ Contrary to Django the project has a flat settings hierarchy so you can do the f
 
  #### Clean Code
 
- There is a pre configured pre-commit configuration, which can be enabled via `pre-commit install --install-hooks`.
+ There is a pre configured pre-commit configuration, which can be enabled via `pre-commit install`.
 
  #### Static Files
 
@@ -97,6 +97,12 @@ The project template features a ready to use fabfile which will grant you some b
 
 ## Installation
 
+    pip install django poetry  # if you dont have it already
+
+    brew install direnv  # to auto load the right virtualenv
+
+    direnv allow
+
     django-admin.py startproject \
     --template=https://github.com/kakulukia/django-default-project/zipball/master \
     <new project name here>
@@ -105,8 +111,19 @@ The project template features a ready to use fabfile which will grant you some b
 
     poetry install
 
+    pre-commit install
+
 PS: You need [poetry](https://github.com/sdispater/poetry) to install this projects requirements.
 You can `pip install poetry` if you don't have it already. I really tried pipenv, but it let me down so many times now.
+
+As soon as you start fiddling with the settings and add stuff that shall differ in production and development.
+Copy my default starting settings for developers and check them in.
+
+    cp settings/andy.py settings/your_name.py
+
+And set the environment variable to your settings file to always load those settings by default.
+
+    export DJANGO_SETTINGS_MODULE=settings.your_name
 
 ## 1st time deployment
 

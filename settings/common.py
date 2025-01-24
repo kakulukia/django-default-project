@@ -27,6 +27,8 @@ SITE_ID = 1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 ALLOWED_HOSTS = [
+    "localhost",
+    "0.0.0.0",
     # 'server.url.here',
 ]
 INSTALLED_APPS = [
