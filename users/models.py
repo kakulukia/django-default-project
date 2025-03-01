@@ -1,14 +1,15 @@
 from django.conf import settings
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.contrib.sites.models import Site
 from django.core import validators
 from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import activate
 from django.utils.translation import gettext_lazy as _
-from django_undeletable.models import BaseModel, UserDataManager
 from post_office import mail
+
+from utils import BaseModel
 
 
 class User(AbstractBaseUser, BaseModel, PermissionsMixin):
@@ -46,7 +47,7 @@ class User(AbstractBaseUser, BaseModel, PermissionsMixin):
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
 
-    data = UserDataManager()
+    data = UserManager()
 
     class Meta(BaseModel.Meta):
         verbose_name = _("user")
