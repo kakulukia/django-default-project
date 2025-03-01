@@ -36,7 +36,6 @@ django-debug-toolbar = "^5.0.1"
 ipdb = "^0.13.6"
 fabric = "<2"
 django-browser-reload = "^1.7.0"
-ipython = "^9.0.0"
 
 
 [build-system]
