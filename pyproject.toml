@@ -13,7 +13,6 @@ homepage = "https://github.com/kakulukia/django-default-project"
 [tool.poetry.dependencies]
 django = "^5.1.1"
 django-secrets = "^1.0.2"
-django-undeletable = "1.1.2"
 django-extensions = "^3.1.1"
 dj-static = "^0.0.6"
 django-compressor = "^4.0"
@@ -25,27 +24,20 @@ huepy = "^1.2.1"
 djangorestframework = "^3.11.0"
 requests = "^2.22.0"
 pendulum = "^3.0.0"
-Pillow = "^10.0.1"
-python = "^3.10"
+Pillow = "^11.1.0"
+python = "^3.11"
 sentry-sdk = "^2.13.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.9.3"
 pre-commit = "^4.1.0"
 icecream = "^2.1.3"
-black = "^24.8.0"
 django-debug-toolbar = "^5.0.1"
 ipdb = "^0.13.6"
 fabric = "<2"
 django-browser-reload = "^1.7.0"
+ipython = "^9.0.0"
 
-
-[tool.black]
-line-length = 99
-extend-exclude = '''
-# A regex preceded with ^/ will apply only to files and directories
-/migrations/  # exclude django migrations
-'''
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
