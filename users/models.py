@@ -9,7 +9,7 @@ from django.utils.translation import activate
 from django.utils.translation import gettext_lazy as _
 from post_office import mail
 
-from utils import BaseModel
+from utils.models import BaseModel
 
 
 class User(AbstractBaseUser, BaseModel, PermissionsMixin):

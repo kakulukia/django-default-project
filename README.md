@@ -8,7 +8,6 @@ The project comes preconfigured for those packages:
     [packages]
     django = "*"
     django-secrets = "*"
-    django-undeletable = "*"
     django-extensions = "*"
     dj-static = "*"
     django-compressor = "*"
@@ -16,13 +15,13 @@ The project comes preconfigured for those packages:
     sentry-sdk = "*"
     pypugjs = "*"
     django-post-office = "*"
-    uwsgidecorators = "*"
+    django-kronos = "*"
+    django-tasks = "*"
     requests = "*"
     pendulum = "*"
     djangorestframework = "*"
 
     [dev-packages]
-    black = "*"
     django-debug-toolbar = "*"
     django-browser-reload = "*"
     fabric = "*"
@@ -41,11 +40,9 @@ Here is a list of what's installed for the frontend:
 
   - [VueJS](https://vuejs.org/v2/guide/) - the base JS framework
   - [sentry](https://docs.sentry.io/quickstart/) - error reporting for the frontend
-  - [lodash](https://lodash.com/docs/4.17.5) - the missing javascript functions
   - [axios](https://github.com/axios/axios) - AJAX calls
-  - [Buefy](https://buefy.github.io/#/documentation/start) - VueJs UI framework
-  mirroring all [Bulma](https://bulma.io/documentation/columns/basics/) features including
-  [Material Design Icons](https://materialdesignicons.com/)
+  - [Vuetify](https://buefy.github.io/#/documentation/start) - VueJs UI framework
+  - [Material Design Icons](https://materialdesignicons.com/)
 
 This is only recommended as long as you only want to spice up your pages with a lil reactivity, tho.
 In case you want to build a more complex frontend, please consider using the Django rest framework and

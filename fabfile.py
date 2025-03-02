@@ -57,6 +57,9 @@ def deploy():
 
     restart()
 
+    # updates the crontab
+    manage("installtasks")
+
 
 def migrate():
     """
@@ -84,7 +87,6 @@ def update_static():
     with cd(env.path):
         print(green("compressing files .."))
         manage("compress -e pug,html --force")
-        # manage("compilescss")
 
         print(green("collecting static files .."))
         manage("collectstatic --noinput")

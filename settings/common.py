@@ -47,8 +47,12 @@ INSTALLED_APPS = [
     "compressor",
     "django_extensions",
     "django_secrets",
-    "post_office",
+    "django_tasks",
+    "django_tasks.backends.database",
     "django_browser_reload",
+    "kronos",
+    "post_office",
+    "utils",
 ]
 
 MIDDLEWARE = [
@@ -100,7 +104,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
         "OPTIONS": {
-            "transaction_mode": "IMMEDIATE",
+            "transaction_mode": "EXCLUSIVE",
             "timeout": 5,  # seconds
             "init_command": """
                     PRAGMA journal_mode=WAL;
@@ -128,6 +132,7 @@ CACHES = {
     "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
     "axes_cache": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
 }
+TASKS = {"default": {"BACKEND": "django_tasks.backends.database.DatabaseBackend"}}
 
 
 # Password validation
