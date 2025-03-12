@@ -56,6 +56,11 @@ body
         document.querySelector('.stage').classList.add('caution')
       }
 
+      // default axios configuration to talk to DRF and use the csrf cookie
+      axios.defaults.baseURL = '/api/';
+      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+      axios.defaults.xsrfCookieName = "csrftoken"
+
     block vue
       script.
         const app = createApp({
