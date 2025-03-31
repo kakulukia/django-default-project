@@ -17,8 +17,9 @@ block footer
         v-text-field#title(v-model='title' density="compact")
       .v-col-auto
         v-btn(:loading="isLoading" color="primary"
-          @click="loadJoke()" href="#") get me another joke
-
+          @click="loadJoke()" href="#")
+            v-icon.mr-1 mdi-autorenew
+            |  get me another joke
 
 block vue
   script.
