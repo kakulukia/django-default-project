@@ -27,8 +27,8 @@ pypugjs = "^5.11.0"
 python = "^3.11"
 requests = "^2.22.0"
 sentry-sdk = "^2.13.0"
-# django-model-utils - use this if a status field is needed and maybe also a status_changed field
 whitenoise = "^6.9.0"
+# django-model-utils - use this if a status field is needed and maybe also a status_changed field
 
 [tool.poetry.group.dev.dependencies]
 django-browser-reload = "^1.7.0"

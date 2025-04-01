@@ -2,210 +2,238 @@
 
 #### Django
 
-This is meant as a base template for new Django projects which uses poetry to manage its 3rd party packages.
-The project comes preconfigured for those packages:
+This project serves as a base template for new Django projects using
+[Poetry](https://github.com/sdispater/poetry) for dependency management. It comes preconfigured
+with a robust set of third-party packages to help you start quickly and maintain best practices.
 
-    [packages]
-    django = "*"
-    django-secrets = "*"
-    django-extensions = "*"
-    dj-static = "*"
-    django-compressor = "*"
-    django-axes = "*"
-    sentry-sdk = "*"
-    pypugjs = "*"
-    django-post-office = "*"
-    django-kronos = "*"
-    django-tasks = "*"
-    requests = "*"
-    pendulum = "*"
-    djangorestframework = "*"
+**Included Packages:**
 
-    [dev-packages]
-    django-debug-toolbar = "*"
-    django-browser-reload = "*"
-    fabric = "*"
-    ipdb = "*"
-    djdt-flamegraph = "*"
-    icecream = "*"
-    ruff = "*"
+```toml
+[packages]
+django = "*"
+django-axes = "*"
+django-compressor = "*"
+django-extensions = "*"
+django-kronos = "*"
+django-post-office = "*"
+django-secrets = "*"
+django-tasks = "*"
+djangorestframework = "*"
+huepy = "*"
+pendulum = "*"
+Pillow = "*"
+pypugjs = "*"
+python = "*"
+requests = "*"
+sentry-sdk = "*"
+whitenoise = "*"
 
-Furthermore, this project template includes a hello world with PUG templates, SASS styles and VueJS
-showing off a minimal reactive page featuring [chuck norris facts](https://api.chucknorris.io) which made me click reload a few dozen
-times while coding this example app. :P
+[dev-packages]
+django-browser-reload = "*"
+django-debug-toolbar = "*"
+fabric = "*"
+icecream = "*"
+ipdb = "*"
+pre-commit = "*"
+ruff = "*"
+```
+
+Furthermore, this template includes a Hello World example utilizing PUG templates, SASS styles, and
+VueJS. The example even features [Chuck Norris facts](https://api.chucknorris.io) to provide a fun,
+interactive experience during development.
 
 #### Frontend
 
-Here is a list of what's installed for the frontend:
+The frontend setup is minimal and designed to add reactivity to your pages without the overhead
+of a full single-page application. It includes:
 
-  - [VueJS](https://vuejs.org/v2/guide/) - the base JS framework
-  - [sentry](https://docs.sentry.io/quickstart/) - error reporting for the frontend
-  - [axios](https://github.com/axios/axios) - AJAX calls
-  - [Vuetify](https://buefy.github.io/#/documentation/start) - VueJs UI framework
-  - [Material Design Icons](https://materialdesignicons.com/)
+- [VueJS](https://vuejs.org/v2/guide/) – the core JavaScript framework.
+- [Sentry](https://docs.sentry.io/quickstart/) – error reporting for the frontend.
+- [Axios](https://github.com/axios/axios) – for AJAX calls.
+- [Vuetify](https://vuetifyjs.com/en/) – a Material Design component framework for VueJS.
+- [Material Design Icons](https://pictogrammers.com/library/mdi/) – iconography for your UI.
 
-This is only recommended as long as you only want to spice up your pages with a lil reactivity, tho.
-In case you want to build a more complex frontend, please consider using the Django rest framework and
-and start building a dedicated frontend with `vue ui` ([more detailed instructions here](https://cli.vuejs.org/)).
-For smaller projects it has proven to be more efficient to have the frontend checked in as a subfolder in the
-backend repo so that you always have the matching backend and frontend code together without messing with
-version conflicts
+For more complex frontends, consider building a dedicated VueJS application (using `vue ui`) in
+conjunction with Django REST Framework. But for smaller projects, this template provides a
+lightweight solution that allows you to add interactivity without the need to deal with ~900
+node dependencies.
 
-#### Settings
+#### Settings Hierarchy
 
-Contrary to Django the project has a flat settings hierarchy so you can do the following:
+This template features a simplified yet flexible settings hierarchy inspired by best practices
+(e.g., *Two Scoops of Django*). The goal is to keep configuration clear and maintainable while
+allowing easy customization for different environments or developers:
 
- 1. Alice and Bob set an environment var pointing to their own settings like "settings.bob"
- 2. When starting a new project they just have to copy setting/dev.py and change it to their liking
- 3. When switching and working on multiple projects, everybody can have their own setting checked into the
- project and automatically using em without the need to remember to activate "<project_name>.settings.whatever"
- (influenced by the really cool TwoScoops of Django)
+1. **Base Settings:**
+All common configurations are located in a central file (`settings/common.py`). This file contains
+settings shared by all environments.
 
- Django-secrets will keep your secrets really secret and help you with your deployment so that you only
- need to initialize your secret environment variables. Also works super easy with i.e. Travis CI.
+2. **Environment-Specific Overrides:**
+Create separate files for environment-specific settings (e.g., `settings/dev.py`,
+`settings/prod.py`). Each of these files imports everything from `base.py` and then applies
+overrides specific to that environment.
 
- All assets and templates are stored in their top level folders .. yes i know it's not portable that way, but most of the time
- I don't build portable apps. I create projects that are meant to be running at customers and never
- see the public light, and thus they shall be clean without the need to remember which assets are hidden in which sub folders.
- The styles.sass in compiled on the fly and thanks to the wonderful django-browser-reload changes will be visible right away in
- your browser (as well as code changes to python files).
+3. **Personalized Settings:**
+Developers can maintain their own settings (e.g., `settings/alice.py`, `settings/bob.py`) based
+on the default environment file. Simply set the environment variable `DJANGO_SETTINGS_MODULE`
+to point to your custom settings (e.g., `export DJANGO_SETTINGS_MODULE=settings.alice`).
 
- Once the settings file is fed with the needed credentials all errors (python and javascript) will be caught by
- Sentry.io for error handling.
+4. **Secret Management:**
+With [django-secrets](https://github.com/jezdez/django-secrets), your sensitive configuration
+(like API keys and passwords) is managed separately, ensuring that secrets remain secure and
+deployment is streamlined (e.g., in CI/CD pipelines).
 
- #### Clean Code
+This flat yet modular approach minimizes complexity while allowing each project or developer to
+tailor the settings as needed without interfering with the shared base configuration.
 
- There is a pre configured pre-commit configuration, which can be enabled via `pre-commit install`.
+#### Clean Code
 
- #### Static Files
+A pre-configured pre-commit hook is included to enforce code quality. Install it with:
 
- wsgi.py is patched with the awesome dj-static lib, so you don't necessarily need to remember to serve static
- files separately unless you really want to.
+```bash
+pre-commit install
+```
 
- #### One more thing: fabfile
+#### Static Files
 
-The project template features a ready to use fabfile which will grant you some basic tasks like:
+The `wsgi.py` file has been updated to integrate
+[Whitenoise](http://whitenoise.evans.io/en/stable/), so serving static files is handled
+directly by Django without the need for an external server (unless desired).
 
-   - _fab deploy_ which will push your content and restart uwsgi
-   - _fab migrate_ which will push updates, updating packages, migrating the DB, compressing files, collecting
-   static files and finally restart the server for you.
+#### fabfile
 
- Hope i didn't forget any gem inside .. have fun with this project template!
+A ready-to-use `fabfile` is provided to simplify common deployment tasks:
+
+- **fab deploy:** Pushes content, deploys static files and restarts the wsgi process.
+- **fab migrate:** Additionally updates packages and applies database migrations,.
+
+Enjoy building your project with this template—it’s designed to accelerate development while
+keeping configurations clean and manageable.
 
 ## Installation
 
-    pip install django poetry  # if you dont have it already
+Ensure you have the required tools installed:
 
-    brew install direnv  # to auto load the right virtualenv
-
-    direnv allow
-
-    django-admin.py startproject \
-    --template=https://github.com/kakulukia/django-default-project/zipball/master \
-    <new project name here>
-
-    cd <repeat the new project name>
-
-    poetry install
-
-    pre-commit install
-
-PS: You need [poetry](https://github.com/sdispater/poetry) to install this projects requirements.
-You can `pip install poetry` if you don't have it already. I really tried pipenv, but it let me down so many times now.
-
-As soon as you start fiddling with the settings and add stuff that shall differ in production and development.
-Copy my default starting settings for developers and check them in.
-
-    cp settings/andy.py settings/your_name.py
-
-And set the environment variable to your settings file to always load those settings by default.
-
-    export DJANGO_SETTINGS_MODULE=settings.your_name
-
-## 1st time deployment
-
-Needed components:
-
-- recent ubuntu or similar server
-- nginx
 ```bash
+pip install django poetry  # if not already installed
+```
+
+For automatic virtual environment management, install [direnv](https://direnv.net/):
+
+```bash
+brew install direnv
+```
+
+To create a new project from this template:
+
+```bash
+django-admin startproject \
+--template=https://github.com/kakulukia/django-default-project/zipball/master \
+<new_project_name>
+```
+
+Then, navigate into your project:
+
+```bash
+cd <new_project_name>
+direnv allow
+poetry install
+git init
+pre-commit install
+```
+
+**Note:** This template uses Poetry for dependency management for now. Im planning to switch to
+uv once this ticket is resolved: https://github.com/astral-sh/uv/issues/6794
+
+After initial setup, customize your settings by copying one of the default environment files:
+
+```bash
+cp settings/andy.py settings/your_name.py
+```
+
+And set your environment variable to use your custom settings by default:
+
+```bash
+export DJANGO_SETTINGS_MODULE=settings.your_name
+```
+
+## 1st Time Deployment
+
+**Required Components:**
+
+- A recent Ubuntu (or similar) server distribution.
+- **Nginx:**
+    ```bash
     sudo apt install nginx
-```
-- nodejs with the latest lts
-```bash
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-    nvm install --lts
-```
-- pm2 (runs the webservice)
-```bash
-    npm install pm2 -g
-```
-- I usually put websited under /opt/www/<project name> and create a virtualenv there
-```bash
-    sudo mkdir -p /opt/www/<project name>
-    sudo chown -R $USER:$USER /opt/www/<project name>
-    cd /opt/www/<project name>
-```
-- install pyenv to manage python versions
-```bash
+    ```
+- **Node.js (latest LTS):**
+    ```bash
+    curl -fsSL https://fnm.vercel.app/install | bash
+
+    fnm install --lts  # or the latest LTS version - used for pm2 and sass
+    ```
+- **pm2 (process manager for Node.js):**
+    ```bash
+    npm install -g pm2 sass
+    ```
+- Set up your project directory (e.g., under `/opt/www/<project_name>`):
+    ```bash
+    sudo mkdir -p /opt/www/<project_name>
+    sudo chown -R $USER:$USER /opt/www/<project_name>
+    cd /opt/www/<project_name>
+    ```
+- **Pyenv:** Install [pyenv](https://github.com/pyenv/pyenv) for Python version management:
+    ```bash
     curl https://pyenv.run | bash
-    echo 'export PATH="/home/<your user>/.pyenv/bin:$PATH"' >> ~/.bashrc
-    echo 'eval "$(pyenv init -)"' >> ~/.bashrc
-    echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
-    source ~/.bashrc
-```
--install the needed build requirements for python
-```bash
+    ```
+- **Build Requirements for Python:**
+    ```bash
     sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
     libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
     xz-utils tk-dev libffi-dev liblzma-dev python-openssl
-```
-- install the need python version and set it to be used globally (update it and install poetry)
-```bash
+    ```
+- Install the required Python version and set it globally, then install Poetry:
+    ```bash
     pyenv install 3.12.7
     pyenv global 3.12.7
     pip install -U pip setuptools poetry
-```
-- direnv will take care of the needed python environment
-```bash
+    ```
+- **Direnv Setup:**
+    ```bash
     sudo apt install direnv
-    echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
-    direnv allow
-```
-- alter the supplied nginx config to your needs and link it to your sites-enabled and restart nginx
-```bash
-    sudo ln -s /opt/www/<project>/settings/<your config> /etc/nginx/sites-enabled/
+    ```
+- Adjust the supplied Nginx configuration to your needs, link it to `sites-enabled`, and
+restart Nginx:
+    ```bash
+    sudo ln -s /opt/www/<project>/settings/<your_config> /etc/nginx/sites-enabled/
     sudo systemctl restart nginx
-```
-- execute a local dev server to init local secrets (SECRET_KEY, OPEN_AI_API_KEY, etc.)
-```bash
-    manage.py runserver
-```
-- test the uwsgi config
-```bash
+    ```
+- Run the local development server to initialize local secrets (e.g., `SECRET_KEY`, `OPEN_AI_API_KEY`):
+    ```bash
+    python manage.py runserver
+    ```
+- Test the uWSGI configuration:
+    ```bash
     uwsgi settings/deployment/project.yml
-```
-- if everything is fine, start the pm2 job and save it as well installing the pm2 startup job
-```bash
+    ```
+- If everything works, start the pm2 job and set it to launch on startup:
+    ```bash
     cd settings/deployment
     pm2 start project.sh
     pm2 save
     pm2 startup
     cd -
-```
-- install sass for (offline compression only)
-```bash
-    npm install -g sass
-```
-- prepare the django static files
-```bash
-    manage.py compress -e pug,html --force
-    manage.py collectstatic --noinput
-```
-Now your project should be up and running. If you want to deploy updates to a server, you can use the fabfile.
+    ```
+- Prepare Django static files:
+    ```bash
+    python manage.py compress -e pug,html --force
+    python manage.py collectstatic --noinput
+    ```
 
-- optionally deploy an SSL certificate via certbot
-```bash
+Your project should now be up and running. For deploying updates, you can use the provided fabfile.
+
+- Optionally, deploy an SSL certificate via Certbot:
+    ```bash
     sudo apt install certbot python3-certbot-nginx
     sudo certbot --nginx
-```
+    ```
