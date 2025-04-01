@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     # our own stuff
     "users",
+    "utils",
     # Django
     "django.contrib.admin",
     "django.contrib.auth",
@@ -52,11 +53,11 @@ INSTALLED_APPS = [
     "django_browser_reload",
     "kronos",
     "post_office",
-    "utils",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -153,7 +154,6 @@ AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 LANGUAGE_CODE = "de-de"
 TIME_ZONE = "CET"
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 
