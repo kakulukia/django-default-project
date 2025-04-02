@@ -54,3 +54,4 @@ INTERNAL_IPS = ALLOWED_HOSTS
 
 POST_OFFICE = {"BACKENDS": {"default": "django.core.mail.backends.console.EmailBackend"}}
 COMPRESS_OFFLINE = False
+DJANGO_RUNSERVER_HIDE_WARNING = True
