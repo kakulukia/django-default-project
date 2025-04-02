@@ -9,10 +9,6 @@ html(lang='de')
       block title
         | Give me a title
     link(href="https://fonts.googleapis.com/css?family=Barrio", rel="stylesheet")
-    script(src="{% static 'js/vue.global.js' %}")
-    script(src="{% static 'js/vuetify.min.js' %}")
-    script(src="{% static 'js/axios.min.js' %}")
-    script(src="{% static 'js/moment.min.js' %}")
 
     link(href='{% static "css/vuetify.min.css" %}', rel="stylesheet", type="text/css")
     link(href='{% static "css/materialdesignicons.min.css" %}', rel="stylesheet", type="text/css")
@@ -32,6 +28,10 @@ body
         block footer
 
   block all_scripts
+    script(src="{% static 'js/vendor/vue.global.js' %}")
+    script(src="{% static 'js/vendor/vuetify.min.js' %}")
+    script(src="{% static 'js/vendor/axios.min.js' %}")
+    script(src="{% static 'js/vendor/moment.min.js' %}")
     script.
       const {createApp} = Vue
       const {createVuetify} = Vuetify
