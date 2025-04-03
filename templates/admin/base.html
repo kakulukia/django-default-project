@@ -1,0 +1,88 @@
+{% extends 'admin/base.html' %}
+{% load compress static %}
+
+
+{% block extrahead %}
+  {{ block.super }}
+  {% compress css %}
+    <link rel='stylesheet' type='text/x-sass' href='{% static "sass/admin.sass" %}'>
+  {% endcompress %}
+
+  <style>
+    /* VARIABLE DEFINITIONS */
+    :root {
+      --primary: #4d4c4c;
+      --secondary: #013366;
+      --accent: #FFC502;
+      --primary-fg: #fff;
+
+      --body-fg: #333;
+      --body-bg: #fff;
+      --body-quiet-color: #666;
+      --body-loud-color: #000;
+
+      --header-color: var(--accent);
+      --header-branding-color: var(--accent);
+      --header-bg: var(--secondary);
+      --header-link-color: var(--primary-fg);
+
+      --breadcrumbs-fg: var(--accent);
+      --breadcrumbs-link-fg: var(--body-bg);
+      --breadcrumbs-bg: var(--primary);
+
+      --link-fg: #383D3F;
+      --link-hover-color: #969C9D;
+      --link-selected-fg: #5b80b2;
+
+      --hairline-color: #e8e8e8;
+      --border-color: #ccc;
+
+      --error-fg: #ba2121;
+
+      --message-success-bg: #dfd;
+      --message-warning-bg: #ffc;
+      --message-error-bg: #ffefef;
+
+      --darkened-bg: #f8f8f8; /* A bit darker than --body-bg */
+      --selected-bg: #e4e4e4; /* E.g. selected table cells */
+      --selected-row: var(--accent);
+
+      --button-fg: #fff;
+      --button-bg: var(--primary);
+      --button-hover-bg: #609ab6;
+      --default-button-bg: var(--secondary);
+      --default-button-hover-bg: #205067;
+      --close-button-bg: #969C9D; /* Previously #bbb, contrast 1.92 */
+      --close-button-hover-bg: #747474;
+      --delete-button-bg: #ba2121;
+      --delete-button-hover-bg: #a41515;
+
+      --object-tools-fg: var(--button-fg);
+      --object-tools-bg: var(--close-button-bg);
+      --object-tools-hover-bg: var(--close-button-hover-bg);
+    }
+
+    /*@font-face {*/
+    /*  font-family: 'Outfit';*/
+    /*  src: url('/static/fonts/Outfit-Bold.ttf') format('truetype');*/
+    /*  font-weight: bold;*/
+    /*  font-style: normal;*/
+    /*}*/
+
+    /*@font-face {*/
+    /*  font-family: 'Outfit';*/
+    /*  src: url('/static/fonts/Outfit-Light.ttf') format('truetype');*/
+    /*  font-weight: 300;*/
+    /*  font-style: normal;*/
+    /*}*/
+
+    /*@font-face {*/
+    /*  font-family: 'Outfit';*/
+    /*  src: url('/static/fonts/Outfit-Regular.ttf') format('truetype');*/
+    /*  font-weight: 400;*/
+    /*  font-style: normal;*/
+    /*}*/
+
+  </style>
+
+{% endblock %}
