@@ -217,6 +217,7 @@ LOGINAS_LOGOUT_REDIRECT_URL = reverse_lazy("admin:index")
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
+        "utils.IsOwnerOrSuperAdmin",
     ],
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",

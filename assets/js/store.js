@@ -22,9 +22,6 @@ export const useAppStore = defineStore('app', {
     displaySuccess(message, action='') {
       this.displayMessage(message, 'success', action)
     },
-    redirectToLogin() {
-      window.location.href = '/admin/login/?next=' + window.location
-    },
     removeOldNotifications() {
       const now = new Date()
       this.notifications = this.notifications.filter(notification => {

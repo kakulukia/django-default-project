@@ -19,6 +19,9 @@ export default {
         moment(value) {
           return moment(value).format('YYYY-MM-DD HH:mm')
         },
+        redirectToLogin() {
+          window.location.href = '/admin/login/?next=' + window.location
+        },
       },
       computed: {
       },
@@ -40,7 +43,7 @@ export default {
             if (error.response && error.response.data && error.response.data.detail) {
               let message = error.response.data.detail
               let action = ''
-              if (error.response.status === 401) {
+              if (error.response.status === 403 && error.config.url === 'users/me/') {
                 message += ' (Click to Login)'
                 action = 'redirectToLogin'
               }
@@ -69,7 +72,7 @@ export default {
         // check if we are actually logged in
         api.get('users/me/')
           .then(response => {
-            this.user = response.data
+            this.store.user = response.data
 
           }).catch(error => {
             if (error.response.status === 401) {
