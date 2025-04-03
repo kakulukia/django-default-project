@@ -34,6 +34,7 @@ ALLOWED_HOSTS = [
 ]
 INSTALLED_APPS = [
     # our own stuff
+    "sample_app",
     "users",
     "utils",
     # Django
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     "loginas",
     "kronos",
     "post_office",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
@@ -211,3 +213,13 @@ def can_login_as(request, target_user):
 CAN_LOGIN_AS = can_login_as
 LOGINAS_REDIRECT_URL = "/admin/"
 LOGINAS_LOGOUT_REDIRECT_URL = reverse_lazy("admin:index")
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+    "DEFAULT_RENDERER_CLASSES": (
+        "rest_framework.renderers.JSONRenderer",
+        "utils.NoFormBrowsableAPIRenderer",  # removes the form and thus a lot of unnecessary queries
+    ),
+}

@@ -8,44 +8,50 @@ html(lang='de')
     title
       block title
         | Give me a title
-    link(href="https://fonts.googleapis.com/css?family=Barrio", rel="stylesheet")
 
+    link(href="https://fonts.googleapis.com/css?family=Barrio", rel="stylesheet")
     link(href='{% static "css/vuetify.min.css" %}', rel="stylesheet", type="text/css")
     link(href='{% static "css/materialdesignicons.min.css" %}', rel="stylesheet", type="text/css")
+    //link(rel="icon" type="image/png" media="(prefers-color-scheme: light)" href="{% static 'img/favicon-light.png' %}")
+    //link(rel="icon" type="image/png" media="(prefers-color-scheme: dark)" href="{% static 'img/favicon-dark.png' %}")
 
     -compress css
       link(href='{% static "sass/styles.sass" %}', rel="stylesheet", type="text/x-sass")
 
 body
   #app
-    v-app(dark v-cloak)
+    v-app(v-cloak)
       v-snackbar(v-model="snackbar" timeout="3000" :color="snackbarColor" location="top") [[ message ]]
-      header
-        block header
-      main
+      block header
+      v-main
         block content
       footer
         block footer
 
-  block all_scripts
-    script(src="{% static 'js/vendor/vue.global.js' %}")
-    script(src="{% static 'js/vendor/vuetify.min.js' %}")
-    script(src="{% static 'js/vendor/axios.min.js' %}")
-    script(src="{% static 'js/vendor/moment.min.js' %}")
-    script.
-      const {createApp} = Vue
-      const {createVuetify} = Vuetify
+  script(src="{% static 'js/vendor/vue.global.js' %}")
+  script(src="{% static 'js/vendor/vuetify.min.js' %}")
+  script(src="{% static 'js/vendor/axios.min.js' %}")
+  script(src="{% static 'js/vendor/moment.min.js' %}")
 
-      // customise the vuetify theme here
+  // components here
+  script(type="text/x-template" id="user-change-template")
+    -include 'components/UserChange.pug'
+
+  block all_scripts
+    script.
+      const { createApp } = Vue
+      const { createVuetify } = Vuetify
+
+      // customize the vuetify theme here
       const vuetify = createVuetify({
         theme: {
           themes: {
             light: {
               dark: false,
               colors: {
-                primary: "#3F51B5",
-                secondary: "#383D3F",
-                accent: '#82B1FF',     // Standard Accent
+                primary: "#7573DB",
+                secondary: "#d26b1f",
+                accent: '#D8D8EE',     // Standard Accent
                 error: '#FF5252',      // Standard Error
                 info: '#2196F3',       // Standard Info
                 success: '#4CAF50',    // Standard Success
@@ -61,10 +67,12 @@ body
         document.querySelector('.stage').classList.add('caution')
       }
 
-      // default axios configuration to talk to DRF and use the csrf cookie
-      axios.defaults.baseURL = '/api/';
-      axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
-      axios.defaults.xsrfCookieName = "csrftoken"
+      // Standard axios configuration reuse the cookie to automatially be logged in
+      const api = axios
+      api.defaults.baseURL = '/api/';
+      api.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+      api.defaults.xsrfCookieName = "csrftoken"
+
 
     block vue
       script.
@@ -74,14 +82,16 @@ body
             return {
             }
           },
-          created() {
+          mounted() {
           },
           methods: {
           }
         })
 
     script(type="module").
-      import BaseApp from '{% static "js/BaseApp.js" %}';
+      import BaseApp from '{% static "js/BaseApp.js" %}'
+      import UserChange from '{% static "js/components/UserChange.js" %}'
       app.use(vuetify)
       app.use(BaseApp)
+      app.component('user-change', UserChange);
       app.mount('#app')

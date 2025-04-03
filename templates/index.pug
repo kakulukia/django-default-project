@@ -5,9 +5,12 @@ block title
   | Hello Django
 
 block content
-  .hello-world
-    span(v-text='title')
-  .joke(v-text="joke")
+  .hello
+    h1(v-text='title')
+    .joke(v-text="joke")
+
+    .mt-4
+      user-change
 
 
 block footer
@@ -49,10 +52,10 @@ block vue
             })
         }
       },
-      created() {
+      mounted() {
         this.loadJoke()
         setTimeout(() => {
           title.focus();
         }, 500);
       }
-    })
+    });
