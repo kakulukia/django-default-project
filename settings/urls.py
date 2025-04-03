@@ -5,7 +5,10 @@ from django.urls import include, path
 from sample_app.views import index
 
 urlpatterns = [
+    # admin urls
+    path("admin/", include("loginas.urls")),
     path("admin/", admin.site.urls),
+    # application urls
     path("", index),
 ]
 

@@ -8,4 +8,4 @@ admin.site.enable_nav_sidebar = False
 
 @admin.register(User)
 class UserAdmin(UserAdmin):
-    pass
+    change_form_template = "loginas/change_form.html"

@@ -552,6 +552,18 @@ python-crontab = ">=1.9.0"
 six = ">=1.9.0"
 
 [[package]]
+name = "django-loginas"
+version = "0.3.11"
+description = "An app to add a \"Log in as user\" button in the Django user admin page."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "django-loginas-0.3.11.tar.gz", hash = "sha256:37aec6fcd1cdb72378b69d2468d2ae39b12cd013f838a9bf9b9b5132e8341735"},
+    {file = "django_loginas-0.3.11-py2.py3-none-any.whl", hash = "sha256:5492eb5b4eb86c05e86cd84fb1f89c9796498643dc23d19e9c9bf83f5768ba86"},
+]
+
+[[package]]
 name = "django-post-office"
 version = "3.9.1"
 description = "A Django app to monitor and send mail asynchronously, complete with template support."
@@ -1772,4 +1784,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "d6dc21df62aaf1178fca6f93ec2e50c42551ba52eb131c3d3b047c4efdb3b368"
+content-hash = "14109aeaa74af146ffe9e8ddd52f5edc0e9120d347156e2f0d6b48923a6bc9ec"

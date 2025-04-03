@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 
+from django.urls import reverse_lazy
 from icecream import install
 from pypugjs.ext.django.compiler import enable_pug_translations
 
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
     "django_tasks",
     "django_tasks.backends.database",
     "django_browser_reload",
+    "loginas",
     "kronos",
     "post_office",
 ]
@@ -200,3 +202,12 @@ EMAIL_FOOTER = ""
 EMAIL_BACKEND = "post_office.EmailBackend"
 
 SILENCED_SYSTEM_CHECKS = ["debug_toolbar.W006"]
+
+
+def can_login_as(request, target_user):
+    return request.user.is_superuser and not target_user.is_superuser
+
+
+CAN_LOGIN_AS = can_login_as
+LOGINAS_REDIRECT_URL = "/admin/"
+LOGINAS_LOGOUT_REDIRECT_URL = reverse_lazy("admin:index")

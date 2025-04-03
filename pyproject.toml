@@ -29,6 +29,7 @@ requests = "^2.32.3"
 sentry-sdk = "^2.25.0"
 whitenoise = "^6.9.0"
 # django-model-utils - use this if a status field is needed and maybe also a status_changed field
+django-loginas = "^0.3.11"
 
 [tool.poetry.group.dev.dependencies]
 django-browser-reload = "^1.18.0"
