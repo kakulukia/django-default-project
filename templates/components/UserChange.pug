@@ -1,1 +1,36 @@
-.userChange Hello World from UserChange component!
+.userChange
+
+  .bar.mb-2 Wanna have fun with users?
+    v-icon(
+      @click="showUsers = !showUsers"
+      :class="showUsers ? 'show' : ''"
+    ) mdi-chevron-right
+
+  v-expand-transition
+    div(v-if="showUsers")
+      .user(v-for="user in users" :key="user.id")
+        .form.mb-1
+          v-text-field(
+            v-model="user.username"
+            label="Change the username .."
+            density="compact"
+            hide-details
+          )
+        v-btn(
+          color="primary"
+          variant="tonal"
+          @click="updateUser(user)"
+        ) 🎉
+      .user
+        .form.mb-1
+          v-text-field(
+            v-model="username"
+            label="Add a user .."
+            density="compact"
+            hide-details
+          )
+        v-btn(
+          color="primary"
+          variant="tonal"
+          @click="addUser()"
+        ) 🎉

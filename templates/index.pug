@@ -9,7 +9,7 @@ block content
     h1(v-text='title')
     .joke(v-text="joke")
 
-    .mt-4
+    .mt-16
       user-change
 
 
@@ -42,12 +42,12 @@ block vue
             .then((response) => { // Arrow function
               this.joke = response.data.value
               const now = this.moment(new Date())
-              this.displayMessage(`${now}: Joke loaded!`, 'success')
+              this.store.displayMessage(`${now}: Joke loaded!`, 'success')
               this.isLoading = false
             })
             .catch((error) => {
               console.error('Error loading joke:', error)
-              this.displayMessage(error, 'error')
+              this.store.displayMessage(error, 'error')
               this.isLoading = false
             })
         }

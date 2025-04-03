@@ -21,7 +21,16 @@ html(lang='de')
 body
   #app
     v-app(v-cloak)
-      v-snackbar(v-model="snackbar" timeout="3000" :color="snackbarColor" location="top") [[ message ]]
+      .notificationContainer
+        v-expand-transition(group)
+          .notification(v-for="notification in store.notifications" :key="notification.timestamp")
+            .pa-1
+              v-alert(:type="notification.type" :class="{'cursor-pointer': notification.action}")
+                .content(
+                  @click="handleNotificationClick"
+                  :data-action="notification.action"
+                  v-html="notification.message"
+                )
       block header
       v-main
         block content
@@ -32,6 +41,7 @@ body
   script(src="{% static 'js/vendor/vuetify.min.js' %}")
   script(src="{% static 'js/vendor/axios.min.js' %}")
   script(src="{% static 'js/vendor/moment.min.js' %}")
+  script(src="{% static 'js/vendor/pinia.iife.prod.js' %}")
 
   // components here
   script(type="text/x-template" id="user-change-template")
@@ -73,7 +83,6 @@ body
       api.defaults.xsrfHeaderName = "X-CSRFTOKEN"
       api.defaults.xsrfCookieName = "csrftoken"
 
-
     block vue
       script.
         const app = createApp({
@@ -89,8 +98,15 @@ body
         })
 
     script(type="module").
+      import { useAppStore } from '{% static "js/store.js" %}';
       import BaseApp from '{% static "js/BaseApp.js" %}'
       import UserChange from '{% static "js/components/UserChange.js" %}'
+      const pinia = Pinia.createPinia()
+      app.use(pinia)
+
+      const appStore = useAppStore()
+      app.config.globalProperties.store = appStore
+
       app.use(vuetify)
       app.use(BaseApp)
       app.component('user-change', UserChange);

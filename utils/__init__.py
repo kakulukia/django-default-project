@@ -23,7 +23,8 @@ class NoFormBrowsableAPIRenderer(BrowsableAPIRenderer):
 
 class IsOwnerOrSuperAdmin(permissions.BasePermission):
     owner_mapping = {
-        "Model": "user",
+        "User": "self",
+        "YourModel": "user",
         # add new classes and their owner attribute here
     }
 
@@ -32,11 +33,14 @@ class IsOwnerOrSuperAdmin(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
+        if request.user.is_superuser:
+            return True
+
         owner_field = self.owner_mapping.get(obj.__class__.__name__)
         if not owner_field:
             # If the object is not defined in our mapping, we deny access.
             return False
 
-        owner = getattr(obj, owner_field, None)
+        owner = obj if owner_field == "self" else getattr(obj, owner_field, None)
         # Allow access if the owner matches the request user or the request user is a superuser.
-        return owner == request.user or request.user.is_superuser
+        return owner == request.user

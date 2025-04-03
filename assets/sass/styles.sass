@@ -1,3 +1,5 @@
+// basic styling
+//////////////////////////////
 [v-cloak]
   display: none
 $yellow: #FCD517
@@ -14,6 +16,15 @@ main
 footer
   padding: 1em 0
 
+.notificationContainer
+  position: fixed
+  top: 10px
+  right: 10px
+  z-index: 99
+
+
+// demo page
+//////////////////////////////
 .hello
   display: flex
   height: 100%
@@ -24,9 +35,26 @@ footer
   h1
     font-family: 'Barrio', cursive
     font-size: 50px
+    font-weight: 100
 
 input#title
   text-align: right
 
 .userChange
   width: 500px
+
+  .bar .v-icon
+    transition: transform 0.3s ease-in-out
+    &.show
+      transform: rotate(90deg)
+
+
+  .user
+    display: grid
+    grid-template-columns: 1fr 50px
+    align-items: center
+    grid-gap: 10px
+
+  .username
+    font-size: 20px
+    font-weight: bold
