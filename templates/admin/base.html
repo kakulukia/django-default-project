@@ -3,13 +3,17 @@
 
 {% block extrahead %}
   {{ block.super }}
+  <script>
+    // ensure we are using the light theme with the below additions
+    localStorage.setItem('theme', 'light');
+  </script>
   {% compress css %}
     <link rel='stylesheet' type='text/x-sass' href='{% static "sass/admin.sass" %}'>
   {% endcompress %}
 
   <style>
     /* VARIABLE DEFINITIONS */
-    :root {
+    html[data-theme="light"], :root {
       --primary: #4d4c4c;
       --secondary: #013366;
       --accent: #FFC502;
