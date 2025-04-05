@@ -23,14 +23,12 @@ export const useAppStore = defineStore('app', {
       this.displayMessage(message, 'success', action)
     },
     removeOldNotifications() {
-      const now = new Date()
-      this.notifications = this.notifications.filter(notification => {
-        const diff = now - notification.timestamp
-        return diff < 3000 // keep notifications for 5 seconds
-      })
-      setTimeout(() => {
-        this.removeOldNotifications()
-      }, 1000)
+      setInterval(() => {
+        const now = new Date();
+        this.notifications = this.notifications.filter(
+          notification => (now - notification.timestamp) < 5000
+        );
+      }, 1000);
     },
   }
 });
