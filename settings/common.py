@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     "django_secrets",
     "django_tasks",
     "django_tasks.backends.database",
-    "django_browser_reload",
     "loginas",
     "kronos",
     "post_office",

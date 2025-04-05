@@ -7,6 +7,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 INSTALLED_APPS += [  # noqa
     # debugging
     "debug_toolbar",
+    "django_browser_reload",
 ]
 
 DEBUG_TOOLBAR_PANELS = (
