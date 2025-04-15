@@ -5,6 +5,7 @@ export const useAppStore = defineStore('app', {
   state: () => ({
     notifications: [],
     user: null,
+    userQueryDone: false,
   }),
   actions: {
     displayMessage(message, type = 'info', action='') {

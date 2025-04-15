@@ -27,7 +27,9 @@ const UserChange = {
     }
   },
   mounted() {
-    this.loadUsers()
+    this.waitUntilUserQueryDone().then(() => {
+      this.loadUsers()
+    })
   }
 };
 

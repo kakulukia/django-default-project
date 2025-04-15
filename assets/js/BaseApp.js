@@ -22,6 +22,16 @@ export default {
         redirectToLogin() {
           window.location.href = '/admin/login/?next=' + window.location
         },
+        waitUntilUserQueryDone() {
+          return new Promise(resolve => {
+            const interval = setInterval(() => {
+              if (this.store.userQueryDone === true) {
+                clearInterval(interval);
+                resolve();
+              }
+            }, 100);
+          });
+        }
       },
       computed: {
       },
@@ -73,8 +83,10 @@ export default {
         api.get('users/me/')
           .then(response => {
             this.store.user = response.data
+            this.store.userQueryDone = true
 
           }).catch(error => {
+            this.store.userQueryDone = true
             if (error.response.status === 401) {
               // TODO: change the login url to a frontend location if there is one
               // this.redirectToLogin()

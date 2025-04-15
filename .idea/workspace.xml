@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d3f9733f-d4b8-4147-816b-b8e890e26696" name="Changes" comment="added default config for axios to be able to talk to DRF and use the csrf cookie">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/BaseApp.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/BaseApp.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/js/components/UserChange.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/components/UserChange.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/js/store.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/store.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/settings/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
