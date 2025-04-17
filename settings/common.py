@@ -114,6 +114,7 @@ DATABASES = {
                     PRAGMA journal_mode=WAL;
                     PRAGMA synchronous=NORMAL;
                     PRAGMA mmap_size = 134217728;
+                    PRAGMA auto_vacuum = FULL;
                     PRAGMA journal_size_limit = 27103364;
                     PRAGMA cache_size=2000;
                 """,
