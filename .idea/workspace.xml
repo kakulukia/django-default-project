@@ -5,12 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d3f9733f-d4b8-4147-816b-b8e890e26696" name="Changes" comment="added default config for axios to be able to talk to DRF and use the csrf cookie">
+      <change afterPath="$PROJECT_DIR$/templates/loginas/change_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/js/BaseApp.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/BaseApp.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/js/components/UserChange.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/components/UserChange.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/js/store.js" beforeDir="false" afterPath="$PROJECT_DIR$/assets/js/store.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fabfile.py" beforeDir="false" afterPath="$PROJECT_DIR$/fabfile.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -85,9 +85,11 @@ def migrate():
 
 def update_static():
     with cd(env.path):
+        # static file need to be collected first ..
         print(green("collecting static files .."))
         manage("collectstatic --noinput")
 
+        # .. in order to compress the latest sass versions
         print(green("compressing files .."))
         manage("compress -e pug,html --force")
 
