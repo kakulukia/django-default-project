@@ -1,7 +1,7 @@
 # coding=utf-8
 from fabric.colors import green
 from fabric.context_managers import cd
-from fabric.operations import get, run
+from fabric.operations import get, local, run
 from fabric.state import env
 
 env.shell = "/bin/zsh -c"
@@ -119,12 +119,29 @@ def manage(command):
 
 # SQLite version
 def get_new_db():
+    """
+    Download a fresh copy of the remote SQLite database via SQL dump,
+    compress it on the server, transfer it, and reconstruct locally.
+    """
+    remote_dump = "db.sqlite3.txt.gz"
+    local_sql = "db.sqlite3.txt"
+    # Ensure any prior local db is removed or backed up as needed
+    # On remote: checkpoint and dump
     with cd(env.path):
-        # Create a new Checkpoint in TRUNCATE mode to ensure all data is written to the main file
+        print(green("Checkpoint remote SQLite DB..."))
         run('sqlite3 db.sqlite3 "PRAGMA wal_checkpoint(TRUNCATE);"')
-
-        # Step 2: Copy the database file to the local machine
-        get("db.sqlite3", "db.sqlite3")
-
-    # Optional: Verify or log that the database has been successfully copied
-    green("Database copied!")
+        print(green("Dumping and compressing remote DB..."))
+        run(f"sqlite3 db.sqlite3 .dump | gzip -c > {remote_dump}")
+        print(green("Transferring compressed dump to local..."))
+        get(remote_dump, remote_dump)
+        print(green("Cleaning up remote dump file..."))
+        run(f"rm -f {remote_dump}")
+    # Locally: reconstruct
+    print(green("Reconstructing local SQLite DB from dump..."))
+    # remove existing DB if exists
+    local("rm -f db.sqlite3")
+    local(f"gunzip -c {remote_dump} > {local_sql}")
+    local(f"cat {local_sql} | sqlite3 db.sqlite3")
+    # cleanup local dump files
+    local(f"rm -f {remote_dump} {local_sql}")
+    print(green("Database copied and reconstructed successfully."))

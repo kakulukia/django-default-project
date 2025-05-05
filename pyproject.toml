@@ -12,7 +12,7 @@ homepage = "https://github.com/kakulukia/django-default-project"
 
 [tool.poetry.dependencies]
 django = "^5.2"
-django-axes = "^7.0.2"
+django-axes = "^7.1.0"
 django-compressor = "^4.5.1"
 django-extensions = "^3.2.3"
 django-kronos = "^1.0"
@@ -21,12 +21,12 @@ django-secrets = "^1.2.4"
 django-tasks = "^0.6.1"
 djangorestframework = "^3.16.0"
 huepy = "^1.2.1"
-pendulum = "^3.0.0"
-Pillow = "^11.1.0"
+pendulum = "^3.1.0"
+Pillow = "^11.2.1"
 pypugjs = "^5.12.0"
 python = "^3.11"
 requests = "^2.32.3"
-sentry-sdk = "^2.25.0"
+sentry-sdk = "^2.27.0"
 whitenoise = "^6.9.0"
 django-loginas = "^0.3.11"
 # django-model-utils - use this if a status field is needed and maybe also a status_changed field
@@ -34,12 +34,12 @@ gunicorn = "^23.0.0"
 
 [tool.poetry.group.dev.dependencies]
 django-browser-reload = "^1.18.0"
-django-debug-toolbar = "^5.1.0"
-fabric = "<2"
+django-debug-toolbar = "^5.2.0"
 icecream = "^2.1.4"
 ipdb = "^0.13.13"
 pre-commit = "^4.2.0"
-ruff = "^0.11.2"
+ruff = "^0.11.8"
+fab-classic = "^1.20.0"
 
 
 [build-system]
