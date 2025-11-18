@@ -9,6 +9,7 @@ INSTALLED_APPS += [  # noqa
     "debug_toolbar",
     "django_browser_reload",
 ]
+MIGRATION_MODULES = {"debug_toolbar": None}  # this disables migrations for debug toolbar
 
 DEBUG_TOOLBAR_PANELS = (
     "debug_toolbar.panels.versions.VersionsPanel",

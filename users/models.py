@@ -66,8 +66,10 @@ class User(AbstractBaseUser, BaseModel, PermissionsMixin):
         Sends an email to this User.
         If settings.EMAIL_OVERRIDE_ADDRESS is set, this mail will be
         redirected to the alternate mail address.
-
         """
+        if not self.email:
+            return
+
         receiver = self.email
         if settings.EMAIL_OVERRIDE_ADDRESS:
             receiver = settings.EMAIL_OVERRIDE_ADDRESS

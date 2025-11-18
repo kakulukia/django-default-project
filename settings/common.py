@@ -21,7 +21,8 @@ install()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path.cwd()
+# Use the path of this settings file to correctly detect the right path to the project root.
+BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = secrets.SECRET_KEY
 SITE_ID = 1
 
@@ -108,7 +109,7 @@ DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
         "OPTIONS": {
-            "transaction_mode": "EXCLUSIVE",
+            "transaction_mode": "IMMEDIATE",
             "timeout": 5,  # seconds
             "init_command": """
                     PRAGMA journal_mode=WAL;
@@ -117,6 +118,7 @@ DATABASES = {
                     PRAGMA auto_vacuum = FULL;
                     PRAGMA journal_size_limit = 27103364;
                     PRAGMA cache_size=2000;
+                    PRAGMA auto_vacuum=INCREMENTAL;
                 """,
         },
     }
