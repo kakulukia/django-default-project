@@ -1,10 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# determine directory where this script lives
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# invoke the WSGI handler from the venv in the project root
-"${SCRIPT_DIR}/../.venv/bin/gunicorn" --env DJANGO_SETTINGS_MODULE=settings --workers 4 --bind unix:/tmp/project.socket settings.wsgi
+PROJECT_DIR="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
-# use this version for testing
-#gunicorn settings.wsgi
+PROJECT_NAME="${PROJECT_NAME:-project}"
+DJANGO_SETTINGS_MODULE="${DJANGO_SETTINGS_MODULE:-settings}"
+GUNICORN_WORKERS="${GUNICORN_WORKERS:-4}"
+GUNICORN_SOCKET="${GUNICORN_SOCKET:-/tmp/${PROJECT_NAME}.gunicorn.sock}"
+
+exec "${PROJECT_DIR}/.venv/bin/gunicorn" \
+  --chdir "${PROJECT_DIR}" \
+  --env "DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}" \
+  --workers "${GUNICORN_WORKERS}" \
+  --bind "unix:${GUNICORN_SOCKET}" \
+  --access-logfile - \
+  --error-logfile - \
+  settings.wsgi:application

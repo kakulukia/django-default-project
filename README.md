@@ -172,7 +172,7 @@ export DJANGO_SETTINGS_MODULE=settings.your_name
 
     fnm install --lts  # or the latest LTS version - used for pm2 and sass
     ```
-- **pm2 (process manager for Node.js):**
+- **pm2 (process manager):**
     ```bash
     npm install -g pm2 sass
     ```
@@ -203,23 +203,27 @@ export DJANGO_SETTINGS_MODULE=settings.your_name
     sudo apt install direnv
     ```
 - Adjust the supplied Nginx configuration to your needs, link it to `sites-enabled`, and
-restart Nginx:
+reload Nginx:
     ```bash
-    sudo ln -s /opt/www/<project>/settings/<your_config> /etc/nginx/sites-enabled/
-    sudo systemctl restart nginx
+    sudo ln -s /opt/www/<project>/settings/deployment/project.nginx /etc/nginx/sites-enabled/<project>
+    sudo nginx -t
+    sudo nginx -s reload
     ```
 - Run the local development server to initialize local secrets (e.g., `SECRET_KEY`, `OPEN_AI_API_KEY`):
     ```bash
     python manage.py runserver
     ```
-- Test the uWSGI configuration:
+- Test the Gunicorn configuration:
     ```bash
-    uwsgi settings/deployment/project.yml
+    .venv/bin/gunicorn --check-config \
+      --chdir /opt/www/<project> \
+      --env DJANGO_SETTINGS_MODULE=settings \
+      settings.wsgi:application
     ```
 - If everything works, start the pm2 job and set it to launch on startup:
     ```bash
     cd settings/deployment
-    pm2 start project.sh
+    PROJECT_NAME=<project> DJANGO_SETTINGS_MODULE=settings pm2 start project.sh --name <project>
     pm2 save
     pm2 startup
     cd -
