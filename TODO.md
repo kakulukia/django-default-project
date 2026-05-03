@@ -23,10 +23,18 @@
   - Befund: `settings/common.py` ist die Production-Baseline, war aber nicht so dokumentiert.
   - Ziel: `common.py` als Default-Production-Settings dokumentieren und HTTPS-/Cookie-Security dort explizit setzen.
 
-- [ ] `manage.py check --deploy` für Production-Settings grün bekommen.
-  - Befund: Warnungen zu HSTS, SSL redirect, secure cookies und schwachem lokalen `SECRET_KEY`.
-  - Ziel: `DJANGO_SETTINGS_MODULE=settings python manage.py check --deploy` ohne Warnungen.
-  - Rest: HSTS-Subdomains/Preload sind bewusst aus, bis alle Subdomains HTTPS-only sind; lokaler `SECRET_KEY` ist noch schwach.
+- [x] Deploy-Check-Warnungen klassifizieren statt blind grün machen.
+  - Befund: Verbleibende Warnungen sind HSTS-Subdomains, HSTS-Preload und lokaler schwacher `SECRET_KEY`.
+  - Ergebnis: HSTS-Subdomains/Preload bleiben sichere Template-Defaults und sind in README/common dokumentiert.
+
+- [ ] `django-secrets` SECRET_KEY-Abfrage upstream verbessern.
+  - Befund: `manage.py` fragt fehlende Secrets interaktiv ab; bei `SECRET_KEY` wird lokal schnell ein schwacher Wert eingegeben.
+  - Ziel: Im `django-secrets` Paket fuer `SECRET_KEY` automatisch einen starken Django-Key vorschlagen und per Enter uebernehmen lassen.
+  - Nicht im Template loesen; das Verhalten gehoert in `django_secrets.startup.check()`.
+
+- [ ] HSTS-Subdomains/Preload pro Projekt entscheiden.
+  - Befund: `SECURE_HSTS_INCLUDE_SUBDOMAINS` und `SECURE_HSTS_PRELOAD` sollten nicht pauschal im Template aktiviert werden.
+  - Ziel: In echten Projekten auf `True` setzen, sobald alle betroffenen Subdomains HTTPS-only und preload-ready sind.
 
 - [ ] User-API absichern oder entfernen.
   - Befund: `UserViewSet` ist ein voller `ModelViewSet`; Safe-Reads sind in `IsOwnerOrSuperAdmin` immer erlaubt.
