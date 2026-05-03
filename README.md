@@ -113,9 +113,11 @@ pre-commit install
 
 #### Static Files
 
-The `wsgi.py` file has been updated to integrate
-[Whitenoise](http://whitenoise.evans.io/en/stable/), so serving static files is handled
-directly by Django without the need for an external server (unless desired).
+Static files are served through
+[Whitenoise](http://whitenoise.evans.io/en/stable/) via `WhiteNoiseMiddleware`, so Django can
+serve collected static files without an additional static-file server for small deployments.
+The production static files storage uses hashed filenames, so changed CSS/JS assets get new URLs
+and do not rely on browsers noticing changed content behind an old path.
 
 #### fabfile
 

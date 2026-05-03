@@ -52,21 +52,25 @@
   - Befund: `AXES_LOGIN_FAILURE_LIMIT = 2` greift bei django-axes 8 vermutlich nicht.
   - Ziel: `AXES_FAILURE_LIMIT = 2` setzen und Lockout-Verhalten testen.
 
-- [ ] `.idea` aus Git entfernen.
+- [x] `.idea` aus Git entfernen.
   - Befund: `.idea` ist in `.gitignore`, aber bereits getrackt.
   - Ziel: IDE-State aus dem Template entfernen; nur projektneutrale Dateien behalten, falls wirklich nötig.
+  - Ergebnis: `.idea` ist nicht mehr getrackt und bleibt per `.gitignore` ignoriert.
 
-- [ ] `TIME_ZONE` korrigieren.
+- [x] `TIME_ZONE` korrigieren.
   - Befund: `TIME_ZONE = "CET"` ignoriert Sommerzeit.
   - Ziel: `TIME_ZONE = "Europe/Berlin"`.
 
-- [ ] Whitenoise-Konfiguration bereinigen.
+- [x] Whitenoise-Konfiguration bereinigen.
   - Befund: `WhiteNoiseMiddleware` ist gesetzt und `wsgi.py` wrapped zusätzlich manuell mit `WhiteNoise`.
   - Ziel: Eine klare Variante verwenden, bevorzugt Middleware plus passende `STORAGES`.
+  - Ergebnis: WSGI-Wrapping entfernt; `WhiteNoiseMiddleware` bleibt die einzige Integration.
 
-- [ ] Static-Files-Storage modernisieren.
+- [x] Static-Files-Storage modernisieren.
   - Befund: Kein explizites `STORAGES`/Manifest-Storage für Production.
   - Ziel: `whitenoise.storage.CompressedManifestStaticFilesStorage` für Production prüfen.
+  - Ergebnis: `STORAGES["staticfiles"]` nutzt Whitenoise `CompressedManifestStaticFilesStorage`.
+  - Verifiziert: `compress` -> `collectstatic` läuft; fehlende Sourcemap-/Font-Referenzen in vendored Assets wurden bereinigt.
 
 - [x] `DEFAULT_FROM_EMAIL` setzen.
   - Befund: `users.models.User.email_user()` nutzt `settings.DEFAULT_FROM_EMAIL`, im Projekt ist es nicht explizit gesetzt.
