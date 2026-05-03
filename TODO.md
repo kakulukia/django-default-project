@@ -36,10 +36,11 @@
   - Befund: `SECURE_HSTS_INCLUDE_SUBDOMAINS` und `SECURE_HSTS_PRELOAD` sollten nicht pauschal im Template aktiviert werden.
   - Ziel: In echten Projekten auf `True` setzen, sobald alle betroffenen Subdomains HTTPS-only und preload-ready sind.
 
-- [ ] User-API absichern oder entfernen.
+- [x] User-API absichern oder entfernen.
   - Befund: `UserViewSet` ist ein voller `ModelViewSet`; Safe-Reads sind in `IsOwnerOrSuperAdmin` immer erlaubt.
   - Risiko: Jeder eingeloggte User kann User-Liste und E-Mail-Adressen lesen.
   - Ziel: Queryset auf `request.user` begrenzen, Admin-only machen oder Demo-API aus dem Template entfernen.
+  - Ergebnis: Nicht-Staff sieht nur sich selbst; Staff sieht alle User.
 
 ## P1 - hohe Priorität
 
