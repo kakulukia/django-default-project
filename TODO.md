@@ -48,7 +48,7 @@
   - Befund: `icecream` wird auch in Production gelegentlich für Debug-Ausgaben gebraucht.
   - Ziel: Als Runtime-Dependency behalten und global in Common-Settings installieren.
 
-- [ ] django-axes Setting aktualisieren.
+- [x] django-axes Setting aktualisieren.
   - Befund: `AXES_LOGIN_FAILURE_LIMIT = 2` greift bei django-axes 8 vermutlich nicht.
   - Ziel: `AXES_FAILURE_LIMIT = 2` setzen und Lockout-Verhalten testen.
 

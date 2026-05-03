@@ -158,7 +158,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
-AXES_LOGIN_FAILURE_LIMIT = 2
+AXES_FAILURE_LIMIT = 2
 AXES_CACHE = "axes_cache"
 AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
 
