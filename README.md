@@ -70,13 +70,30 @@ settings shared by all environments.
 
 2. **Environment-Specific Overrides:**
 Create separate files for environment-specific settings (e.g., `settings/dev.py`,
-`settings/prod.py`). Each of these files imports everything from `base.py` and then applies
-overrides specific to that environment.
+`settings/stage.py`). Each of these files imports everything from `common.py` and then applies
+overrides specific to that environment. `settings/dev.py` is the local development baseline.
 
 3. **Personalized Settings:**
 Developers can maintain their own settings (e.g., `settings/alice.py`, `settings/bob.py`) based
 on the default environment file. Simply set the environment variable `DJANGO_SETTINGS_MODULE`
 to point to your custom settings (e.g., `export DJANGO_SETTINGS_MODULE=settings.alice`).
+
+For production, review and commit the relevant values in `settings/common.py` or in a tracked
+environment-specific settings module:
+
+```python
+ALLOWED_HOSTS = ["example.com", "www.example.com"]
+CSRF_TRUSTED_ORIGINS = ["https://example.com", "https://www.example.com"]
+DEFAULT_FROM_EMAIL = "webmaster@example.com"
+```
+
+Enable HSTS subdomains/preload only when every affected subdomain is HTTPS-only:
+
+```python
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+```
 
 4. **Secret Management:**
 With [django-secrets](https://github.com/jezdez/django-secrets), your sensitive configuration

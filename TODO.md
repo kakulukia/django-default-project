@@ -19,13 +19,14 @@
   - Befund: `.venv` wird relativ zu `settings/deployment` gesucht und liegt dadurch vermutlich falsch.
   - Ziel: Projektroot sauber bestimmen und `.venv/bin/gunicorn` dort aufrufen.
 
-- [ ] Production-Settings ergänzen.
-  - Befund: Es gibt kein echtes `settings/prod.py`.
-  - Ziel: `DEBUG = False`, harte `ALLOWED_HOSTS`, HTTPS-/Cookie-Security und Production-Mail/Sentry sauber konfigurieren.
+- [x] Production-Settings ergänzen.
+  - Befund: `settings/common.py` ist die Production-Baseline, war aber nicht so dokumentiert.
+  - Ziel: `common.py` als Default-Production-Settings dokumentieren und HTTPS-/Cookie-Security dort explizit setzen.
 
 - [ ] `manage.py check --deploy` für Production-Settings grün bekommen.
   - Befund: Warnungen zu HSTS, SSL redirect, secure cookies und schwachem lokalen `SECRET_KEY`.
-  - Ziel: `DJANGO_SETTINGS_MODULE=settings.prod python manage.py check --deploy` ohne Warnungen.
+  - Ziel: `DJANGO_SETTINGS_MODULE=settings python manage.py check --deploy` ohne Warnungen.
+  - Rest: HSTS-Subdomains/Preload sind bewusst aus, bis alle Subdomains HTTPS-only sind; lokaler `SECRET_KEY` ist noch schwach.
 
 - [ ] User-API absichern oder entfernen.
   - Befund: `UserViewSet` ist ein voller `ModelViewSet`; Safe-Reads sind in `IsOwnerOrSuperAdmin` immer erlaubt.
@@ -34,9 +35,9 @@
 
 ## P1 - hohe Priorität
 
-- [ ] `icecream` aus `settings/common.py` entfernen.
-  - Befund: `icecream` ist Dev-Dependency, wird aber in Common-Settings importiert.
-  - Ziel: Debug-Helfer nur in `settings/dev.py` aktivieren.
+- [x] `icecream` in `settings/common.py` bewusst behalten.
+  - Befund: `icecream` wird auch in Production gelegentlich für Debug-Ausgaben gebraucht.
+  - Ziel: Als Runtime-Dependency behalten und global in Common-Settings installieren.
 
 - [ ] django-axes Setting aktualisieren.
   - Befund: `AXES_LOGIN_FAILURE_LIMIT = 2` greift bei django-axes 8 vermutlich nicht.
@@ -58,7 +59,7 @@
   - Befund: Kein explizites `STORAGES`/Manifest-Storage für Production.
   - Ziel: `whitenoise.storage.CompressedManifestStaticFilesStorage` für Production prüfen.
 
-- [ ] `DEFAULT_FROM_EMAIL` setzen.
+- [x] `DEFAULT_FROM_EMAIL` setzen.
   - Befund: `users.models.User.email_user()` nutzt `settings.DEFAULT_FROM_EMAIL`, im Projekt ist es nicht explizit gesetzt.
   - Ziel: Sinnvollen Default in Settings hinterlegen.
 
@@ -169,5 +170,5 @@
 - `python manage.py test`: ok, aber 0 Tests.
 - `ruff check .`: ok.
 - `ruff format --check .`: ok.
-- `python manage.py check --deploy`: Security-Warnungen vorhanden.
+- `python manage.py check --deploy`: HSTS-Subdomains/Preload-Warnungen und lokale `SECRET_KEY`-Warnung bleiben bewusst offen.
 - `poetry check`: ok, nur Deprecation-Warnungen zu `[tool.poetry]`-Metadaten.
