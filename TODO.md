@@ -82,7 +82,7 @@
   - Ziel: konfigurierbares `BASE_URL` verwenden.
   - Ergebnis: `email_user()` nutzt jetzt `Site + scheme`.
 
-- [ ] README auf aktuellen Stand bringen.
+- [x] README auf aktuellen Stand bringen.
   - Befund: Django-4-Text, Vue-2-Link, Poetry/uv-Mix, uWSGI/Gunicorn-Widerspruch.
   - Ziel: Doku muss exakt dem Template entsprechen.
 
@@ -100,7 +100,7 @@
   - Befund: `poetry check` warnt, dass mehrere `[tool.poetry]` Felder deprecated sind.
   - Ziel: `[project]` verwenden oder bewusst bei alter Poetry-Struktur bleiben.
 
-- [ ] `django-upgrade` Zielversion aktualisieren.
+- [x] `django-upgrade` Zielversion aktualisieren.
   - Befund: Pre-commit nutzt `--target-version 5.1`, Projekt dependency ist Django 5.2.
   - Ziel: Target auf 5.2 setzen.
 

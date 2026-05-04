@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "django_secrets",
     "django_tasks",
-    "django_tasks.backends.database",
+    "django_tasks_db",
     "loginas",
     "kronos",
     "post_office",
@@ -149,7 +149,7 @@ CACHES = {
     "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
     "axes_cache": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
 }
-TASKS = {"default": {"BACKEND": "django_tasks.backends.database.DatabaseBackend"}}
+TASKS = {"default": {"BACKEND": "django_tasks_db.DatabaseBackend"}}
 
 
 # Password validation
