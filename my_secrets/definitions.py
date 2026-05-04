@@ -7,5 +7,5 @@
 
 SECRET_KEYS = [
     "SECRET_KEY",
-    "SENTRY_DSN",  # optional – leave empty to disable Sentry
+    "SENTRY_DSN",  # enter your DSN to enable Sentry, or "none" to disable
 ]

@@ -100,9 +100,8 @@
 - [x] `django-upgrade` Zielversion aktualisieren.
   - Ergebnis: Target läuft auf `6.0` (zusammen mit Django-6-Upgrade angepasst).
 
-- [ ] Tests ergänzen.
-  - Befund: `manage.py test` findet 0 Tests.
-  - Ziel: Smoke-Tests fuer Settings, URLs, Admin, API-Auth, ASGI/WSGI und Deployment-Check.
+- [x] Tests ergänzen.
+  - Ergebnis: 12 Tests. Neu in `utils/tests.py`: WSGI/ASGI-Import, Index-200, Admin-Redirect, unauthenticated-API-403.
 
 - [ ] Custom User vereinfachen prüfen.
   - Befund: `AbstractBaseUser` ist mehr Wartungsfläche als nötig.
@@ -178,7 +177,7 @@
 ## Bereits geprüft
 
 - `python manage.py check`: ok.
-- `python manage.py test`: ok, 7 Tests.
+- `python manage.py test`: ok, 12 Tests.
 - `ruff check .`: ok.
 - `ruff format --check .`: ok.
 - `python manage.py check --deploy`: HSTS-Subdomains/Preload-Warnungen und lokale `SECRET_KEY`-Warnung bleiben bewusst offen.

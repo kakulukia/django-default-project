@@ -198,7 +198,7 @@ COMPRESS_OFFLINE = True
 
 
 _sentry_dsn = getattr(secrets, "SENTRY_DSN", None)
-if _sentry_dsn:
+if _sentry_dsn and _sentry_dsn.startswith("https://"):
     sentry_sdk.init(
         dsn=_sentry_dsn,
         send_default_pii=True,

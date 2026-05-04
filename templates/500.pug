@@ -1,0 +1,20 @@
+- load compress static
+!!! 5
+
+html(lang='de')
+head
+  meta(charset="UTF-8")
+  title Uuups
+
+  link(href="https://fonts.googleapis.com/css?family=Raleway:400,700", rel="stylesheet")
+
+  -compress css
+    link(href='{% static "sass/styles.sass" %}', rel="stylesheet", type="text/x-sass")
+
+body.maintenance
+  .caution
+  .message
+    | This should not have happened. 🫣
+    br
+    | Admins have been informed about this bug.
+  .caution
