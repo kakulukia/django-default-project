@@ -122,15 +122,15 @@ DATABASES = {
         "OPTIONS": {
             "transaction_mode": "IMMEDIATE",
             "timeout": 5,  # seconds
+            # auto_vacuum only takes effect when the database is first created.
             "init_command": """
-                    PRAGMA journal_mode=WAL;
-                    PRAGMA synchronous=NORMAL;
-                    PRAGMA mmap_size = 134217728;
-                    PRAGMA auto_vacuum = FULL;
-                    PRAGMA journal_size_limit = 27103364;
-                    PRAGMA cache_size=2000;
-                    PRAGMA auto_vacuum=INCREMENTAL;
-                """,
+                PRAGMA journal_mode=WAL;
+                PRAGMA synchronous=NORMAL;
+                PRAGMA mmap_size=134217728;
+                PRAGMA journal_size_limit=27103364;
+                PRAGMA cache_size=2000;
+                PRAGMA auto_vacuum=INCREMENTAL;
+            """,
         },
     }
     # PLEASE, as soon as the project gets a lil more serious => use Postgres!
@@ -205,7 +205,6 @@ if _sentry_dsn and _sentry_dsn.startswith("https://"):
         traces_sample_rate=0.2,
     )
 
-DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 EMAIL_OVERRIDE_ADDRESS = None
 EMAIL_FOOTER = ""

@@ -109,13 +109,11 @@
 - [x] Admin fuer Custom User vervollständigen.
   - Ergebnis: `readonly_fields` (created, modified, last_login), Timestamps-Fieldset, list_display mit created/is_active, ordering nach -created.
 
-- [ ] `DEFAULT_AUTO_FIELD` überdenken.
-  - Befund: `AutoField` ist bewusst legacy.
-  - Ziel: Bei neuen Projekten eher `BigAutoField`, falls keine Altlasten dagegen sprechen.
+- [x] `DEFAULT_AUTO_FIELD` überdenken.
+  - Ergebnis: Auf `BigAutoField` umgestellt. Migration für `users.User` generiert. App-Level-Override in `utils/apps.py` entfernt.
 
-- [ ] SQLite-Defaults entschärfen oder dokumentieren.
-  - Befund: Mehrere PRAGMAs sind template-weit aktiv; `auto_vacuum` ist doppelt/widersprüchlich gesetzt.
-  - Ziel: Minimalen SQLite-Default wählen oder klar dokumentieren, wann Postgres Pflicht wird.
+- [x] SQLite-Defaults entschärfen oder dokumentieren.
+  - Ergebnis: Doppeltes `auto_vacuum` bereinigt (INCREMENTAL behalten), Kommentar ergänzt dass es nur beim DB-Erstellen greift.
 
 - [ ] Dummy-Cache für django-axes prüfen.
   - Befund: `axes_cache` nutzt `DummyCache`; Lockout-Zustand hängt dadurch nicht am Cache.
