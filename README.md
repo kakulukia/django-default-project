@@ -87,7 +87,9 @@ CSRF_TRUSTED_ORIGINS = ["https://example.com", "https://www.example.com"]
 DEFAULT_FROM_EMAIL = "webmaster@example.com"
 ```
 
-Enable HSTS subdomains/preload only when every affected subdomain is HTTPS-only:
+Keep HSTS subdomains/preload disabled in the template. Enable them in a
+project-specific production settings module only after every affected
+subdomain is HTTPS-only:
 
 ```python
 SECURE_HSTS_SECONDS = 31536000

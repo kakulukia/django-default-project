@@ -36,7 +36,9 @@ CSRF_TRUSTED_ORIGINS = [
 SECURE_SSL_REDIRECT = True
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_HSTS_SECONDS = 3600
-# Enable these only when every affected subdomain is HTTPS-only and preload-ready.
+# Keep these off in the template. Enable them in a project-specific production
+# settings module only after every affected subdomain is HTTPS-only and
+# preload-ready.
 SECURE_HSTS_INCLUDE_SUBDOMAINS = False
 SECURE_HSTS_PRELOAD = False
 SESSION_COOKIE_SECURE = True
