@@ -9,29 +9,29 @@ with a robust set of third-party packages to help you start quickly and maintain
 **Included Packages:**
 
 ```toml
-[packages]
-django = "*"
+[tool.poetry.dependencies]
+django = "^5.2"
 django-axes = "*"
 django-compressor = "*"
 django-extensions = "*"
 django-kronos = "*"
+django-loginas = "*"
 django-post-office = "*"
 django-secrets = "*"
 django-tasks = "*"
 djangorestframework = "*"
-huepy = "*"
+gunicorn = "*"
 pendulum = "*"
-Pillow = "*"
+pillow = "*"
 pypugjs = "*"
-python = "*"
 requests = "*"
 sentry-sdk = "*"
 whitenoise = "*"
 
-[dev-packages]
+[tool.poetry.group.dev.dependencies]
 django-browser-reload = "*"
 django-debug-toolbar = "*"
-fabric = "*"
+fab-classic = "*"
 icecream = "*"
 ipdb = "*"
 pre-commit = "*"
@@ -47,10 +47,10 @@ interactive experience during development.
 The frontend setup is minimal and designed to add reactivity to your pages without the overhead
 of a full single-page application. It includes:
 
-- [VueJS](https://vuejs.org/v2/guide/) – the core JavaScript framework.
-- [Sentry](https://docs.sentry.io/quickstart/) – error reporting for the frontend.
+- [Vue 3](https://vuejs.org/guide/introduction.html) – the core JavaScript framework.
+- [Vuetify](https://vuetifyjs.com/en/) – a Material Design component framework for Vue.
+- [Pinia](https://pinia.vuejs.org/) – state management.
 - [Axios](https://github.com/axios/axios) – for AJAX calls.
-- [Vuetify](https://vuetifyjs.com/en/) – a Material Design component framework for VueJS.
 - [Material Design Icons](https://pictogrammers.com/library/mdi/) – iconography for your UI.
 
 For more complex frontends, consider building a dedicated VueJS application (using `vue ui`) in
@@ -125,8 +125,8 @@ and do not rely on browsers noticing changed content behind an old path.
 
 A ready-to-use `fabfile` is provided to simplify common deployment tasks:
 
-- **fab deploy:** Pushes content, deploys static files and restarts the wsgi process.
-- **fab migrate:** Additionally updates packages and applies database migrations,.
+- **fab deploy:** Pushes content, deploys static files and restarts the Gunicorn process via PM2.
+- **fab migrate:** Additionally updates packages and applies database migrations.
 
 Enjoy building your project with this template—it’s designed to accelerate development while
 keeping configurations clean and manageable.
@@ -162,9 +162,6 @@ poetry install
 git init
 pre-commit install
 ```
-
-**Note:** This template uses Poetry for dependency management for now. Im planning to switch to
-uv once this ticket is resolved: https://github.com/astral-sh/uv/issues/6794
 
 After initial setup, customize your settings by copying one of the default environment files:
 

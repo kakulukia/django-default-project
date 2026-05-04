@@ -772,17 +772,6 @@ testing = ["coverage", "eventlet", "gevent", "pytest", "pytest-cov"]
 tornado = ["tornado (>=0.2)"]
 
 [[package]]
-name = "huepy"
-version = "1.2.1"
-description = "Print awesomely in terminals."
-optional = false
-python-versions = "*"
-groups = ["main"]
-files = [
-    {file = "huepy-1.2.1.tar.gz", hash = "sha256:5b29beef797312fb7606188bc5cd98f78ab8f7e01576427a9312f1c9b20b759d"},
-]
-
-[[package]]
 name = "icecream"
 version = "2.2.0"
 description = "Never use print() to debug again: inspect variables, expressions, and program execution with a single, simple function call."
@@ -2016,4 +2005,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "150695f9f974abbe7c6eb9fff721a26d08c26e0d81b98b633279b097d640217b"
+content-hash = "122defa4a65738c9c75a709e2838b4936bf1ffc95ae9ede910c8037c45130a64"

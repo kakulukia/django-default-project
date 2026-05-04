@@ -88,13 +88,13 @@
 
 ## P2 - mittlere Priorität
 
-- [ ] Poetry-Setup kurzfristig konsistent halten.
-  - Befund: `pyproject.toml` nutzt Poetry, `.envrc` erstellt aber nur `uv venv`.
-  - Ziel: Im aktuellen Branch Poetry als Quelle beibehalten und README/Setup-Befehle darauf abstimmen.
+- [ ] Auf `uv` migrieren.
+  - Befund: `pyproject.toml` nutzt noch Poetry; `.envrc` erstellt bereits `uv venv`. Poetry soll vollständig raus.
+  - Ziel: `uv.lock`, `[tool.uv] package = false`, Dependency-Groups statt `[tool.poetry.group.dev.dependencies]`, aktualisierte `.envrc`, `pyproject.toml` auf PEP-621-Metadaten (`[project]`), README und Deployment-Doku anpassen, `fab-classic` und `toml`-Dev-Dep prüfen.
 
-- [ ] `uv`-Migration separat evaluieren.
-  - Befund: `uv` waere fuer dieses Template interessant, sollte aber nicht nebenbei in den Fehlerfix-Branch.
-  - Ziel: Separater Branch/Spike mit `uv.lock`, `[tool.uv] package = false`, Dependency-Groups, aktualisierter `.envrc` und angepasster README/Deployment-Doku.
+- [ ] Sentry in Template integrieren.
+  - Befund: `sentry-sdk` ist in `pyproject.toml`, aber das Template enthält weder DSN-Konfiguration noch `sentry_sdk.init()`-Aufruf in Settings/WSGI/ASGI.
+  - Ziel: `SENTRY_DSN` als optionales Secret anlegen, `sentry_sdk.init()` in `settings/common.py` nur bei gesetztem DSN aufrufen, Beispiel in README ergänzen.
 
 - [ ] `pyproject.toml` auf moderne PEP-621-Metadaten prüfen.
   - Befund: `poetry check` warnt, dass mehrere `[tool.poetry]` Felder deprecated sind.
