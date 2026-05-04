@@ -137,13 +137,8 @@ keeping configurations clean and manageable.
 Ensure you have the required tools installed:
 
 ```bash
-pip install django poetry  # if not already installed
-```
-
-For automatic virtual environment management, install [direnv](https://direnv.net/):
-
-```bash
-brew install direnv
+pip install django      # for django-admin startproject
+brew install uv direnv  # macOS; see https://docs.astral.sh/uv/getting-started/installation/ for other platforms
 ```
 
 To create a new project from this template:
@@ -158,8 +153,7 @@ Then, navigate into your project:
 
 ```bash
 cd <new_project_name>
-direnv allow
-poetry install
+direnv allow        # creates .venv and runs uv sync automatically
 git init
 pre-commit install
 ```
@@ -201,21 +195,9 @@ export DJANGO_SETTINGS_MODULE=settings.your_name
     sudo chown -R $USER:$USER /opt/www/<project_name>
     cd /opt/www/<project_name>
     ```
-- **Pyenv:** Install [pyenv](https://github.com/pyenv/pyenv) for Python version management:
+- **uv** (Python version management + dependency installation):
     ```bash
-    curl https://pyenv.run | bash
-    ```
-- **Build Requirements for Python:**
-    ```bash
-    sudo apt install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
-    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev libffi-dev liblzma-dev python-openssl
-    ```
-- Install the required Python version and set it globally, then install Poetry:
-    ```bash
-    pyenv install 3.12.7
-    pyenv global 3.12.7
-    pip install -U pip setuptools poetry
+    curl -LsSf https://astral.sh/uv/install.sh | sh
     ```
 - **Direnv Setup:**
     ```bash
@@ -228,8 +210,9 @@ reload Nginx:
     sudo nginx -t
     sudo nginx -s reload
     ```
-- Run the local development server to initialize local secrets (e.g., `SECRET_KEY`, `OPEN_AI_API_KEY`):
+- Run `direnv allow` to create the venv and install dependencies, then initialize secrets:
     ```bash
+    direnv allow
     python manage.py runserver
     ```
 - Test the Gunicorn configuration:

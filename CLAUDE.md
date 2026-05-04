@@ -98,7 +98,7 @@ Templates use **Pug** via `pypugjs`. The base template (`templates/base.pug`) lo
 
 Notable open items that affect day-to-day work:
 
-- P2: Migrate from Poetry to `uv` — `uv.lock`, PEP-621 `[project]` metadata, updated `.envrc`, README and deployment docs.
+- ~~P2: Migrate from Poetry to `uv`~~ — done.
 - P2: Integrate Sentry — `SENTRY_DSN` secret, `sentry_sdk.init()` in `settings/common.py` guarded by DSN presence.
 - P2: `django-upgrade` pre-commit target is `5.1`; project runs Django 5.2 — bump when convenient.
 - P2: `DEFAULT_AUTO_FIELD` is legacy `AutoField`; new projects should prefer `BigAutoField`.

@@ -88,21 +88,18 @@
 
 ## P2 - mittlere Priorität
 
-- [ ] Auf `uv` migrieren.
-  - Befund: `pyproject.toml` nutzt noch Poetry; `.envrc` erstellt bereits `uv venv`. Poetry soll vollständig raus.
-  - Ziel: `uv.lock`, `[tool.uv] package = false`, Dependency-Groups statt `[tool.poetry.group.dev.dependencies]`, aktualisierte `.envrc`, `pyproject.toml` auf PEP-621-Metadaten (`[project]`), README und Deployment-Doku anpassen, `fab-classic` und `toml`-Dev-Dep prüfen.
+- [x] Auf `uv` migrieren.
+  - Ergebnis: `pyproject.toml` auf PEP-621 (`[project]` + `[dependency-groups]`), `[tool.uv] package = false`, `uv.lock` erzeugt, `poetry.lock` entfernt, `.envrc` und `fabfile.py` angepasst, README und Deployment-Doku aktualisiert. `toml`-Dev-Dep entfernt.
 
 - [ ] Sentry in Template integrieren.
   - Befund: `sentry-sdk` ist in `pyproject.toml`, aber das Template enthält weder DSN-Konfiguration noch `sentry_sdk.init()`-Aufruf in Settings/WSGI/ASGI.
   - Ziel: `SENTRY_DSN` als optionales Secret anlegen, `sentry_sdk.init()` in `settings/common.py` nur bei gesetztem DSN aufrufen, Beispiel in README ergänzen.
 
-- [ ] `pyproject.toml` auf moderne PEP-621-Metadaten prüfen.
-  - Befund: `poetry check` warnt, dass mehrere `[tool.poetry]` Felder deprecated sind.
-  - Ziel: `[project]` verwenden oder bewusst bei alter Poetry-Struktur bleiben.
+- [x] `pyproject.toml` auf moderne PEP-621-Metadaten prüfen.
+  - Ergebnis: Im Zuge der uv-Migration auf `[project]` + `[dependency-groups]` umgestellt.
 
 - [x] `django-upgrade` Zielversion aktualisieren.
-  - Befund: Pre-commit nutzt `--target-version 5.1`, Projekt dependency ist Django 5.2.
-  - Ziel: Target auf 5.2 setzen.
+  - Ergebnis: Target läuft auf `6.0` (zusammen mit Django-6-Upgrade angepasst).
 
 - [ ] Tests ergänzen.
   - Befund: `manage.py test` findet 0 Tests.
@@ -163,7 +160,7 @@
   - Ziel: Kurze, aktuelle, template-taugliche Kommentare.
 
 - [ ] `fabfile.py` kritisch prüfen.
-  - Befund: Fabric-Deployment enthält harte Namen, PM2, Poetry und destruktives lokales DB-Ersetzen.
+  - Befund: Fabric-Deployment enthält harte Namen, PM2 und destruktives lokales DB-Ersetzen. Poetry-Referenzen wurden auf uv umgestellt.
   - Ziel: Entweder modernisieren oder als optionales Beispiel auslagern.
 
 - [ ] `get_new_db()` absichern.
@@ -182,8 +179,8 @@
 ## Bereits geprüft
 
 - `python manage.py check`: ok.
-- `python manage.py test`: ok, aber 0 Tests.
+- `python manage.py test`: ok, 7 Tests.
 - `ruff check .`: ok.
 - `ruff format --check .`: ok.
 - `python manage.py check --deploy`: HSTS-Subdomains/Preload-Warnungen und lokale `SECRET_KEY`-Warnung bleiben bewusst offen.
-- `poetry check`: ok, nur Deprecation-Warnungen zu `[tool.poetry]`-Metadaten.
+- `uv lock`: ok (Poetry entfernt).

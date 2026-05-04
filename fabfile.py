@@ -71,9 +71,7 @@ def migrate():
 
     with cd(env.path):
         print(green("updating packages .."))
-        # this might cause some trouble: https://github.com/python-poetry/poetry/issues/732
-        run("poetry run pip install --upgrade pip setuptools")
-        run("poetry install")
+        run("uv sync")
 
         print(green("migrating database .."))
         manage("migrate --noinput")
@@ -95,7 +93,7 @@ def update_static():
 
 
 def manage(command):
-    run("poetry run ./manage.py " + command)
+    run("uv run ./manage.py " + command)
 
 
 # # Postgres version
