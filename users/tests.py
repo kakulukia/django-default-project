@@ -1,4 +1,3 @@
-from types import SimpleNamespace
 from unittest.mock import patch
 
 from django.contrib.sites.models import Site
@@ -63,12 +62,8 @@ class UserEmailUserTest(TestCase):
 
     @override_settings(SECURE_SSL_REDIRECT=True, EMAIL_OVERRIDE_ADDRESS=None, DEFAULT_FROM_EMAIL="from@example.com")
     @patch("users.models.mail.send")
-    def test_email_user_uses_https_site_base_url_when_ssl_redirect_is_enabled(self, mock_send):
-        self.user.email_user(
-            "template-name",
-            context={"existing": "value"},
-            request=SimpleNamespace(is_secure=lambda: True),
-        )
+    def test_email_user_uses_https_when_ssl_redirect_is_enabled(self, mock_send):
+        self.user.email_user("template-name", context={"existing": "value"})
 
         mock_send.assert_called_once()
         kwargs = mock_send.call_args.kwargs
@@ -77,8 +72,8 @@ class UserEmailUserTest(TestCase):
 
     @override_settings(SECURE_SSL_REDIRECT=False, EMAIL_OVERRIDE_ADDRESS=None, DEFAULT_FROM_EMAIL="from@example.com")
     @patch("users.models.mail.send")
-    def test_email_user_uses_http_site_base_url_when_ssl_redirect_is_disabled(self, mock_send):
-        self.user.email_user("template-name", request=SimpleNamespace(is_secure=lambda: False))
+    def test_email_user_uses_http_when_ssl_redirect_is_disabled(self, mock_send):
+        self.user.email_user("template-name")
 
         mock_send.assert_called_once()
         kwargs = mock_send.call_args.kwargs

@@ -103,13 +103,11 @@
 - [x] Tests ergänzen.
   - Ergebnis: 12 Tests. Neu in `utils/tests.py`: WSGI/ASGI-Import, Index-200, Admin-Redirect, unauthenticated-API-403.
 
-- [ ] Custom User vereinfachen prüfen.
-  - Befund: `AbstractBaseUser` ist mehr Wartungsfläche als nötig.
-  - Ziel: Wenn keine harte Abweichung nötig ist, auf `AbstractUser` wechseln.
+- [x] Custom User vereinfachen prüfen.
+  - Ergebnis: Auf `AbstractUser` umgestellt. Alle redundanten Felddefinitionen und Methoden entfernt. Migration für `first_name`/`last_name` max_length 30→150 und `username`-Validator-Cleanup generiert.
 
-- [ ] Admin fuer Custom User vervollständigen.
-  - Befund: `UserAdmin` wird fast unverändert geerbt, aber das Model ist kein `AbstractUser`.
-  - Ziel: `fieldsets`, `add_fieldsets`, `list_display`, `search_fields`, `ordering` explizit prüfen.
+- [x] Admin fuer Custom User vervollständigen.
+  - Ergebnis: `readonly_fields` (created, modified, last_login), Timestamps-Fieldset, list_display mit created/is_active, ordering nach -created.
 
 - [ ] `DEFAULT_AUTO_FIELD` überdenken.
   - Befund: `AutoField` ist bewusst legacy.

@@ -1,10 +1,6 @@
 from django.conf import settings
-from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin, UserManager
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.sites.models import Site
-from django.core import validators
-from django.db import models
-from django.utils.timezone import now
 from django.utils.translation import activate
 from django.utils.translation import gettext_lazy as _
 from post_office import mail
@@ -12,69 +8,22 @@ from post_office import mail
 from utils.models import BaseModel
 
 
-class User(AbstractBaseUser, BaseModel, PermissionsMixin):
-    username = models.CharField(
-        _("username"),
-        max_length=30,
-        unique=True,
-        help_text=_("user.login.username_help"),
-        validators=[
-            validators.RegexValidator(
-                r"^[\w.@+-]+$",
-                _("forms.errors.enter_valid_username."),
-                "username_invalid",
-            )
-        ],
-    )
-    first_name = models.CharField(_("first name"), max_length=30, blank=True)
-    last_name = models.CharField(_("last name"), max_length=30, blank=True)
-    email = models.EmailField(_("email address"), blank=True)
-    is_staff = models.BooleanField(
-        _("staff status"),
-        default=False,
-        help_text=_("Designates whether the user can log into this admin site."),
-    )
-    is_active = models.BooleanField(
-        _("active"),
-        default=True,
-        help_text=_(
-            "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
-        ),
-    )
-    date_joined = models.DateTimeField(_("date joined"), default=now)
-
-    USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["email"]
-
+class User(AbstractUser, BaseModel):
     data = UserManager()
 
-    class Meta(BaseModel.Meta):
+    class Meta:
+        ordering = ["-created"]
+        base_manager_name = "data"
+        default_manager_name = "data"
         verbose_name = _("user")
         verbose_name_plural = _("users")
 
-    def get_full_name(self):
-        """Returns the first_name plus the last_name, with a space in between."""
-        full_name = "%s %s" % (self.first_name, self.last_name)
-        return full_name.strip()
-
-    def get_short_name(self):
-        """Returns the short name for the user."""
-        return self.first_name
-
-    def get_base_url(self, request=None):
-        """Build the absolute base URL from the current site and request scheme."""
+    def get_base_url(self):
         site = Site.objects.get_current()
-        scheme = "https"
-        if request is not None:
-            scheme = "https" if request.is_secure() else "http"
+        scheme = "https" if settings.SECURE_SSL_REDIRECT else "http"
         return f"{scheme}://{site.domain}"
 
-    def email_user(self, template_name, context=None, request=None):
-        """
-        Sends an email to this User.
-        If settings.EMAIL_OVERRIDE_ADDRESS is set, this mail will be
-        redirected to the alternate mail address.
-        """
+    def email_user(self, template_name, context=None):
         if not self.email:
             return
 
@@ -85,7 +34,7 @@ class User(AbstractBaseUser, BaseModel, PermissionsMixin):
         if not context:
             context = {}
         context["user"] = self
-        context["base_url"] = self.get_base_url(request=request)
+        context["base_url"] = self.get_base_url()
         context["footer"] = settings.EMAIL_FOOTER
 
         activate("de")
