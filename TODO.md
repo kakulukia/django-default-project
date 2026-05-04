@@ -118,9 +118,8 @@
 - [x] Dummy-Cache für django-axes prüfen.
   - Ergebnis: DummyCache ist absichtlich — zwingt axes zur DB-basierten Lockout-Verwaltung (restart-sicher). Kommentar ergänzt.
 
-- [ ] Demo-App optional machen.
-  - Befund: `sample_app`, Chuck-Norris-API und Vue-Demo landen direkt in neuen Projekten.
-  - Ziel: Entweder als klarer Beispielordner oder nach Projektstart leicht entfernbar.
+- [x] Demo-App optional machen.
+  - Ergebnis: `sample_app` entfernt. Index-View ist jetzt ein `TemplateView` direkt in `settings/urls.py`.
 
 ## P3 - Nice-to-have / Cleanup
 

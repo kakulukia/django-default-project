@@ -1,9 +1,9 @@
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import TemplateView
 from rest_framework import routers
 
-from sample_app.views import index
 from users.views import UserViewSet
 
 handler500 = "utils.views.server_error"
@@ -18,7 +18,7 @@ urlpatterns = [
     path("api/", include(router.urls)),
     # path("accounts/", include("django.contrib.auth.urls")),  # add this if you want to use the default auth urls
     # application urls
-    path("", index),
+    path("", TemplateView.as_view(template_name="index.pug")),
 ]
 
 if settings.DEBUG:

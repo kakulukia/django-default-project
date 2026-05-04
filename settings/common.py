@@ -46,7 +46,6 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 INSTALLED_APPS = [
     # our own stuff
-    "sample_app",
     "users",
     "utils",
     # Django
