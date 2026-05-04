@@ -27,12 +27,13 @@
   - Befund: Verbleibende Warnungen sind HSTS-Subdomains, HSTS-Preload und lokaler schwacher `SECRET_KEY`.
   - Ergebnis: HSTS-Subdomains/Preload bleiben sichere Template-Defaults und sind in README/common dokumentiert.
 
-- [ ] `django-secrets` SECRET_KEY-Abfrage upstream verbessern.
+- [x] `django-secrets` SECRET_KEY-Abfrage upstream verbessern.
   - Befund: `manage.py` fragt fehlende Secrets interaktiv ab; bei `SECRET_KEY` wird lokal schnell ein schwacher Wert eingegeben.
   - Ziel: Im `django-secrets` Paket fuer `SECRET_KEY` automatisch einen starken Django-Key vorschlagen und per Enter uebernehmen lassen.
   - Nicht im Template loesen; das Verhalten gehoert in `django_secrets.startup.check()`.
+  - Ergebnis: Auf `django-secrets` 3.0.3 aktualisiert; `SECRET_KEY` wurde damit neu erzeugt und sauber gezogen.
 
-- [ ] HSTS-Subdomains/Preload pro Projekt entscheiden.
+- [x] HSTS-Subdomains/Preload pro Projekt entscheiden.
   - Befund: `SECURE_HSTS_INCLUDE_SUBDOMAINS` und `SECURE_HSTS_PRELOAD` sollten nicht pauschal im Template aktiviert werden.
   - Ziel: In echten Projekten auf `True` setzen, sobald alle betroffenen Subdomains HTTPS-only und preload-ready sind.
 
@@ -76,9 +77,10 @@
   - Befund: `users.models.User.email_user()` nutzt `settings.DEFAULT_FROM_EMAIL`, im Projekt ist es nicht explizit gesetzt.
   - Ziel: Sinnvollen Default in Settings hinterlegen.
 
-- [ ] `base_url` in E-Mails HTTPS-fähig machen.
+- [x] `base_url` in E-Mails HTTPS-fähig machen.
   - Befund: `email_user()` baut `http://{Site.objects.get_current()}` hart zusammen.
   - Ziel: konfigurierbares `BASE_URL` verwenden.
+  - Ergebnis: `email_user()` nutzt jetzt `Site + scheme`.
 
 - [ ] README auf aktuellen Stand bringen.
   - Befund: Django-4-Text, Vue-2-Link, Poetry/uv-Mix, uWSGI/Gunicorn-Widerspruch.
