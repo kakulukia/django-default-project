@@ -148,6 +148,8 @@ DATABASES = {
 }
 CACHES = {
     "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
+    # DummyCache forces axes to use the database (AccessAttempt model) for lockout
+    # state instead of the cache — lockouts survive server restarts.
     "axes_cache": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
 }
 TASKS = {"default": {"BACKEND": "django_tasks_db.DatabaseBackend"}}

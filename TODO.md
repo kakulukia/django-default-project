@@ -115,9 +115,8 @@
 - [x] SQLite-Defaults entschärfen oder dokumentieren.
   - Ergebnis: Doppeltes `auto_vacuum` bereinigt (INCREMENTAL behalten), Kommentar ergänzt dass es nur beim DB-Erstellen greift.
 
-- [ ] Dummy-Cache für django-axes prüfen.
-  - Befund: `axes_cache` nutzt `DummyCache`; Lockout-Zustand hängt dadurch nicht am Cache.
-  - Ziel: Absicht dokumentieren oder stabilen Cache/DB-Handler konfigurieren.
+- [x] Dummy-Cache für django-axes prüfen.
+  - Ergebnis: DummyCache ist absichtlich — zwingt axes zur DB-basierten Lockout-Verwaltung (restart-sicher). Kommentar ergänzt.
 
 - [ ] Demo-App optional machen.
   - Befund: `sample_app`, Chuck-Norris-API und Vue-Demo landen direkt in neuen Projekten.
