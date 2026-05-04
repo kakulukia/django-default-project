@@ -3,40 +3,44 @@
 #### Django
 
 This project serves as a base template for new Django projects using
-[Poetry](https://github.com/sdispater/poetry) for dependency management. It comes preconfigured
+[uv](https://docs.astral.sh/uv/) for dependency management. It comes preconfigured
 with a robust set of third-party packages to help you start quickly and maintain best practices.
 
 **Included Packages:**
 
 ```toml
-[tool.poetry.dependencies]
-django = "^5.2"
-django-axes = "*"
-django-compressor = "*"
-django-extensions = "*"
-django-kronos = "*"
-django-loginas = "*"
-django-post-office = "*"
-django-secrets = "*"
-django-tasks = "*"
-django-tasks-db = "*"
-djangorestframework = "*"
-gunicorn = "*"
-pendulum = "*"
-pillow = "*"
-pypugjs = "*"
-requests = "*"
-sentry-sdk = "*"
-whitenoise = "*"
+[project]
+dependencies = [
+    "django>=6.0",
+    "django-axes",
+    "django-compressor",
+    "django-extensions",
+    "django-kronos",
+    "django-loginas",
+    "django-post-office",
+    "django-secrets",
+    "django-tasks",
+    "django-tasks-db",
+    "djangorestframework",
+    "gunicorn",
+    "icecream",
+    "pendulum",
+    "pillow",
+    "pypugjs",
+    "requests",
+    "sentry-sdk",
+    "whitenoise",
+]
 
-[tool.poetry.group.dev.dependencies]
-django-browser-reload = "*"
-django-debug-toolbar = "*"
-fab-classic = "*"
-icecream = "*"
-ipdb = "*"
-pre-commit = "*"
-ruff = "*"
+[dependency-groups]
+dev = [
+    "django-browser-reload",
+    "django-debug-toolbar",
+    "fab-classic",
+    "ipdb",
+    "pre-commit",
+    "ruff",
+]
 ```
 
 Furthermore, this template includes a Hello World example utilizing PUG templates, SASS styles, and
@@ -105,6 +109,13 @@ deployment is streamlined (e.g., in CI/CD pipelines).
 
 This flat yet modular approach minimizes complexity while allowing each project or developer to
 tailor the settings as needed without interfering with the shared base configuration.
+
+#### Sentry
+
+[Sentry](https://sentry.io) error reporting is included but disabled by default. On first run,
+`manage.py` will prompt for a `SENTRY_DSN` — leave it empty to disable Sentry, or enter your
+project DSN to enable it. `sentry_sdk.init()` is called automatically in `settings/common.py`
+whenever a non-empty DSN is present.
 
 #### Clean Code
 

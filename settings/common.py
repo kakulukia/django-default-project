@@ -6,6 +6,7 @@ import it and explicitly relax local-only behavior in ``settings/dev.py``.
 
 from pathlib import Path
 
+import sentry_sdk
 from django.urls import reverse_lazy
 from icecream import install
 from pypugjs.ext.django.compiler import enable_pug_translations
@@ -196,26 +197,13 @@ COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
 
 
-# sentry_sdk.init(
-#     dsn=secrets.SENTRY_DSN,
-#
-#     integrations=[DjangoIntegration()],
-#
-#     # Set traces_sample_rate to 1.0 to capture 100%
-#     # of transactions for performance monitoring.
-#     # We recommend adjusting this value in production,
-#     traces_sample_rate=1.0,
-#
-#     # If you wish to associate users to errors (assuming you are using
-#     # django.contrib.auth) you may enable sending PII data.
-#     send_default_pii=True,
-#
-#     # By default the SDK will try to use the SENTRY_RELEASE
-#     # environment variable, or infer a git commit
-#     # SHA as release, however you may want to set
-#     # something more human-readable.
-#     # release="myapp@1.0.0",
-# )
+_sentry_dsn = getattr(secrets, "SENTRY_DSN", None)
+if _sentry_dsn:
+    sentry_sdk.init(
+        dsn=_sentry_dsn,
+        send_default_pii=True,
+        traces_sample_rate=0.2,
+    )
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 

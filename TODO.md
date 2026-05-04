@@ -91,9 +91,8 @@
 - [x] Auf `uv` migrieren.
   - Ergebnis: `pyproject.toml` auf PEP-621 (`[project]` + `[dependency-groups]`), `[tool.uv] package = false`, `uv.lock` erzeugt, `poetry.lock` entfernt, `.envrc` und `fabfile.py` angepasst, README und Deployment-Doku aktualisiert. `toml`-Dev-Dep entfernt.
 
-- [ ] Sentry in Template integrieren.
-  - Befund: `sentry-sdk` ist in `pyproject.toml`, aber das Template enthält weder DSN-Konfiguration noch `sentry_sdk.init()`-Aufruf in Settings/WSGI/ASGI.
-  - Ziel: `SENTRY_DSN` als optionales Secret anlegen, `sentry_sdk.init()` in `settings/common.py` nur bei gesetztem DSN aufrufen, Beispiel in README ergänzen.
+- [x] Sentry in Template integrieren.
+  - Ergebnis: `sentry_sdk.init()` in `settings/common.py` aktiv, greift nur wenn `SENTRY_DSN` in `my_secrets/secrets.py` gesetzt ist. Hinweis und Kommentar in `definitions.py` und README ergänzt.
 
 - [x] `pyproject.toml` auf moderne PEP-621-Metadaten prüfen.
   - Ergebnis: Im Zuge der uv-Migration auf `[project]` + `[dependency-groups]` umgestellt.
