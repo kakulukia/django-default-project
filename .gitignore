@@ -1,14 +1,33 @@
-# Created by .ignore support plugin (hsz.mobi)
-
+# macOS
 .DS_Store
+
+# Python
 *.pyc
+*.pyo
+__pycache__/
+*.egg-info/
+
+# Tools
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Editors
 .idea
-dump.rdb
 *.orig
 
+# Django
 db.sqlite3
-.venv
-static
-.direnv
 db.sqlite3-shm
 db.sqlite3-wal
+static/
+media/
+
+# Environment
+.venv
+.direnv
+.env
+
+# Misc
+node_modules/
+dump.rdb

@@ -12,7 +12,6 @@ block content
     .mt-16
       user-change
 
-
 block footer
   .container
     .v-row
@@ -20,7 +19,7 @@ block footer
         v-text-field#title(v-model='title' density="compact")
       .v-col-auto
         v-btn(:loading="isLoading" color="primary"
-          @click="loadJoke()" href="#")
+          @click="loadJoke()")
             v-icon.mr-1 mdi-autorenew
             |  get me another joke
 

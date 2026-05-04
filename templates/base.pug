@@ -29,7 +29,7 @@ body
                 .content(
                   @click="handleNotificationClick"
                   :data-action="notification.action"
-                  v-html="notification.message"
+                  v-text="notification.message"
                 )
       block header
       v-main
@@ -61,11 +61,11 @@ body
               colors: {
                 primary: "#7573DB",
                 secondary: "#d26b1f",
-                accent: '#D8D8EE',     // Standard Accent
-                error: '#FF5252',      // Standard Error
-                info: '#2196F3',       // Standard Info
-                success: '#4CAF50',    // Standard Success
-                warning: '#FFC107'     // Standard Warning
+                accent: '#D8D8EE',
+                error: '#FF5252',
+                info: '#2196F3',
+                success: '#4CAF50',
+                warning: '#FFC107'
               }
             },
           },
@@ -74,10 +74,10 @@ body
 
       // if the current domain is from the staging system, add class caution to div.stage
       if (window.location.hostname === 'stage.something.com') {
-        document.querySelector('.stage').classList.add('caution')
+        document.querySelector('.stage')?.classList.add('caution')
       }
 
-      // Standard axios configuration reuse the cookie to automatially be logged in
+      // Standard axios configuration — reuses the CSRF cookie for DRF requests
       const api = axios
       api.defaults.baseURL = '/api/';
       api.defaults.xsrfHeaderName = "X-CSRFTOKEN"

@@ -123,50 +123,41 @@
 
 ## P3 - Nice-to-have / Cleanup
 
-- [ ] `v-html` in Notifications vermeiden.
-  - Befund: `templates/base.pug` rendert Notification-Message als HTML.
-  - Ziel: Standardmäßig Text rendern; HTML nur explizit sanitized erlauben.
+- [x] `v-html` in Notifications vermeiden.
+  - Ergebnis: `v-html` → `v-text` in `base.pug`.
 
 - [ ] Externe Requests im Default-Template entfernen.
   - Befund: Google Font und Chuck-Norris-API werden im Beispiel genutzt.
-  - Ziel: Keine externen Requests im Default-Screen.
+  - Entscheidung: Demo bleibt bewusst drin — wird nicht umgesetzt.
 
 - [ ] Moment.js ersetzen oder entfernen.
   - Befund: Moment ist groß und legacy.
-  - Ziel: Native `Intl.DateTimeFormat`, `dayjs` oder gar keine Date-Library.
+  - Entscheidung: Wird vorerst nicht angefasst, da Demo darauf aufbaut.
 
 - [ ] Vendored Frontend-Assets aktualisierbar machen.
   - Befund: Vue, Vuetify, Axios, Pinia liegen als statische Dateien im Repo.
   - Ziel: Update-Prozess dokumentieren oder Assets über Build/Download-Script verwalten.
 
-- [ ] `document.querySelector('.stage')` robust machen.
-  - Befund: Code kann crashen, wenn `.stage` nicht existiert.
-  - Ziel: Null-Check oder Stage-Hinweis aus Template entfernen.
+- [x] `document.querySelector('.stage')` robust machen.
+  - Ergebnis: Hardcoded Stage-Check entfernt; optional-chaining (`?.`) für `title.focus()` ergänzt.
 
-- [ ] `href="#"` bei Buttons entfernen.
-  - Befund: Demo-Button nutzt Link-Verhalten für eine Aktion.
-  - Ziel: Button ohne Link-Href.
+- [x] `href="#"` bei Buttons entfernen.
+  - Ergebnis: `href="#"` aus Demo-Button entfernt.
 
-- [ ] Texte und Kommentare bereinigen.
-  - Befund: Alte Django-Versionen, Tippfehler, gemischte deutsche/englische Kommentare.
-  - Ziel: Kurze, aktuelle, template-taugliche Kommentare.
+- [x] Texte und Kommentare bereinigen.
+  - Ergebnis: Veraltete Kommentare aktualisiert, Demo-Texte bereinigt.
 
-- [ ] `fabfile.py` kritisch prüfen.
-  - Befund: Fabric-Deployment enthält harte Namen, PM2 und destruktives lokales DB-Ersetzen. Poetry-Referenzen wurden auf uv umgestellt.
-  - Ziel: Entweder modernisieren oder als optionales Beispiel auslagern.
+- [x] `fabfile.py` kritisch prüfen.
+  - Ergebnis: Poetry-Referenzen auf uv umgestellt (vorherige Session). Harte Namen und PM2 sind Template-Platzhalter — bleiben mit Kommentar.
 
-- [ ] `get_new_db()` absichern.
-  - Befund: Entfernt lokal `db.sqlite3` ohne Sicherheitsabfrage.
-  - Ziel: Backup/Bestätigung einbauen oder Task entfernen.
+- [x] `get_new_db()` absichern.
+  - Ergebnis: Bestätigungsabfrage vor destruktivem DB-Ersetzen eingebaut.
 
 - [x] `settings/deployment/project.yml` korrigieren oder entfernen.
-  - Befund: `vaccum` ist falsch geschrieben; Socket-Rechte `666` sind fragwürdig.
-  - Ziel: Nur behalten, wenn uWSGI wirklich Ziel-Stack ist.
   - Ergebnis: Entfernt, weil Gunicorn der Ziel-Stack ist.
 
-- [ ] `.gitignore` erweitern.
-  - Befund: `__pycache__`, `.ruff_cache`, Coverage-Dateien und lokale Secrets/Caches sollten expliziter ignoriert werden.
-  - Ziel: Template-taugliche Python/Django-Gitignore-Regeln.
+- [x] `.gitignore` erweitern.
+  - Ergebnis: `__pycache__/`, `.ruff_cache/`, `.coverage`, `htmlcov/`, `node_modules/`, `.env`, `media/` ergänzt.
 
 ## Bereits geprüft
 

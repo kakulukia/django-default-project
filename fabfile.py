@@ -121,10 +121,13 @@ def get_new_db():
     Download a fresh copy of the remote SQLite database via SQL dump,
     compress it on the server, transfer it, and reconstruct locally.
     """
+    answer = input("This will REPLACE your local db.sqlite3. Continue? [y/N] ")
+    if answer.strip().lower() != "y":
+        print("Aborted.")
+        return
+
     remote_dump = "db.sqlite3.txt.gz"
     local_sql = "db.sqlite3.txt"
-    # Ensure any prior local db is removed or backed up as needed
-    # On remote: checkpoint and dump
     with cd(env.path):
         print(green("Checkpoint remote SQLite DB..."))
         run('sqlite3 db.sqlite3 "PRAGMA wal_checkpoint(TRUNCATE);"')
@@ -134,12 +137,9 @@ def get_new_db():
         get(remote_dump, remote_dump)
         print(green("Cleaning up remote dump file..."))
         run(f"rm -f {remote_dump}")
-    # Locally: reconstruct
     print(green("Reconstructing local SQLite DB from dump..."))
-    # remove existing DB if exists
     local("rm -f db.sqlite3")
     local(f"gunzip -c {remote_dump} > {local_sql}")
     local(f"cat {local_sql} | sqlite3 db.sqlite3")
-    # cleanup local dump files
     local(f"rm -f {remote_dump} {local_sql}")
     print(green("Database copied and reconstructed successfully."))
