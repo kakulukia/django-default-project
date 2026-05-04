@@ -134,9 +134,8 @@
   - Befund: Moment ist groß und legacy.
   - Entscheidung: Wird vorerst nicht angefasst, da Demo darauf aufbaut.
 
-- [ ] Vendored Frontend-Assets aktualisierbar machen.
-  - Befund: Vue, Vuetify, Axios, Pinia liegen als statische Dateien im Repo.
-  - Ziel: Update-Prozess dokumentieren oder Assets über Build/Download-Script verwalten.
+- [x] Vendored Frontend-Assets aktualisieren.
+  - Ergebnis: Vue 3.5.13→3.5.33, Vuetify 3.7.12→3.12.5, Axios 1.4.0→1.16.0, Pinia 3.0.1→3.0.4. MDI 7.4.47 war bereits aktuell. Vuetify 4.x ist ein Breaking Change, bleibt auf 3.x.
 
 - [x] `document.querySelector('.stage')` robust machen.
   - Ergebnis: Hardcoded Stage-Check entfernt; optional-chaining (`?.`) für `title.focus()` ergänzt.
