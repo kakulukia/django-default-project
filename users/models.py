@@ -61,7 +61,15 @@ class User(AbstractBaseUser, BaseModel, PermissionsMixin):
         """Returns the short name for the user."""
         return self.first_name
 
-    def email_user(self, template_name, context=None):
+    def get_base_url(self, request=None):
+        """Build the absolute base URL from the current site and request scheme."""
+        site = Site.objects.get_current()
+        scheme = "https"
+        if request is not None:
+            scheme = "https" if request.is_secure() else "http"
+        return f"{scheme}://{site.domain}"
+
+    def email_user(self, template_name, context=None, request=None):
         """
         Sends an email to this User.
         If settings.EMAIL_OVERRIDE_ADDRESS is set, this mail will be
@@ -77,7 +85,7 @@ class User(AbstractBaseUser, BaseModel, PermissionsMixin):
         if not context:
             context = {}
         context["user"] = self
-        context["base_url"] = "http://{}".format(Site.objects.get_current())
+        context["base_url"] = self.get_base_url(request=request)
         context["footer"] = settings.EMAIL_FOOTER
 
         activate("de")

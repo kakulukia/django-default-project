@@ -639,19 +639,19 @@ test = ["pytest", "pytest-django", "tox (>=2.3)"]
 
 [[package]]
 name = "django-secrets"
-version = "2.0.1"
-description = ""
+version = "3.0.3"
+description = "The easy way of handling Django secrets."
 optional = false
-python-versions = "<4.0,>=3.9"
+python-versions = ">=3.12"
 groups = ["main"]
 files = [
-    {file = "django_secrets-2.0.1-py3-none-any.whl", hash = "sha256:21561611257e6218196e3b9b443d683643079a205d4cf43671d10125eb38bc69"},
-    {file = "django_secrets-2.0.1.tar.gz", hash = "sha256:e4598cad190574e590a1a81a5ee9a45e252418d63e2610ab4f23de1404b92355"},
+    {file = "django_secrets-3.0.3-py3-none-any.whl", hash = "sha256:c38136cd4da9768527d94ec16843b0e1f06cf3da003dacc2027f1aea4864770e"},
+    {file = "django_secrets-3.0.3.tar.gz", hash = "sha256:d292c18eb87cceb0076fabb660db5b7dd004d5cbe1acc16ff9468e3c2bef80dd"},
 ]
 
 [package.dependencies]
 Django = ">=2.2.27"
-six = ">=1.11,<2.0"
+six = ">=1.11"
 
 [[package]]
 name = "django-stubs-ext"
@@ -882,7 +882,6 @@ psutil = ">=7"
 pygments = ">=2.14.0"
 stack_data = ">=0.6.0"
 traitlets = ">=5.13.0"
-typing_extensions = {version = ">=4.6", markers = "python_version < \"3.12\""}
 
 [package.extras]
 all = ["argcomplete (>=3.0)", "ipython[doc,matplotlib,terminal,test,test-extra]", "types-decorator"]
@@ -1932,12 +1931,11 @@ version = "4.15.0"
 description = "Backported and Experimental Type Hints for Python 3.9+"
 optional = false
 python-versions = ">=3.9"
-groups = ["main", "dev"]
+groups = ["main"]
 files = [
     {file = "typing_extensions-4.15.0-py3-none-any.whl", hash = "sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548"},
     {file = "typing_extensions-4.15.0.tar.gz", hash = "sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466"},
 ]
-markers = {dev = "python_version == \"3.11\""}
 
 [[package]]
 name = "tzdata"
@@ -2017,5 +2015,5 @@ brotli = ["brotli"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.11"
-content-hash = "9df964c026a30c57edda71aca5bce2fc13a5ee7e920dac1fe42b50d92874c0f0"
+python-versions = "^3.12"
+content-hash = "150695f9f974abbe7c6eb9fff721a26d08c26e0d81b98b633279b097d640217b"

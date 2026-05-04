@@ -1,4 +1,8 @@
-from django.test import TestCase
+from types import SimpleNamespace
+from unittest.mock import patch
+
+from django.contrib.sites.models import Site
+from django.test import TestCase, override_settings
 from rest_framework.test import APIClient
 
 from users.models import User
@@ -47,3 +51,35 @@ class UserViewSetTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], self.user.id)
+
+
+class UserEmailUserTest(TestCase):
+    def setUp(self):
+        self.user = User.data.create_user(username="user", email="user@example.com", password="password")
+        site = Site.objects.get_current()
+        site.domain = "example.com"
+        site.save(update_fields=["domain"])
+        Site.objects.clear_cache()
+
+    @override_settings(SECURE_SSL_REDIRECT=True, EMAIL_OVERRIDE_ADDRESS=None, DEFAULT_FROM_EMAIL="from@example.com")
+    @patch("users.models.mail.send")
+    def test_email_user_uses_https_site_base_url_when_ssl_redirect_is_enabled(self, mock_send):
+        self.user.email_user(
+            "template-name",
+            context={"existing": "value"},
+            request=SimpleNamespace(is_secure=lambda: True),
+        )
+
+        mock_send.assert_called_once()
+        kwargs = mock_send.call_args.kwargs
+        self.assertEqual(kwargs["context"]["base_url"], "https://example.com")
+        self.assertEqual(kwargs["context"]["existing"], "value")
+
+    @override_settings(SECURE_SSL_REDIRECT=False, EMAIL_OVERRIDE_ADDRESS=None, DEFAULT_FROM_EMAIL="from@example.com")
+    @patch("users.models.mail.send")
+    def test_email_user_uses_http_site_base_url_when_ssl_redirect_is_disabled(self, mock_send):
+        self.user.email_user("template-name", request=SimpleNamespace(is_secure=lambda: False))
+
+        mock_send.assert_called_once()
+        kwargs = mock_send.call_args.kwargs
+        self.assertEqual(kwargs["context"]["base_url"], "http://example.com")
