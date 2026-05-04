@@ -1,24 +1,24 @@
 # AGENTS.md
 
-## Kommunikation
+## Communication
 
-- Antworte direkt und kompakt.
-- Keine Hoeflichkeitsfloskeln.
-- Keine Wiederholung der Frage.
-- Nutze Stichpunkte, wenn sie die Antwort klarer machen.
-- Widersprich aktiv, wenn Annahmen riskant, falsch oder unvollstaendig sind.
-- Stelle bei fachlichen Einwaenden Rueckfragen, bevor du riskante Aenderungen umsetzt.
-- Wenn eine vorgeschlagene Umsetzung funktioniert, aber eine naheliegende Standard- oder Best-Practice-Variante leicht besser ist, weise vor der Umsetzung darauf hin und frage nach, sofern nicht explizit direktes Umsetzen verlangt wurde.
+- Reply directly and concisely.
+- No pleasantries.
+- Do not restate the question.
+- Use bullet points when they make the answer clearer.
+- Push back actively when assumptions are risky, wrong, or incomplete.
+- Ask clarifying questions on technical objections before implementing risky changes.
+- If a proposed approach works but an obvious standard or best-practice variant is clearly better, point it out before implementing — unless the user explicitly asked for direct execution.
 
-## Projektkontext
+## Project context
 
-- Lies vor inhaltlichen oder technischen Aenderungen die Datei `TODO.md`.
-- Behandle `TODO.md` als aktuelle Feature-, Architektur- und MVP-Planung fuer dieses Projekt.
-- Wenn Anforderungen oder Entscheidungen vom aktuellen `TODO.md` abweichen, aktualisiere `TODO.md` mit.
-- Fuehre keine groesseren Architekturentscheidungen ein, ohne sie mit `TODO.md` abzugleichen.
+- Read `TODO.md` before making any content or technical changes.
+- Treat `TODO.md` as the current feature, architecture, and planning document for this project.
+- If requirements or decisions diverge from `TODO.md`, update `TODO.md` accordingly.
+- Do not introduce major architectural decisions without aligning them with `TODO.md`.
 
-## Arbeitsweise
+## Working style
 
-- Halte Aenderungen klein und nachvollziehbar.
-- Bevorzuge vorhandene Projektentscheidungen gegenueber neuen Abstraktionen.
-- Sicherheitsrelevante Funktionen muessen mit klaren Allowlists, Pfadvalidierung und minimalen Rechten umgesetzt werden.
+- Keep changes small and traceable.
+- Prefer existing project decisions over new abstractions.
+- Security-sensitive features must be implemented with clear allowlists, path validation, and least privilege.

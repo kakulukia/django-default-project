@@ -51,6 +51,20 @@ class UserViewSetTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], self.user.id)
 
+    def test_non_staff_cannot_create_user(self):
+        self.client.force_authenticate(self.user)
+
+        response = self.client.post("/api/users/", {"username": "newuser", "password": "pass"})
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_staff_can_create_user(self):
+        self.client.force_authenticate(self.staff_user)
+
+        response = self.client.post("/api/users/", {"username": "newuser", "password": "Str0ngPass!"})
+
+        self.assertEqual(response.status_code, 201)
+
 
 class UserEmailUserTest(TestCase):
     def setUp(self):

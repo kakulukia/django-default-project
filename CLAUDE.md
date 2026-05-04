@@ -2,21 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Kommunikation
+## Communication
 
-- Antworte direkt und kompakt. Keine Höflichkeitsfloskeln, keine Wiederholung der Frage.
-- Widersprich aktiv, wenn Annahmen riskant, falsch oder unvollständig sind.
-- Stelle bei fachlichen Einwänden Rückfragen, bevor du riskante Änderungen umsetzt.
-- Weise auf naheliegende Best-Practice-Varianten hin und frage nach, sofern nicht explizit direktes Umsetzen verlangt wurde.
+- Reply directly and concisely. No pleasantries, no restating the question.
+- Push back actively when assumptions are risky, wrong, or incomplete.
+- Ask clarifying questions on technical objections before implementing risky changes.
+- Point out obvious best-practice alternatives and ask before implementing — unless direct execution was explicitly requested.
 
 ## Workflow
 
-- Lies `TODO.md` vor inhaltlichen oder technischen Änderungen. Es ist die aktuelle Feature-, Architektur- und Planungsdatei.
-- Wenn Anforderungen oder Entscheidungen von `TODO.md` abweichen, aktualisiere `TODO.md` mit.
-- Keine größeren Architekturentscheidungen ohne Abgleich mit `TODO.md`.
-- Halte Änderungen klein und nachvollziehbar.
-- Bevorzuge vorhandene Projektentscheidungen gegenüber neuen Abstraktionen.
-- Sicherheitsrelevante Funktionen mit klaren Allowlists, Pfadvalidierung und minimalen Rechten umsetzen.
+- Read `TODO.md` before making any content or technical changes. It is the current feature, architecture, and planning document.
+- If requirements or decisions diverge from `TODO.md`, update `TODO.md` accordingly.
+- No major architectural decisions without aligning with `TODO.md`.
+- Keep changes small and traceable.
+- Prefer existing project decisions over new abstractions.
+- Implement security-sensitive features with clear allowlists, path validation, and least privilege.
 
 ## Commands
 
@@ -55,7 +55,7 @@ fab migrate    # install deps + migrate + restart
 
 - `common.py` — production baseline (`DEBUG=False`, SSL on, HSTS 3600 s). This is the default module.
 - `dev.py` — imports common, flips `DEBUG=True`, disables SSL/HSTS, adds debug toolbar + browser reload.
-- `andy.py` — per-developer example: `cp settings/andy.py settings/<yourname>.py`, then set `DJANGO_SETTINGS_MODULE=settings.<yourname>`. Never commit personal modules.
+- `andy.py` — per-developer example: `cp settings/andy.py settings/<yourname>.py`, then set `DJANGO_SETTINGS_MODULE=settings.<yourname>`.
 
 `manage.py` defaults to `DJANGO_SETTINGS_MODULE=settings` (production). Always export a dev module when running locally.
 
@@ -63,9 +63,7 @@ fab migrate    # install deps + migrate + restart
 
 **`utils/`** — shared base. `BaseModel` (abstract) provides `created`/`modified` timestamps and a default `ordering = ["-created"]`. Use `.data` (not `.objects`) as the canonical manager — all models inherit this.
 
-**`users/`** — custom auth. `User` extends `AbstractBaseUser` + `BaseModel` + `PermissionsMixin`. `email_user(template_name, context, request)` sends via `post_office` using the request-aware scheme + Site domain; activates the German locale (`de-de`).
-
-**`sample_app/`** — demo only (Chuck Norris jokes, Vue 3 + Vuetify). Intended to be replaced or removed in real projects.
+**`users/`** — custom auth. `User` extends `AbstractUser` + `BaseModel`. `email_user(template_name, context)` sends via `post_office` using `SECURE_SSL_REDIRECT` to determine the URL scheme + the current Site domain; activates the German locale (`de-de`).
 
 URL routing is **centralized** in `settings/urls.py` — there are no per-app `urls.py` files.
 
@@ -77,11 +75,11 @@ URL routing is **centralized** in `settings/urls.py` — there are no per-app `u
 owner_mapping = {"User": "self", ...}
 ```
 
-When adding a new model to the API, add an entry here. `UserViewSet.get_queryset` restricts non-staff to their own row; staff see all rows. This is the intended pattern for new viewsets.
+When adding a new model to the API, add an entry here. `UserViewSet.get_queryset` restricts non-staff to their own row; staff see all rows. `UserViewSet.get_permissions` restricts `create` to staff (`IsAdminUser`). This is the intended pattern for new viewsets.
 
 ## Templates & frontend
 
-Templates use **Pug** via `pypugjs`. The base template (`templates/base.pug`) loads Vue 3, Vuetify, Axios, Pinia, and Moment.js from vendored files in `assets/js/vendor/`.
+Templates use **Pug** via `pypugjs`. The base template (`templates/base.pug`) loads Vue 3, Vuetify, Axios, Pinia, and Moment.js from vendored files in `assets/js/vendor/`. The `lang` attribute on `<html>` is driven by `{{ LANGUAGE_CODE }}` from the `i18n` context processor.
 
 ## Key dependencies and conventions
 
@@ -94,14 +92,12 @@ Templates use **Pug** via `pypugjs`. The base template (`templates/base.pug`) lo
 - **Language**: `de-de`, **Timezone**: `Europe/Berlin`.
 - **Line length**: 120 (ruff). Imports sorted with `I001`.
 
-## Open work (from TODO.md)
+## New project checklist
 
-Notable open items that affect day-to-day work:
+When creating a new project from this template:
 
-- ~~P2: Migrate from Poetry to `uv`~~ — done.
-- P2: Integrate Sentry — `SENTRY_DSN` secret, `sentry_sdk.init()` in `settings/common.py` guarded by DSN presence.
-- P2: `django-upgrade` pre-commit target is `5.1`; project runs Django 5.2 — bump when convenient.
-- P2: `DEFAULT_AUTO_FIELD` is legacy `AutoField`; new projects should prefer `BigAutoField`.
-- P2: SQLite PRAGMAs in `common.py` include a duplicate/conflicting `auto_vacuum` setting.
-- P2: `UserAdmin` fieldsets not fully customized for the `AbstractBaseUser`-based model.
-- P3: `v-html` in `base.pug` notifications is an XSS risk — sanitize before rendering HTML there.
+- `settings/common.py`: set `ALLOWED_HOSTS`, `DEFAULT_FROM_EMAIL`, `SERVER_EMAIL`.
+- `settings/deployment/`: update `APP_NAME` in `project.sh` and `fabfile.py`.
+- `my_secrets/definitions.py`: check which secrets are needed (`SENTRY_DSN` etc.).
+- `LANGUAGE_CODE` / `TIME_ZONE` in `common.py`: adjust for the target locale.
+- Remove the `UserChange` demo component from `base.pug` / `index.pug` if not needed.
