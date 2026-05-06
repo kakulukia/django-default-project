@@ -22,7 +22,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Development server (personal settings module required — see Settings below)
-DJANGO_SETTINGS_MODULE=settings.andy python manage.py runserver
+DJANGO_SETTINGS_MODULE=settings.andy python manage.py runserver --nostatic
 
 # Tests
 python manage.py test                        # all tests

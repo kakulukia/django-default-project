@@ -64,3 +64,14 @@ POST_OFFICE = {"BACKENDS": {"default": "django.core.mail.backends.console.EmailB
 COMPRESS_OFFLINE = False
 STORAGES["staticfiles"] = {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"}  # noqa
 DJANGO_RUNSERVER_HIDE_WARNING = True
+
+
+def dev_static_no_cache(headers, path, url):
+    """Disable browser caching for static files served by WhiteNoise in development."""
+    headers["Cache-Control"] = "no-store, max-age=0"
+    headers["Pragma"] = "no-cache"
+    headers["Expires"] = "0"
+
+
+# Effective when runserver is started with --nostatic, so WhiteNoise handles /static/.
+WHITENOISE_ADD_HEADERS_FUNCTION = dev_static_no_cache
