@@ -152,6 +152,8 @@ pip install django      # for django-admin startproject
 brew install uv direnv  # macOS; see https://docs.astral.sh/uv/getting-started/installation/ for other platforms
 ```
 
+Python 3.14 is the project default.
+
 To create a new project from this template:
 
 ```bash

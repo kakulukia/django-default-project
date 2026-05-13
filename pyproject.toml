@@ -5,7 +5,7 @@ description = "It's not always good to start from scratch .. lets have some sane
 authors = [{name = "Andy Grabow", email = "andy@freilandkiwis.de"}]
 license = {text = "MIT"}
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
     "django>=6.0.4",
     "django-axes>=8.3.1",

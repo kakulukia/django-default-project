@@ -44,11 +44,11 @@ def clear_cache():
 
 
 def restart():
-    """Restart nginx and the backend worker."""
+    """Restart the server process."""
+    clear_cache()
+
     print(green("restarting server .."))
     run(f"pm2 restart {APP_NAME}")
-
-    clear_cache()
 
 
 def deploy():
