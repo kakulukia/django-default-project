@@ -183,6 +183,20 @@ And set your environment variable to use your custom settings by default:
 export DJANGO_SETTINGS_MODULE=settings.your_name
 ```
 
+## Dependency Updates
+
+Check which dependencies would be updated:
+
+```bash
+uv lock --upgrade --dry-run
+```
+
+Run the actual dependency update:
+
+```bash
+uv lock --upgrade
+```
+
 ## 1st Time Deployment
 
 **Required Components:**
