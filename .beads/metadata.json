@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "django_default_project",
+  "project_id": "019a1cd1-5848-40e5-905b-d2ebad4286ad"
+}
