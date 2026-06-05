@@ -135,11 +135,11 @@ and do not rely on browsers noticing changed content behind an old path.
 
 #### Project Tools
 
-Initialize the local tool context once so the AI can use it afterwards:
+Install and initialize the optional AI helper tools before asking an agent to use them:
 
-- **Beads:** run `bd init` in the project root.
-- **CodeGraph:** run `codegraph init .` in the project root, and `codegraph install` if the MCP server is not already installed for your agent.
-- **Graphify:** run `graphify .` once to initialize its knowledge graph.
+- **Beads:** install with `brew install beads`, then run `bd init` in the project root.
+- **CodeGraph:** install with `npm install -g @colbymchenry/codegraph`, run `codegraph install` to register the MCP server with your agent, then run `codegraph init .` in the project root.
+- **Graphify:** install with `uv tool install graphifyy`, run `graphify install --platform codex` to register the skill, then run `graphify .` once to initialize its knowledge graph.
 
 #### fabfile
 
