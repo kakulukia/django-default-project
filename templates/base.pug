@@ -4,6 +4,7 @@
 html(lang='{{ LANGUAGE_CODE }}')
   head
     meta(charset="UTF-8")
+    // These viewport defaults can cause zoom issues on mobile; adjust or remove them if needed for the project.
     meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui")
     title
       block title
@@ -25,12 +26,12 @@ body
         v-expand-transition(group)
           .notification(v-for="notification in store.notifications" :key="notification.timestamp")
             .pa-1
-              v-alert(:type="notification.type" :class="{'cursor-pointer': notification.action}")
-                .content(
-                  @click="handleNotificationClick"
-                  :data-action="notification.action"
-                  v-text="notification.message"
-                )
+              v-alert(
+                :type="notification.type"
+                :class="{'cursor-pointer': notification.action}"
+                @click="handleNotificationClick(notification)"
+              )
+                .content(v-text="notification.message")
       block header
       v-main
         block content
@@ -43,71 +44,29 @@ body
   script(src="{% static 'js/vendor/moment.min.js' %}")
   script(src="{% static 'js/vendor/pinia.iife.prod.js' %}")
 
-  // components here
-  script(type="text/x-template" id="user-change-template")
-    -include 'components/UserChange.pug'
-
-  block all_scripts
-    script.
-      const { createApp } = Vue
-      const { createVuetify } = Vuetify
-
-      // customize the vuetify theme here
-      const vuetify = createVuetify({
-        theme: {
-          themes: {
-            light: {
-              dark: false,
-              colors: {
-                primary: "#7573DB",
-                secondary: "#d26b1f",
-                accent: '#D8D8EE',
-                error: '#FF5252',
-                info: '#2196F3',
-                success: '#4CAF50',
-                warning: '#FFC107'
-              }
-            },
-          },
-        },
-      })
-
-      // if the current domain is from the staging system, add class caution to div.stage
-      if (window.location.hostname === 'stage.something.com') {
-        document.querySelector('.stage')?.classList.add('caution')
-      }
-
-      // Standard axios configuration — reuses the CSRF cookie for DRF requests
-      const api = axios
-      api.defaults.baseURL = '/api/';
-      api.defaults.xsrfHeaderName = "X-CSRFTOKEN"
-      api.defaults.xsrfCookieName = "csrftoken"
-
-    block vue
-      script.
-        const app = createApp({
-          delimiters: ['[[', ']]'],
-          data() {
-            return {
-            }
-          },
-          mounted() {
-          },
-          methods: {
+  script(type="application/json" id="app-config").
+    {
+      "apiBaseUrl": "/api/",
+      "csrfHeaderName": "X-CSRFTOKEN",
+      "csrfCookieName": "csrftoken",
+      "stagingHost": "",
+      "theme": {
+        "light": {
+          "dark": false,
+          "colors": {
+            "primary": "#7573DB",
+            "secondary": "#d26b1f",
+            "accent": "#D8D8EE",
+            "error": "#FF5252",
+            "info": "#2196F3",
+            "success": "#4CAF50",
+            "warning": "#FFC107"
           }
-        })
+        }
+      }
+    }
 
-    script(type="module").
-      import { useAppStore } from '{% static "js/store.js" %}';
-      import BaseApp from '{% static "js/BaseApp.js" %}'
-      import UserChange from '{% static "js/components/UserChange.js" %}'
-      const pinia = Pinia.createPinia()
-      app.use(pinia)
+  block components
+  block vue
 
-      const appStore = useAppStore()
-      app.config.globalProperties.store = appStore
-
-      app.use(vuetify)
-      app.use(BaseApp)
-      app.component('user-change', UserChange);
-      app.mount('#app')
+  script(type="module" src="{% static 'js/bootstrap.js' %}")

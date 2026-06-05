@@ -23,38 +23,11 @@ block footer
             v-icon.mr-1 mdi-autorenew
             |  get me another joke
 
+block components
+  script(type="text/x-template" id="user-change-template")
+    -include 'components/UserChange.pug'
+
 block vue
-  script.
-    const app = createApp({
-      delimiters: ['[[', ']]'],
-      data() {
-        return {
-          title: "Django + VueJs = ❤",
-          joke: '',
-          isLoading: false
-        }
-      },
-      methods: {
-        loadJoke: function () {
-          this.isLoading = true
-          axios.get('https://api.chucknorris.io/jokes/random')
-            .then((response) => { // Arrow function
-              this.joke = response.data.value
-              const now = this.moment(new Date())
-              this.store.displayMessage(`${now}: Joke loaded!`, 'success')
-              this.isLoading = false
-            })
-            .catch((error) => {
-              console.error('Error loading joke:', error)
-              this.store.displayMessage(error, 'error')
-              this.isLoading = false
-            })
-        }
-      },
-      mounted() {
-        this.loadJoke()
-        setTimeout(() => {
-          title.focus();
-        }, 500);
-      }
-    });
+  script(type="module").
+    import indexAppOptions from '{% static "js/pages/index.js" %}'
+    window.__VUE_APP_OPTIONS__ = indexAppOptions

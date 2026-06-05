@@ -36,3 +36,9 @@ dump.rdb
 .dolt/
 *.db
 .beads-credential-key
+
+# bv (beads viewer) local config and caches
+.bv/
+
+# Beads / Dolt files (added by bd init)
+.beads/proxieddb/

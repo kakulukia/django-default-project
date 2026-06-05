@@ -1,4 +1,4 @@
-"""Default production settings.
+"""Shared base settings and the production baseline.
 
 The ``settings`` package imports this module by default. Development settings
 import it and explicitly relax local-only behavior in ``settings/dev.py``.
