@@ -13,8 +13,7 @@ html(lang='{{ LANGUAGE_CODE }}')
     link(href="https://fonts.googleapis.com/css?family=Barrio", rel="stylesheet")
     link(href='{% static "css/vuetify.min.css" %}', rel="stylesheet", type="text/css")
     link(href='{% static "css/materialdesignicons.min.css" %}', rel="stylesheet", type="text/css")
-    //link(rel="icon" type="image/png" media="(prefers-color-scheme: light)" href="{% static 'img/favicon-light.png' %}")
-    //link(rel="icon" type="image/png" media="(prefers-color-scheme: dark)" href="{% static 'img/favicon-dark.png' %}")
+    link(rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}")
 
     -compress css
       link(href='{% static "sass/styles.sass" %}', rel="stylesheet", type="text/x-sass")
