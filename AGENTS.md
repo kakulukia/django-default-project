@@ -12,10 +12,10 @@
 
 ## Project context
 
-- Read `TODO.md` before making any content or technical changes.
-- Treat `TODO.md` as the current feature, architecture, and planning document for this project.
-- If requirements or decisions diverge from `TODO.md`, update `TODO.md` accordingly.
-- Do not introduce major architectural decisions without aligning them with `TODO.md`.
+- Use Beads (`bd`) as the current feature, architecture, and planning source.
+- Run `bd prime` when Beads context is missing or stale.
+- If requirements or decisions need durable tracking, create or update a Bead.
+- Do not introduce major architectural decisions without recording them in Beads.
 
 ## Working style
 
@@ -28,5 +28,4 @@
 Use Beads (`bd`) for all shared task tracking in this repository.
 
 - Do not use markdown TODO lists for shared project work.
-- Do not create ad hoc memory files for project tracking. Use `bd remember`!
-
+- Do not create ad hoc memory files for project tracking; use `bd remember`.

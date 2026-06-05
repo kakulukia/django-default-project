@@ -139,7 +139,7 @@ Initialize the local tool context once so the AI can use it afterwards:
 
 - **Beads:** run `bd init` in the project root.
 - **CodeGraph:** run `codegraph init .` in the project root, and `codegraph install` if the MCP server is not already installed for your agent.
-- **Graphify:** run `graphify .` once to initiallize its knowledge graph.
+- **Graphify:** run `graphify .` once to initialize its knowledge graph.
 
 #### fabfile
 
