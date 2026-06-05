@@ -133,6 +133,14 @@ serve collected static files without an additional static-file server for small 
 The production static files storage uses hashed filenames, so changed CSS/JS assets get new URLs
 and do not rely on browsers noticing changed content behind an old path.
 
+#### Project Tools
+
+Initialize the local tool context once so the AI can use it afterwards:
+
+- **Beads:** run `bd init` in the project root.
+- **CodeGraph:** run `codegraph init .` in the project root, and `codegraph install` if the MCP server is not already installed for your agent.
+- **Graphify:** run `graphify .` once to initiallize its knowledge graph.
+
 #### fabfile
 
 A ready-to-use `fabfile` is provided to simplify common deployment tasks:
@@ -203,53 +211,72 @@ uv lock --upgrade
 
 - A recent Ubuntu (or similar) server distribution.
 - **Nginx:**
+
     ```bash
     sudo apt install nginx
     ```
+
 - **Node.js (latest LTS):**
+
     ```bash
     curl -fsSL https://fnm.vercel.app/install | bash
 
     fnm install --lts  # or the latest LTS version - used for pm2 and sass
     ```
+
 - **pm2 (process manager):**
+
     ```bash
     npm install -g pm2 sass
     ```
+
 - Set up your project directory (e.g., under `/opt/www/<project_name>`):
+
     ```bash
     sudo mkdir -p /opt/www/<project_name>
     sudo chown -R $USER:$USER /opt/www/<project_name>
     cd /opt/www/<project_name>
     ```
+
 - **uv** (Python version management + dependency installation):
+
     ```bash
     curl -LsSf https://astral.sh/uv/install.sh | sh
     ```
+
 - **Direnv Setup:**
+
     ```bash
     sudo apt install direnv
     ```
+
 - Adjust the supplied Nginx configuration to your needs, link it to `sites-enabled`, and
 reload Nginx:
+
     ```bash
     sudo ln -s /opt/www/<project>/settings/deployment/project.nginx /etc/nginx/sites-enabled/<project>
     sudo nginx -t
     sudo nginx -s reload
     ```
+
 - Run `direnv allow` to create the venv and install dependencies, then initialize secrets:
+
     ```bash
     direnv allow
     python manage.py runserver
     ```
+
 - Test the Gunicorn configuration:
+
     ```bash
     .venv/bin/gunicorn --check-config \
       --chdir /opt/www/<project> \
       --env DJANGO_SETTINGS_MODULE=settings \
       settings.wsgi:application
     ```
+
 - If everything works, start the pm2 job and set it to launch on startup:
+
     ```bash
     cd settings/deployment
     PROJECT_NAME=<project> DJANGO_SETTINGS_MODULE=settings pm2 start project.sh --name <project>
@@ -257,7 +284,9 @@ reload Nginx:
     pm2 startup
     cd -
     ```
+
 - Prepare Django static files:
+
     ```bash
     python manage.py compress -e pug,html --force
     python manage.py collectstatic --noinput
@@ -266,6 +295,7 @@ reload Nginx:
 Your project should now be up and running. For deploying updates, you can use the provided fabfile.
 
 - Optionally, deploy an SSL certificate via Certbot:
+
     ```bash
     sudo apt install certbot python3-certbot-nginx
     sudo certbot --nginx
