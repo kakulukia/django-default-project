@@ -19,7 +19,8 @@
 
 ## Working style
 
-- Keep changes small and traceable.
+- Keep changes small and traceable. 
+- Generally work minimal/YAGNI style.
 - Prefer existing project decisions over new abstractions.
 - Security-sensitive features must be implemented with clear allowlists, path validation, and least privilege.
 

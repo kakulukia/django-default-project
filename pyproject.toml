@@ -5,27 +5,27 @@ description = "It's not always good to start from scratch .. lets have some sane
 authors = [{name = "Andy Grabow", email = "andy@freilandkiwis.de"}]
 license = {text = "MIT"}
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = "==3.14.6"
 dependencies = [
-    "django>=6.0.4",
-    "django-axes>=8.3.1",
-    "django-compressor>=4.6.0",
-    "django-extensions>=4.1",
-    "django-kronos>=1.0",
-    "django-loginas>=0.3.14",
-    "django-post-office>=3.11.2",
-    "django-secrets>=3.0.3",
-    "django-tasks>=0.12.0",
-    "django-tasks-db>=0.12.0",
-    "djangorestframework>=3.17.1",
-    "gunicorn>=25.3.0",
-    "icecream>=2.2.0",
-    "pendulum>=3.2.0",
-    "pillow>=12.2.0",
-    "pypugjs>=6.0.3",
-    "requests>=2.33.1",
-    "sentry-sdk>=2.59.0",
-    "whitenoise>=6.12.0",
+    "django==6.0.7",
+    "django-axes==8.3.1",
+    "django-compressor==4.6.0",
+    "django-extensions==4.1",
+    "django-kronos==1.0",
+    "django-loginas==0.3.14",
+    "django-post-office==3.11.2",
+    "django-secrets==3.0.5",
+    "django-tasks==0.12.0",
+    "django-tasks-db==0.12.0",
+    "djangorestframework==3.17.1",
+    "gunicorn==26.0.0",
+    "icecream==2.2.0",
+    "pendulum==3.2.0",
+    "pillow==12.3.0",
+    "pypugjs==6.0.3",
+    "requests==2.34.2",
+    "sentry-sdk==2.65.0",
+    "whitenoise==6.12.0",
     # django-model-utils - use this if a status field is needed and maybe also a status_changed field
 ]
 
@@ -35,12 +35,12 @@ homepage = "https://github.com/kakulukia/django-default-project"
 
 [dependency-groups]
 dev = [
-    "django-browser-reload>=1.21.0",
-    "django-debug-toolbar>=6.3.0",
-    "fab-classic>=1.21.0",  # uv add --group dev "git+https://github.com/kakulukia/fab-classic.git#master" (ssh key fwding)
-    "ipdb>=0.13.13",
-    "pre-commit>=4.6.0",
-    "ruff>=0.15.12",
+    "django-browser-reload==1.21.0",
+    "django-debug-toolbar==7.0.0",
+    "fab-classic==1.21.0",  # uv add --group dev "git+https://github.com/kakulukia/fab-classic.git#master" (ssh key fwding)
+    "ipdb==0.13.13",
+    "pre-commit==4.6.0",
+    "ruff==0.15.21",
 ]
 
 [tool.uv]
