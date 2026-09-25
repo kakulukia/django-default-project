@@ -80,8 +80,8 @@ MIDDLEWARE = [
     "axes.middleware.AxesMiddleware",
 ]
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
     "axes.backends.AxesBackend",
+    "django.contrib.auth.backends.ModelBackend",
 ]
 TEMPLATES = [
     {

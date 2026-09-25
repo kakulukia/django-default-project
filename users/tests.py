@@ -1,10 +1,27 @@
 from unittest.mock import patch
 
+from django.conf import settings
+from django.contrib.auth import authenticate
 from django.contrib.sites.models import Site
-from django.test import TestCase, override_settings
+from django.test import RequestFactory, TestCase, override_settings
 from rest_framework.test import APIClient
 
 from users.models import User
+
+
+class LoginLockoutTest(TestCase):
+    def test_correct_password_is_rejected_after_failure_limit(self):
+        user = User.data.create_user(username="locked-user", password="correct-password")
+        factory = RequestFactory()
+
+        def attempt(password):
+            request = factory.post("/admin/login/", REMOTE_ADDR="192.0.2.1", HTTP_USER_AGENT="lockout-test")
+            return authenticate(request=request, username=user.username, password=password)
+
+        self.assertEqual(attempt("correct-password"), user)
+        for _ in range(settings.AXES_FAILURE_LIMIT):
+            self.assertIsNone(attempt("wrong-password"))
+        self.assertIsNone(attempt("correct-password"))
 
 
 class UserViewSetTest(TestCase):
