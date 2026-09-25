@@ -176,6 +176,21 @@ Then, navigate into your project:
 
 ```bash
 cd <new_project_name>
+```
+
+Before the first dependency sync, edit `pyproject.toml` to describe your new
+project. Django copies this file unchanged:
+
+- Set `project.name` to your new project name.
+- Choose your initial `project.version` and update `project.description`.
+- Replace `project.authors` and the repository/homepage under `project.urls`
+  with your own values; remove URLs you do not have yet.
+- Review `project.license` and adapt this README to your project.
+
+Then initialize the environment and repository. The first `uv sync` also updates
+the copied lockfile to match your new project metadata:
+
+```bash
 direnv allow        # creates .venv and runs uv sync automatically
 git init
 pre-commit install
