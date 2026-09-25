@@ -1,9 +1,33 @@
+from unittest.mock import patch
+
 from django.conf import settings
 from django.core.management import call_command
 from django.tasks import TaskResultStatus
 from django.test import SimpleTestCase, TestCase, TransactionTestCase
 
 from utils.tasks import calculate_meaning_of_life
+
+
+class DeploymentCommandsTest(SimpleTestCase):
+    def test_deployments_install_cron_in_project_and_restart_both_processes(self):
+        import fabfile
+
+        for deploy in (fabfile.deploy, fabfile.migrate):
+            with self.subTest(deploy=deploy.__name__):
+                calls = []
+                with patch("fabfile.run", side_effect=lambda command: calls.append((command, fabfile.env.cwd))):
+                    deploy()
+
+                commands = [command for command, _ in calls]
+                cron = "uv run ./manage.py installtasks"
+                self.assertEqual(commands.count(cron), 1)
+                for command, cwd in calls:
+                    if command.startswith("uv run ./manage.py "):
+                        self.assertEqual(cwd, fabfile.env.path, command)
+                for name in (fabfile.APP_NAME, f"{fabfile.APP_NAME}-worker"):
+                    restart = f"pm2 restart {name}"
+                    self.assertIn(restart, commands)
+                    self.assertLess(commands.index(cron), commands.index(restart))
 
 
 class BackgroundTaskTest(TransactionTestCase):

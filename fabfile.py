@@ -37,10 +37,9 @@ def deploy_only():
 
 
 def clear_cache():
-    with cd(env.path):
-        print(green("\ndeleting cache .."))
-        manage("clear_cache")
-        # manage("thumbnail clear_delete_all")
+    print(green("\ndeleting cache .."))
+    manage("clear_cache")
+    # manage("thumbnail clear_delete_all")
 
 
 def restart():
@@ -49,22 +48,21 @@ def restart():
 
     print(green("restarting server .."))
     run(f"pm2 restart {APP_NAME}")
+    run(f"pm2 restart {APP_NAME}-worker")
 
 
 def deploy():
     deploy_only()
     update_static()
 
-    restart()
-
-    # updates the crontab
     manage("installtasks")
+    restart()
 
 
 def migrate():
     """
     Pull all updates from the remote repository.
-    Migrates the database and installs new lib versions from requirements.
+    Synchronizes dependencies and migrates the database.
     Static files are also collected.
     """
     deploy_only()
@@ -73,27 +71,27 @@ def migrate():
         print(green("updating packages .."))
         run("uv sync")
 
-        print(green("migrating database .."))
-        manage("migrate --noinput")
+    print(green("migrating database .."))
+    manage("migrate --noinput")
 
-        update_static()
-
+    update_static()
+    manage("installtasks")
     restart()
 
 
 def update_static():
-    with cd(env.path):
-        # static file need to be collected first ..
-        print(green("collecting static files .."))
-        manage("collectstatic --noinput")
+    # Static files need to be collected first.
+    print(green("collecting static files .."))
+    manage("collectstatic --noinput")
 
-        # .. in order to compress the latest sass versions
-        print(green("compressing files .."))
-        manage("compress -e pug,html --force")
+    # Then compress the latest Sass versions.
+    print(green("compressing files .."))
+    manage("compress -e pug,html --force")
 
 
 def manage(command):
-    run("uv run ./manage.py " + command)
+    with cd(env.path):
+        run("uv run ./manage.py " + command)
 
 
 # # Postgres version

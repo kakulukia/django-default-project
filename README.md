@@ -144,8 +144,11 @@ Install and initialize the optional AI helper tools before asking an agent to us
 
 A ready-to-use `fabfile` is provided to simplify common deployment tasks:
 
-- **fab deploy:** Pushes content, deploys static files and restarts the Gunicorn process via PM2.
+- **fab deploy:** Pulls code, deploys static files, updates cron entries and restarts Gunicorn and the task worker via PM2.
 - **fab migrate:** Additionally updates packages and applies database migrations.
+
+Set `APP_NAME`, `env.path` and `env.hosts` in `fabfile.py` for your project.
+The PM2 processes must be named `<APP_NAME>` and `<APP_NAME>-worker`, as shown below.
 
 Enjoy building your project with this template—it’s designed to accelerate development while
 keeping configurations clean and manageable.
@@ -279,11 +282,11 @@ reload Nginx:
     sudo nginx -s reload
     ```
 
-- Run `direnv allow` to create the venv and install dependencies, then initialize secrets:
+- Run `direnv allow` to create the venv and install dependencies, then initialize secrets and the database:
 
     ```bash
     direnv allow
-    python manage.py runserver
+    DJANGO_SETTINGS_MODULE=settings python manage.py migrate --noinput
     ```
 
 - Test the Gunicorn configuration:
@@ -295,22 +298,31 @@ reload Nginx:
       settings.wsgi:application
     ```
 
-- If everything works, start the pm2 job and set it to launch on startup:
+- Prepare static files and install the cron job for queued email before starting the processes:
+
+    ```bash
+    DJANGO_SETTINGS_MODULE=settings python manage.py collectstatic --noinput
+    DJANGO_SETTINGS_MODULE=settings python manage.py compress -e pug,html --force
+    DJANGO_SETTINGS_MODULE=settings python manage.py installtasks
+    ```
+
+- If everything works, start Gunicorn and the database task worker with PM2 and enable startup:
 
     ```bash
     cd settings/deployment
     PROJECT_NAME=<project> DJANGO_SETTINGS_MODULE=settings pm2 start project.sh --name <project>
+    DJANGO_SETTINGS_MODULE=settings pm2 start worker.sh --name <project>-worker --kill-timeout 30000
     pm2 save
     pm2 startup
     cd -
     ```
 
-- Prepare Django static files:
-
-    ```bash
-    python manage.py compress -e pug,html --force
-    python manage.py collectstatic --noinput
-    ```
+The worker executes tasks queued through `django.tasks`; the cron job handles
+queued email separately. Use the same settings module for management commands,
+Gunicorn and the worker. The worker has 30 seconds to finish its current task
+during a PM2 restart; increase `--kill-timeout` if your tasks can run longer.
+For an existing installation, add the worker process once before using the updated
+Fabric deployment commands, then run `pm2 save`.
 
 Your project should now be up and running. For deploying updates, you can use the provided fabfile.
 
