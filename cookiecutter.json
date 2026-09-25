@@ -3,6 +3,8 @@
   "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '-').replace('_', '-') }}",
   "description": "A Django project.",
   "author_name": "Your Name",
+  "__author_first_name": "{{ (cookiecutter.author_name.split() | first | default('developer', true)) | slugify(separator='_') }}",
+  "__author_settings": "{{ cookiecutter.__author_first_name ~ '_local' if cookiecutter.__author_first_name in ['common', 'dev', 'urls', 'wsgi', 'asgi', '__init__'] else cookiecutter.__author_first_name }}",
   "author_email": "you@example.com",
   "repository_url": "",
   "_copy_without_render": [

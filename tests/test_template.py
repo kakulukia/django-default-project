@@ -33,7 +33,7 @@ class TemplateTest(unittest.TestCase):
         )
 
     def test_generated_project(self):
-        project = self.generate()
+        project = self.generate(author_name="Alex Example")
         metadata = tomllib.loads((project / "pyproject.toml").read_text())["project"]
         self.assertEqual(project.name, "my-project")
         self.assertEqual(metadata["name"], project.name)
@@ -78,7 +78,6 @@ class TemplateTest(unittest.TestCase):
             ".venv",
             "db.sqlite3",
             "my_secrets/secrets.py",
-            "settings/andy.py",
             "cookiecutter.json",
             "hooks",
             "tests",
@@ -95,19 +94,31 @@ class TemplateTest(unittest.TestCase):
             (project / "settings/deployment/project.nginx").read_text(),
         )
         self.assertNotIn("django-default-project", (project / "README.md").read_text())
+        self.assertEqual((project / "settings/alex.py").read_text(), "from .dev import *  # noqa\n")
 
         env = os.environ | {
-            "DJANGO_SETTINGS_MODULE": "settings.dev",
+            "DJANGO_SETTINGS_MODULE": "settings.alex",
             "SECRET_KEY": "test-only-cookiecutter-secret-key",
-            "SENTRY_DSN": "none",
+            "SENTRY_DSN": "",
         }
         env.pop("UV_PROJECT_ENVIRONMENT", None)
         env.pop("VIRTUAL_ENV", None)
         env.pop("PYTHONPATH", None)
         lock_before = (project / "uv.lock").read_bytes()
+        subprocess.run(["uv", "sync", "--locked"], cwd=project, env=env, check=True)
+        check = ["uv", "run", "--locked", "python", "manage.py", "check"]
+        subprocess.run(check, cwd=project, env=env, input="\n", text=True, check=True)
+        subprocess.run(check, cwd=project, env=env, input="", text=True, check=True)
+        help_result = subprocess.run(
+            ["uv", "run", "--locked", "python", "manage.py", "runserver", "--nostatic", "--help"],
+            cwd=project,
+            env=env,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        self.assertIn("--nostatic", help_result.stdout)
         for command in (
-            ["uv", "sync", "--locked"],
-            ["uv", "run", "--locked", "python", "manage.py", "check"],
             [
                 "uv",
                 "run",
@@ -144,6 +155,31 @@ class TemplateTest(unittest.TestCase):
         )
         self.assertEqual(metadata["urls"], {"repository": context["repository_url"]})
         self.assertTrue((project / "README.md").read_text().startswith("# Über Portal\n"))
+        self.assertEqual((project / "settings/zoe.py").read_text(), "from .dev import *  # noqa\n")
+
+    def test_author_settings_names(self):
+        for author, module in (
+            ("Jean-Luc Picard", "jean_luc"),
+            ("Your Name", "your"),
+            ("   ", "developer"),
+            ("Dev Patel", "dev_local"),
+            ("Common Name", "common_local"),
+            ("Urls Name", "urls_local"),
+            ("Wsgi Name", "wsgi_local"),
+            ("Asgi Name", "asgi_local"),
+        ):
+            with self.subTest(author=author):
+                project = self.generate(project_slug=module.replace("_", "-"), author_name=author)
+                self.assertEqual((project / f"settings/{module}.py").read_text(), "from .dev import *  # noqa\n")
+                for name in ("common", "dev", "urls", "wsgi", "asgi"):
+                    self.assertEqual(
+                        (project / f"settings/{name}.py").read_bytes(), (TEMPLATE / f"settings/{name}.py").read_bytes()
+                    )
+        for author in ("123 Name", "!!!", "class Name"):
+            with self.subTest(author=author):
+                with self.assertRaises(FailedHookException):
+                    self.generate(author_name=author)
+                self.assertFalse((self.output / "my-project").exists())
 
     def test_invalid_slug(self):
         for slug in ("Uppercase", "with spaces", "bad_name", "bad--name", 'bad"name'):

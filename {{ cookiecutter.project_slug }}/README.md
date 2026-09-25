@@ -80,9 +80,9 @@ Create separate files for environment-specific settings (e.g., `settings/dev.py`
 overrides specific to that environment. `settings/dev.py` is the local development baseline.
 
 3. **Personalized Settings:**
-Developers can maintain their own settings (e.g., `settings/alice.py`, `settings/bob.py`) based
-on the default environment file. Simply set the environment variable `DJANGO_SETTINGS_MODULE`
-to point to your custom settings (e.g., `export DJANGO_SETTINGS_MODULE=settings.alice`).
+Your personal settings file, `settings/{{ cookiecutter.__author_settings }}.py`, is generated
+from the author's first name and imports `settings.dev`. Add your own overrides there.
+Set `DJANGO_SETTINGS_MODULE=settings.{{ cookiecutter.__author_settings }}` to use it.
 
 For production, review and commit the relevant values in `settings/common.py` or in a tracked
 environment-specific settings module:
@@ -114,9 +114,10 @@ tailor the settings as needed without interfering with the shared base configura
 #### Sentry
 
 [Sentry](https://sentry.io) error reporting is included but disabled by default. On first run,
-`manage.py` will prompt for a `SENTRY_DSN` — enter `none` to disable Sentry, or enter your
+`manage.py` will prompt for a `SENTRY_DSN` — leave it empty to disable Sentry, or enter your
 project DSN to enable it. `sentry_sdk.init()` is called automatically in `settings/common.py`
 when the DSN starts with `https://`.
+An empty answer is saved as disabled, so subsequent starts do not ask again.
 
 #### Clean Code
 
@@ -162,13 +163,13 @@ From this project's directory:
 
 ```bash
 uv sync --locked
-export DJANGO_SETTINGS_MODULE=settings.dev
+export DJANGO_SETTINGS_MODULE=settings.{{ cookiecutter.__author_settings }}
 uv run python manage.py migrate
 uv run python manage.py runserver
 ```
 
 On the first management command, follow the prompts to create local secrets.
-Enter `none` for `SENTRY_DSN` to disable Sentry. Secrets are ignored by Git.
+Leave `SENTRY_DSN` empty to disable Sentry. Secrets are ignored by Git.
 Open http://127.0.0.1:8000/ after starting the server.
 
 Initialize Git and the code-quality hooks when ready:
@@ -179,14 +180,15 @@ uv run pre-commit install
 ```
 
 Optionally install direnv and run `direnv allow` to activate the environment
-automatically. For personal settings, copy `settings/dev.py` to
-`settings/your_name.py` and set `DJANGO_SETTINGS_MODULE=settings.your_name`.
+automatically. Your personal development settings are in
+`settings/{{ cookiecutter.__author_settings }}.py`. Other developers can add their own
+settings module with `from .dev import *` and select it via `DJANGO_SETTINGS_MODULE`.
 Use the default `settings` module for production.
 
 Run the project tests with the development settings:
 
 ```bash
-DJANGO_SETTINGS_MODULE=settings.dev uv run python manage.py test users utils
+DJANGO_SETTINGS_MODULE=settings.{{ cookiecutter.__author_settings }} uv run python manage.py test users utils
 ```
 
 ## Dependency Updates

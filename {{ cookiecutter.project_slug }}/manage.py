@@ -3,9 +3,15 @@ import os
 import sys
 
 if __name__ == "__main__":
-    from django_secrets.startup import check
+    from django_secrets import startup
 
-    check()
+    # django-secrets treats empty values as missing; persist a disabled marker for Sentry.
+    prompt_for_secret = startup.prompt_for_secret
+    startup.prompt_for_secret = lambda key: prompt_for_secret(key) or ("none" if key == "SENTRY_DSN" else "")
+    try:
+        startup.check()
+    finally:
+        startup.prompt_for_secret = prompt_for_secret
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
     try:

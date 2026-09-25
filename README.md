@@ -20,6 +20,12 @@ a description, author name and email, and an optional repository URL. The slug
 must start with a lowercase letter and use lowercase letters, digits and single
 hyphens, for example `customer-portal`. New projects start at version `0.1.0`.
 
+The author's first name also determines a personal development settings file:
+`Alex Example` creates `settings/alex.py`, importing the shared `settings.dev`.
+Names are normalized (`Zoë` → `zoe`, `Jean-Luc` → `jean_luc`). If the name matches
+a shared settings module, `_local` is appended (`Dev` → `dev_local`).
+The generated README shows the resulting `DJANGO_SETTINGS_MODULE` value.
+
 The generated README contains the local setup and deployment instructions.
 Domain, server and production settings are configured later in that project.
 The MIT license metadata is inherited; review it for your own project.
