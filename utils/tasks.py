@@ -1,4 +1,4 @@
-from django_tasks import task
+from django.tasks import task
 from icecream import ic
 
 

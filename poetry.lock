@@ -728,23 +728,6 @@ django = "*"
 typing-extensions = "*"
 
 [[package]]
-name = "django-tasks"
-version = "0.12.0"
-description = "A backport of Django's built in Tasks framework"
-optional = false
-python-versions = ">=3.10"
-groups = ["main"]
-files = [
-    {file = "django_tasks-0.12.0-py3-none-any.whl", hash = "sha256:ffcc1d7bdfad3bc5ef9c2d498596c6546484c9ec6b182fb9709c691eb66a8709"},
-    {file = "django_tasks-0.12.0.tar.gz", hash = "sha256:58be66c1e487da32a3ce7320bd1949d0d1dc381b9004819f92591eb37fb2c1b8"},
-]
-
-[package.dependencies]
-Django = ">=4.2"
-django-stubs-ext = "*"
-typing_extensions = "*"
-
-[[package]]
 name = "django-tasks-db"
 version = "0.13.0"
 description = "An ORM-based backend for Django Tasks"
@@ -2064,4 +2047,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14.6,<3.15"
-content-hash = "6edc4b489649e58e933cb858f04bda7f58b4b9c2f7f37a6637e8f9198beca858"
+content-hash = "a5cd0219b8d4fddc1fb17c369c005fc18567579252c9b43e16b744324cffc051"

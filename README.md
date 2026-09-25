@@ -19,7 +19,6 @@ dependencies = [
     "django-loginas",
     "django-post-office",
     "django-secrets",
-    "django-tasks",
     "django-tasks-db",
     "djangorestframework",
     "gunicorn",

@@ -61,7 +61,6 @@ INSTALLED_APPS = [
     "compressor",
     "django_extensions",
     "django_secrets",
-    "django_tasks",
     "django_tasks_db",
     "loginas",
     "kronos",
