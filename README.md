@@ -192,17 +192,38 @@ export DJANGO_SETTINGS_MODULE=settings.your_name
 
 ## Dependency Updates
 
-Check which dependencies would be updated:
+The bundled `scripts/uv-update` updates exact pins in `pyproject.toml`, then
+updates `uv.lock` and synchronizes the environment. Direct dependencies stay
+within their current major version; transitive dependencies follow their own
+requirements. Major upgrades are listed separately for manual review.
+
+Install its development tool dependency once (requires Python 3.11 or newer):
 
 ```bash
-uv lock --upgrade --dry-run
+uv tool install --python 3.14 python-update-checker
 ```
 
-Run the actual dependency update:
+Ensure `puc` is on your `PATH` (`uv tool update-shell` can configure this).
+
+Check for updates without changing files:
 
 ```bash
-uv lock --upgrade
+./scripts/uv-update --check
 ```
+
+Update the pinned dependencies and the local environment:
+
+```bash
+./scripts/uv-update
+```
+
+To update a single dependency, use `./scripts/uv-update --package django`.
+Use `./scripts/uv-update --show-majors` to list only blocked major upgrades.
+Checks can exit with a non-zero status when updates are available.
+
+Run these commands from the project root. You can also pass the path to another
+project's `pyproject.toml`; its environment will be synchronized there.
+Review the diff and run the project tests after updating dependencies.
 
 ## 1st Time Deployment
 

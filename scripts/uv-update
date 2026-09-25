@@ -1,0 +1,828 @@
+#!/usr/bin/env bash
+# Update pinned pyproject.toml dependencies within their current major version.
+
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage: uv-update [OPTIONS] [pyproject.toml]
+
+Generate temporary major-version constraints from exactly pinned
+pyproject.toml dependencies, optionally convert non-exact dependencies like
+django<7.0.0,>=6.0.1 to django==6.0.1, run puc with those constraints, then
+upgrade locked dependencies and sync the uv environment.
+Major-version constraints apply to direct pins; transitive dependencies follow
+their declared requirements. --package limits the upgrade to selected packages.
+
+Default:
+  uv-update                # puc update pyproject.toml && uv sync --upgrade
+
+Options:
+      --check              Check only; do not update or sync
+      --update             Update dependencies (default)
+      --show-majors        Show blocked major updates only
+      --no-sync            Do not run uv sync after puc update
+      --constraints VALUE  Additional constraints file or constraint text
+      --package NAME       Check/update only one package; can be used multiple times
+      --exclude-newer VAL  Forward to puc
+      --exclude-newer-package VAL
+      --no-color           Forward to puc
+      --debug              Forward to puc
+  -h, --help               Show this help
+EOF
+}
+
+die() {
+  echo "Error: $*" >&2
+  exit 1
+}
+
+require_command() {
+  command -v "$1" >/dev/null 2>&1 || die "$1 is not installed."
+}
+
+require_puc() {
+  if ! command -v puc >/dev/null 2>&1; then
+    die "puc is not installed. Install it with: uv tool install python-update-checker"
+  fi
+}
+
+puc_python_cmd() {
+  local puc_bin shebang
+  puc_bin="$(command -v puc)" || return 1
+  IFS= read -r shebang <"$puc_bin"
+  shebang="${shebang#\#!}"
+
+  if [[ "$shebang" == /usr/bin/env\ * ]]; then
+    # shellcheck disable=SC2206
+    PUC_PYTHON=(${shebang#"/usr/bin/env "})
+  else
+    # shellcheck disable=SC2206
+    PUC_PYTHON=($shebang)
+  fi
+}
+
+write_major_constraints() {
+  local pyproject="$1"
+  shift
+
+  "${PUC_PYTHON[@]}" - "$pyproject" "$@" <<'PY'
+import sys
+import tomllib
+
+from packaging.requirements import Requirement
+from packaging.utils import canonicalize_name
+from packaging.version import InvalidVersion, Version
+
+
+def iter_dependencies(data):
+    project = data.get("project", {})
+
+    for dep in project.get("dependencies", []):
+        yield dep
+
+    for deps in project.get("optional-dependencies", {}).values():
+        for dep in deps:
+            yield dep
+
+    for deps in data.get("dependency-groups", {}).values():
+        for dep in deps:
+            if isinstance(dep, str):
+                yield dep
+
+
+def next_major_constraint(dep):
+    try:
+        req = Requirement(dep)
+    except Exception:
+        return None
+
+    if req.url:
+        return None
+
+    specs = list(req.specifier)
+    if len(specs) != 1:
+        return None
+
+    spec = specs[0]
+    if spec.operator not in ("==", "===") or "*" in spec.version:
+        return None
+
+    try:
+        version = Version(spec.version)
+    except InvalidVersion:
+        return None
+
+    upper = (
+        f"{version.epoch}!{version.major + 1}"
+        if version.epoch
+        else str(version.major + 1)
+    )
+    return canonicalize_name(req.name), f"{req.name}<{upper}"
+
+
+pyproject_path = sys.argv[1]
+package_filters = {canonicalize_name(name) for name in sys.argv[2:]}
+
+with open(pyproject_path, "rb") as handle:
+    data = tomllib.load(handle)
+
+constraints = {}
+conflicts = {}
+
+for dep in iter_dependencies(data):
+    result = next_major_constraint(dep)
+    if result is None:
+        continue
+
+    canonical_name, constraint = result
+    if package_filters and canonical_name not in package_filters:
+        continue
+
+    previous = constraints.get(canonical_name)
+    if previous is not None and previous != constraint:
+        conflicts.setdefault(canonical_name, sorted({previous, constraint}))
+        continue
+
+    constraints[canonical_name] = constraint
+
+if conflicts:
+    print(
+        "Conflict: the same package is pinned in multiple major versions:",
+        file=sys.stderr,
+    )
+    for package, values in sorted(conflicts.items()):
+        print(f"  {package}: {', '.join(values)}", file=sys.stderr)
+    sys.exit(2)
+
+for package in sorted(constraints):
+    print(constraints[package])
+PY
+}
+
+list_lower_bound_conversions() {
+  local pyproject="$1"
+  shift
+
+  "${PUC_PYTHON[@]}" - "$pyproject" "$@" <<'PY'
+import json
+import os
+import re
+import subprocess
+import sys
+import tomllib
+from pathlib import Path
+
+from packaging.requirements import Requirement
+from packaging.utils import canonicalize_name
+from packaging.version import InvalidVersion, Version
+
+
+def iter_dependencies(data):
+    project = data.get("project", {})
+
+    for dep in project.get("dependencies", []):
+        yield dep
+
+    for deps in project.get("optional-dependencies", {}).values():
+        for dep in deps:
+            yield dep
+
+    for deps in data.get("dependency-groups", {}).values():
+        for dep in deps:
+            if isinstance(dep, str):
+                yield dep
+
+
+def project_installed_versions(pyproject_path):
+    project_dir = Path(pyproject_path).resolve().parent
+    candidates = (
+        project_dir / ".venv" / "bin" / "python",
+        project_dir / ".venv" / "Scripts" / "python.exe",
+    )
+    python = next((path for path in candidates if path.exists()), None)
+    if python is None:
+        return {}
+
+    code = r'''
+import importlib.metadata
+import json
+import re
+
+def canonicalize_name(name):
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+print(json.dumps({
+    canonicalize_name(dist.metadata["Name"]): dist.version
+    for dist in importlib.metadata.distributions()
+    if dist.metadata.get("Name")
+}))
+'''
+    result = subprocess.run(
+        [os.fspath(python), "-c", code],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        print(
+            f"Warning: could not read installed packages from {python}: {result.stderr.strip()}",
+            file=sys.stderr,
+        )
+        return {}
+
+    try:
+        return json.loads(result.stdout)
+    except json.JSONDecodeError:
+        return {}
+
+
+def exact_requirement(req, version):
+    base = req.name
+    if req.extras:
+        base += "[" + ",".join(sorted(req.extras)) + "]"
+    dependency = f"{base}=={version}"
+    if req.marker:
+        dependency += f"; {req.marker}"
+    return dependency
+
+
+def skipped_dependency_conversion(dep, installed_versions):
+    try:
+        req = Requirement(dep)
+    except Exception:
+        return None
+
+    if req.url:
+        return None
+
+    specs = list(req.specifier)
+    if len(specs) == 1:
+        spec = specs[0]
+        if spec.operator in ("==", "===") and "*" not in spec.version:
+            return None
+
+    installed_version = installed_versions.get(canonicalize_name(req.name))
+
+    if installed_version:
+        try:
+            installed = Version(installed_version)
+        except InvalidVersion:
+            installed = None
+
+        if installed is not None:
+            if req.specifier and not req.specifier.contains(installed, prereleases=True):
+                print(
+                    f"Warning: installed {req.name}=={installed_version} does not satisfy '{dep}', skipping.",
+                    file=sys.stderr,
+                )
+                return None
+            return canonicalize_name(req.name), dep, exact_requirement(req, installed_version)
+
+    if len(specs) == 1 and specs[0].operator == ">=" and "*" not in specs[0].version:
+        try:
+            Version(specs[0].version)
+        except InvalidVersion:
+            return None
+        return canonicalize_name(req.name), dep, exact_requirement(req, specs[0].version)
+
+    if req.specifier:
+        print(
+            f"Warning: no installed version found for '{dep}', skipping.",
+            file=sys.stderr,
+        )
+
+        return None
+
+    return None
+
+
+pyproject_path = sys.argv[1]
+package_filters = {canonicalize_name(name) for name in sys.argv[2:]}
+installed_versions = project_installed_versions(pyproject_path)
+
+with open(pyproject_path, "rb") as handle:
+    data = tomllib.load(handle)
+
+seen = set()
+conversions = []
+
+for dep in iter_dependencies(data):
+    result = skipped_dependency_conversion(dep, installed_versions)
+    if result is None:
+        continue
+
+    canonical_name, old_dep, new_dep = result
+    if package_filters and canonical_name not in package_filters:
+        continue
+
+    key = (old_dep, new_dep)
+    if key in seen:
+        continue
+
+    seen.add(key)
+    conversions.append((old_dep, new_dep))
+
+for old_dep, new_dep in conversions:
+    print(f"{old_dep}\t{new_dep}")
+PY
+}
+
+apply_lower_bound_conversions() {
+  local pyproject="$1"
+  shift
+
+  "${PUC_PYTHON[@]}" - "$pyproject" "$@" <<'PY'
+import json
+import os
+import re
+import subprocess
+import sys
+import tomllib
+from pathlib import Path
+
+from packaging.requirements import Requirement
+from packaging.utils import canonicalize_name
+from packaging.version import InvalidVersion, Version
+
+
+def iter_dependencies(data):
+    project = data.get("project", {})
+
+    for dep in project.get("dependencies", []):
+        yield dep
+
+    for deps in project.get("optional-dependencies", {}).values():
+        for dep in deps:
+            yield dep
+
+    for deps in data.get("dependency-groups", {}).values():
+        for dep in deps:
+            if isinstance(dep, str):
+                yield dep
+
+
+def project_installed_versions(pyproject_path):
+    project_dir = Path(pyproject_path).resolve().parent
+    candidates = (
+        project_dir / ".venv" / "bin" / "python",
+        project_dir / ".venv" / "Scripts" / "python.exe",
+    )
+    python = next((path for path in candidates if path.exists()), None)
+    if python is None:
+        return {}
+
+    code = r'''
+import importlib.metadata
+import json
+import re
+
+def canonicalize_name(name):
+    return re.sub(r"[-_.]+", "-", name).lower()
+
+print(json.dumps({
+    canonicalize_name(dist.metadata["Name"]): dist.version
+    for dist in importlib.metadata.distributions()
+    if dist.metadata.get("Name")
+}))
+'''
+    result = subprocess.run(
+        [os.fspath(python), "-c", code],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        print(
+            f"Warning: could not read installed packages from {python}: {result.stderr.strip()}",
+            file=sys.stderr,
+        )
+        return {}
+
+    try:
+        return json.loads(result.stdout)
+    except json.JSONDecodeError:
+        return {}
+
+
+def exact_requirement(req, version):
+    base = req.name
+    if req.extras:
+        base += "[" + ",".join(sorted(req.extras)) + "]"
+    dependency = f"{base}=={version}"
+    if req.marker:
+        dependency += f"; {req.marker}"
+    return dependency
+
+
+def skipped_dependency_conversion(dep, installed_versions):
+    try:
+        req = Requirement(dep)
+    except Exception:
+        return None
+
+    if req.url:
+        return None
+
+    specs = list(req.specifier)
+    if len(specs) == 1:
+        spec = specs[0]
+        if spec.operator in ("==", "===") and "*" not in spec.version:
+            return None
+
+    installed_version = installed_versions.get(canonicalize_name(req.name))
+
+    if installed_version:
+        try:
+            installed = Version(installed_version)
+        except InvalidVersion:
+            installed = None
+
+        if installed is not None:
+            if req.specifier and not req.specifier.contains(installed, prereleases=True):
+                print(
+                    f"Warning: installed {req.name}=={installed_version} does not satisfy '{dep}', skipping.",
+                    file=sys.stderr,
+                )
+                return None
+            return canonicalize_name(req.name), dep, exact_requirement(req, installed_version)
+
+    if len(specs) == 1 and specs[0].operator == ">=" and "*" not in specs[0].version:
+        try:
+            Version(specs[0].version)
+        except InvalidVersion:
+            return None
+        return canonicalize_name(req.name), dep, exact_requirement(req, specs[0].version)
+
+    if req.specifier:
+        print(
+            f"Warning: no installed version found for '{dep}', skipping.",
+            file=sys.stderr,
+        )
+
+        return None
+
+    return None
+
+
+pyproject_path = sys.argv[1]
+package_filters = {canonicalize_name(name) for name in sys.argv[2:]}
+installed_versions = project_installed_versions(pyproject_path)
+
+with open(pyproject_path, "rb") as handle:
+    data = tomllib.load(handle)
+
+seen = set()
+conversions = []
+
+for dep in iter_dependencies(data):
+    result = skipped_dependency_conversion(dep, installed_versions)
+    if result is None:
+        continue
+
+    canonical_name, old_dep, new_dep = result
+    if package_filters and canonical_name not in package_filters:
+        continue
+
+    key = (old_dep, new_dep)
+    if key in seen:
+        continue
+
+    seen.add(key)
+    conversions.append((old_dep, new_dep))
+
+if not conversions:
+    sys.exit(0)
+
+with open(pyproject_path, "r", encoding="utf-8") as handle:
+    content = handle.read()
+
+for old_dep, new_dep in conversions:
+    old_literal = json.dumps(old_dep)
+    new_literal = json.dumps(new_dep)
+    if old_literal not in content:
+        print(
+            f"Error: could not find dependency literal {old_literal} in {pyproject_path}.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
+    content = content.replace(old_literal, new_literal)
+
+with open(pyproject_path, "w", encoding="utf-8") as handle:
+    handle.write(content)
+
+for old_dep, new_dep in conversions:
+    print(f"  {old_dep} -> {new_dep}")
+PY
+}
+
+maybe_convert_lower_bounds() {
+  local conversions
+  local answer=""
+
+  conversions="$(list_lower_bound_conversions "$PYPROJECT" ${PACKAGE_FILTERS[@]+"${PACKAGE_FILTERS[@]}"})"
+  [[ -n "$conversions" ]] || return 0
+
+  if [[ ! -t 0 ]]; then
+    echo "uv-update: Found non-exact dependencies that puc will skip." >&2
+    echo "uv-update: Re-run in an interactive terminal to convert them." >&2
+    return 0
+  fi
+
+  echo "uv-update: Found non-exact dependencies that puc will skip:"
+  while IFS=$'\t' read -r old_dep new_dep; do
+    printf '  %s -> %s\n' "$old_dep" "$new_dep"
+  done <<<"$conversions"
+  read -r -p "Convert these to exact pins now? [Y/n] " answer
+  case "$answer" in
+  "" | [Yy] | [Yy][Ee][Ss]) ;;
+  *)
+    echo "uv-update: Leaving non-exact dependencies unchanged."
+    return 0
+    ;;
+  esac
+
+  echo "uv-update: Converted non-exact dependencies:"
+  apply_lower_bound_conversions "$PYPROJECT" ${PACKAGE_FILTERS[@]+"${PACKAGE_FILTERS[@]}"}
+  CONVERTED_NON_EXACT=1
+}
+
+show_major_updates() {
+  local pyproject="$1"
+  local constraint_file="$2"
+  local heading="${3:-1}"
+  shift 3
+
+  "${PUC_PYTHON[@]}" - "$pyproject" "$constraint_file" "$heading" "$@" <<'PY'
+import subprocess
+import sys
+import tomllib
+
+from packaging.requirements import Requirement
+from packaging.utils import canonicalize_name
+from packaging.version import InvalidVersion, Version
+from puc.dependencies import get_latest_version
+
+
+def iter_dependencies(data):
+    project = data.get("project", {})
+
+    for dep in project.get("dependencies", []):
+        yield dep, False
+
+    for deps in project.get("optional-dependencies", {}).values():
+        for dep in deps:
+            yield dep, False
+
+    for group, deps in data.get("dependency-groups", {}).items():
+        for dep in deps:
+            if isinstance(dep, str):
+                yield dep, group == "dev"
+
+
+def pinned_requirement(dep):
+    try:
+        req = Requirement(dep)
+    except Exception:
+        return None
+
+    if req.url:
+        return None
+
+    specs = list(req.specifier)
+    if len(specs) != 1:
+        return None
+
+    spec = specs[0]
+    if spec.operator not in ("==", "===") or "*" in spec.version:
+        return None
+
+    try:
+        version = Version(spec.version)
+    except InvalidVersion:
+        return None
+
+    return req, version
+
+
+pyproject_path = sys.argv[1]
+constraint_file = sys.argv[2]
+heading = sys.argv[3] == "1"
+package_filters = {canonicalize_name(name) for name in sys.argv[4:]}
+
+with open(pyproject_path, "rb") as handle:
+    data = tomllib.load(handle)
+
+requirements = {}
+conflicts = {}
+dev_requirements = set()
+
+for dep, is_dev in iter_dependencies(data):
+    result = pinned_requirement(dep)
+    if result is None:
+        continue
+
+    req, current_version = result
+    canonical_name = canonicalize_name(req.name)
+    if package_filters and canonical_name not in package_filters:
+        continue
+
+    previous = requirements.get(canonical_name)
+    current = (req.name, str(current_version), current_version.major)
+    if previous is not None and previous != current:
+        conflicts.setdefault(canonical_name, sorted({previous[1], current[1]}))
+        continue
+
+    requirements[canonical_name] = current
+    if is_dev:
+        dev_requirements.add(canonical_name)
+
+if conflicts:
+    print(
+        "Conflict: the same package is pinned in multiple versions:",
+        file=sys.stderr,
+    )
+    for package, values in sorted(conflicts.items()):
+        print(f"  {package}: {', '.join(values)}", file=sys.stderr)
+    sys.exit(2)
+
+major_updates = []
+
+for canonical_name, (name, current_version, current_major) in sorted(requirements.items()):
+    try:
+        latest_version = get_latest_version(name)
+    except subprocess.CalledProcessError as exc:
+        print(f"Warning: could not determine latest version for {name}: {exc}", file=sys.stderr)
+        continue
+
+    try:
+        latest = Version(latest_version)
+    except InvalidVersion:
+        continue
+
+    if latest.major <= current_major:
+        continue
+
+    try:
+        safe_version = get_latest_version(name, constraint_file=constraint_file)
+    except subprocess.CalledProcessError:
+        safe_version = "-"
+
+    major_updates.append(
+        (name, current_version, safe_version, latest_version, canonical_name in dev_requirements)
+    )
+
+if not major_updates:
+    if heading:
+        print("uv-update: No blocked major updates found.")
+    sys.exit(0)
+
+if heading:
+    print("uv-update: Blocked major updates:")
+for name, current_version, safe_version, latest_version, is_dev in major_updates:
+    print(f"  {name}: {current_version} -> {latest_version} (safe: {safe_version})")
+    dev_flag = " --dev" if is_dev else ""
+    print(f"    uv add{dev_flag} \"{name}=={latest_version}\"")
+
+sys.exit(1)
+PY
+}
+
+MODE="update"
+SYNC=1
+SHOW_MAJORS=0
+CONVERTED_NON_EXACT=0
+PYPROJECT="pyproject.toml"
+EXTRA_CONSTRAINTS=()
+PUC_ARGS=()
+# Optional arrays use ${array[@]+"${array[@]}"} for Bash 3.2 with nounset.
+PACKAGE_FILTERS=()
+POSITIONAL=()
+
+while (($#)); do
+  case "$1" in
+  --check)
+    MODE="check"
+    SYNC=0
+    ;;
+  --update)
+    MODE="update"
+    ;;
+  --show-majors)
+    MODE="check"
+    SYNC=0
+    SHOW_MAJORS=1
+    ;;
+  --no-sync)
+    SYNC=0
+    ;;
+  --constraints)
+    shift
+    [[ $# -gt 0 ]] || die "--constraints requires a value."
+    EXTRA_CONSTRAINTS+=("$1")
+    ;;
+  --package)
+    shift
+    [[ $# -gt 0 ]] || die "--package requires a package name."
+    PACKAGE_FILTERS+=("$1")
+    PUC_ARGS+=(--package "$1")
+    ;;
+  --exclude-newer | --exclude-newer-package)
+    local_opt="$1"
+    shift
+    [[ $# -gt 0 ]] || die "$local_opt requires a value."
+    PUC_ARGS+=("$local_opt" "$1")
+    ;;
+  --no-color | --debug)
+    PUC_ARGS+=("$1")
+    ;;
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  --)
+    shift
+    POSITIONAL+=("$@")
+    break
+    ;;
+  -*)
+    usage >&2
+    die "Unknown option: $1"
+    ;;
+  *)
+    POSITIONAL+=("$1")
+    ;;
+  esac
+  shift
+done
+
+if ((${#POSITIONAL[@]} > 1)); then
+  usage >&2
+  die "Please pass at most one pyproject.toml file."
+fi
+
+if ((${#POSITIONAL[@]} == 1)); then
+  PYPROJECT="${POSITIONAL[0]}"
+fi
+
+[[ -f "$PYPROJECT" ]] || die "$PYPROJECT not found."
+
+require_puc
+require_command uv
+puc_python_cmd || die "Could not determine the Python interpreter used by puc."
+
+if [[ "$MODE" == "update" && "$SHOW_MAJORS" == 0 ]]; then
+  maybe_convert_lower_bounds
+fi
+
+if [[ "$CONVERTED_NON_EXACT" == 1 ]]; then
+  echo "uv-update: Re-run uv-update to check or update with the new exact pins."
+  exit 0
+fi
+
+CONSTRAINT_FILE="$(mktemp "${TMPDIR:-/tmp}/uv-update-constraints.XXXXXX")"
+trap 'rm -f "$CONSTRAINT_FILE"' EXIT
+
+write_major_constraints "$PYPROJECT" ${PACKAGE_FILTERS[@]+"${PACKAGE_FILTERS[@]}"} >"$CONSTRAINT_FILE"
+
+for extra in ${EXTRA_CONSTRAINTS[@]+"${EXTRA_CONSTRAINTS[@]}"}; do
+  printf '\n' >>"$CONSTRAINT_FILE"
+  if [[ -f "$extra" ]]; then
+    cat "$extra" >>"$CONSTRAINT_FILE"
+  else
+    printf '%s\n' "$extra" >>"$CONSTRAINT_FILE"
+  fi
+done
+
+if [[ ! -s "$CONSTRAINT_FILE" ]]; then
+  echo "uv-update: No exactly pinned dependencies found for constraints." >&2
+  exit 0
+fi
+
+if [[ "$SHOW_MAJORS" == 1 ]]; then
+  show_major_updates "$PYPROJECT" "$CONSTRAINT_FILE" 1 ${PACKAGE_FILTERS[@]+"${PACKAGE_FILTERS[@]}"}
+  exit $?
+fi
+
+PUC_RC=0
+puc ${PUC_ARGS[@]+"${PUC_ARGS[@]}"} --constraints "$CONSTRAINT_FILE" "$MODE" "$PYPROJECT" || PUC_RC=$?
+
+if [[ "$MODE" == "update" && "$PUC_RC" != 0 ]]; then
+  exit "$PUC_RC"
+fi
+
+if [[ "$MODE" == "update" && "$SYNC" == 1 ]]; then
+  UPGRADE_ARGS=(--upgrade)
+  if ((${#PACKAGE_FILTERS[@]})); then
+    UPGRADE_ARGS=()
+    for package in ${PACKAGE_FILTERS[@]+"${PACKAGE_FILTERS[@]}"}; do
+      UPGRADE_ARGS+=(--upgrade-package "$package")
+    done
+  fi
+  uv sync --project "$(dirname "$PYPROJECT")" "${UPGRADE_ARGS[@]}"
+fi
+
+echo >&2
+show_major_updates "$PYPROJECT" "$CONSTRAINT_FILE" 1 ${PACKAGE_FILTERS[@]+"${PACKAGE_FILTERS[@]}"} || true
+
+exit "$PUC_RC"
