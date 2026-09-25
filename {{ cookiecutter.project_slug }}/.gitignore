@@ -28,9 +28,6 @@ media/
 .direnv
 .env
 
-# Secrets left in the template checkout from before the Cookiecutter conversion.
-/my_secrets/secrets.py
-
 # Misc
 node_modules/
 dump.rdb

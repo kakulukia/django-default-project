@@ -6,7 +6,7 @@ from fabric.state import env
 
 env.shell = "/bin/zsh -c"
 
-APP_NAME = "app_name"
+APP_NAME = "{{ cookiecutter.project_slug }}"
 # APP_NAME is also used as user and
 # password for the database for local systems - get_new_db task
 
@@ -19,7 +19,7 @@ env.hosts = ["servername"]
 # def stage():
 #     env.environment = "stage"
 #     env.hosts = ["servername"]
-#     env.gateway = "andy@mamasystems.de"  # if needed
+#     env.gateway = "user@gateway.example.com"  # if needed
 
 
 # def live():

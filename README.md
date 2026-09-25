@@ -1,349 +1,76 @@
 # django-default-project
 
-#### Django
+A Cookiecutter template for Django projects with uv, Django REST Framework,
+Django Tasks, PUG/Sass/Vue, and Fabric/PM2 deployment support.
 
-This project serves as a base template for new Django projects using
-[uv](https://docs.astral.sh/uv/) for dependency management. It comes preconfigured
-with a robust set of third-party packages to help you start quickly and maintain best practices.
+## Create a project
 
-**Included Packages:**
-
-```toml
-[project]
-dependencies = [
-    "django>=6.0",
-    "django-axes",
-    "django-compressor",
-    "django-extensions",
-    "django-kronos",
-    "django-loginas",
-    "django-post-office",
-    "django-secrets",
-    "django-tasks-db",
-    "djangorestframework",
-    "gunicorn",
-    "icecream",
-    "pendulum",
-    "pillow",
-    "pypugjs",
-    "requests",
-    "sentry-sdk",
-    "whitenoise",
-]
-
-[dependency-groups]
-dev = [
-    "django-browser-reload",
-    "django-debug-toolbar",
-    "fab-classic",
-    "ipdb",
-    "pre-commit",
-    "ruff",
-]
-```
-
-Furthermore, this template includes a Hello World example utilizing PUG templates, SASS styles, and
-VueJS. The example even features [Chuck Norris facts](https://api.chucknorris.io) to provide a fun,
-interactive experience during development.
-
-#### Frontend
-
-The frontend setup is minimal and designed to add reactivity to your pages without the overhead
-of a full single-page application. It includes:
-
-- [Vue 3](https://vuejs.org/guide/introduction.html) – the core JavaScript framework.
-- [Vuetify](https://vuetifyjs.com/en/) – a Material Design component framework for Vue.
-- [Pinia](https://pinia.vuejs.org/) – state management.
-- [Axios](https://github.com/axios/axios) – for AJAX calls.
-- [Material Design Icons](https://pictogrammers.com/library/mdi/) – iconography for your UI.
-
-For more complex frontends, consider building a dedicated VueJS application (using `vue ui`) in
-conjunction with Django REST Framework. But for smaller projects, this template provides a
-lightweight solution that allows you to add interactivity without the need to deal with ~900
-node dependencies.
-
-#### Settings Hierarchy
-
-This template features a simplified yet flexible settings hierarchy inspired by best practices
-(e.g., *Two Scoops of Django*). The goal is to keep configuration clear and maintainable while
-allowing easy customization for different environments or developers:
-
-1. **Base Settings:**
-All common configurations are located in a central file (`settings/common.py`). This file contains
-settings shared by all environments.
-
-2. **Environment-Specific Overrides:**
-Create separate files for environment-specific settings (e.g., `settings/dev.py`,
-`settings/stage.py`). Each of these files imports everything from `common.py` and then applies
-overrides specific to that environment. `settings/dev.py` is the local development baseline.
-
-3. **Personalized Settings:**
-Developers can maintain their own settings (e.g., `settings/alice.py`, `settings/bob.py`) based
-on the default environment file. Simply set the environment variable `DJANGO_SETTINGS_MODULE`
-to point to your custom settings (e.g., `export DJANGO_SETTINGS_MODULE=settings.alice`).
-
-For production, review and commit the relevant values in `settings/common.py` or in a tracked
-environment-specific settings module:
-
-```python
-ALLOWED_HOSTS = ["example.com", "www.example.com"]
-CSRF_TRUSTED_ORIGINS = ["https://example.com", "https://www.example.com"]
-DEFAULT_FROM_EMAIL = "webmaster@example.com"
-```
-
-Keep HSTS subdomains/preload disabled in the template. Enable them in a
-project-specific production settings module only after every affected
-subdomain is HTTPS-only:
-
-```python
-SECURE_HSTS_SECONDS = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-```
-
-4. **Secret Management:**
-With [django-secrets](https://github.com/jezdez/django-secrets), your sensitive configuration
-(like API keys and passwords) is managed separately, ensuring that secrets remain secure and
-deployment is streamlined (e.g., in CI/CD pipelines).
-
-This flat yet modular approach minimizes complexity while allowing each project or developer to
-tailor the settings as needed without interfering with the shared base configuration.
-
-#### Sentry
-
-[Sentry](https://sentry.io) error reporting is included but disabled by default. On first run,
-`manage.py` will prompt for a `SENTRY_DSN` — leave it empty to disable Sentry, or enter your
-project DSN to enable it. `sentry_sdk.init()` is called automatically in `settings/common.py`
-whenever a non-empty DSN is present.
-
-#### Clean Code
-
-A pre-configured pre-commit hook is included to enforce code quality. Install it with:
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then run:
 
 ```bash
-pre-commit install
+uvx --from 'cookiecutter==2.7.1' cookiecutter gh:kakulukia/django-default-project
 ```
 
-#### Static Files
+This command uses the published GitHub version. Local changes are only available
+when generating from your checkout, as described under **Work on the template**.
+The GitHub command requires the Cookiecutter conversion to have been published.
 
-Static files are served through
-[Whitenoise](http://whitenoise.evans.io/en/stable/) via `WhiteNoiseMiddleware`, so Django can
-serve collected static files without an additional static-file server for small deployments.
-The production static files storage uses hashed filenames, so changed CSS/JS assets get new URLs
-and do not rely on browsers noticing changed content behind an old path.
+Cookiecutter asks for the project title, a directory/package name (`project_slug`),
+a description, author name and email, and an optional repository URL. The slug
+must start with a lowercase letter and use lowercase letters, digits and single
+hyphens, for example `customer-portal`. New projects start at version `0.1.0`.
 
-#### Project Tools
+The generated README contains the local setup and deployment instructions.
+Domain, server and production settings are configured later in that project.
+The MIT license metadata is inherited; review it for your own project.
 
-Install and initialize the optional AI helper tools before asking an agent to use them:
+This replaces the former `django-admin startproject --template=…` workflow.
+Existing projects are unaffected; Cookiecutter creates new projects only.
 
-- **Beads:** install with `brew install beads`, then run `bd init` in the project root.
-- **CodeGraph:** install with `npm install -g @colbymchenry/codegraph`, run `codegraph install` to register the MCP server with your agent, then run `codegraph init .` in the project root.
-- **Graphify:** install with `uv tool install graphifyy`, run `graphify install --platform codex` to register the skill, then run `graphify .` once to initialize its knowledge graph.
+## Work on the template
 
-#### fabfile
-
-A ready-to-use `fabfile` is provided to simplify common deployment tasks:
-
-- **fab deploy:** Pulls code, deploys static files, updates cron entries and restarts Gunicorn and the task worker via PM2.
-- **fab migrate:** Additionally updates packages and applies database migrations.
-
-Set `APP_NAME`, `env.path` and `env.hosts` in `fabfile.py` for your project.
-The PM2 processes must be named `<APP_NAME>` and `<APP_NAME>-worker`, as shown below.
-
-Enjoy building your project with this template—it’s designed to accelerate development while
-keeping configurations clean and manageable.
-
-## Installation
-
-Ensure you have the required tools installed:
+The application source lives in `{{ cookiecutter.project_slug }}/`. Edit it there,
+then run this command from the template repository to generate a disposable
+project for running Django or testing dependency updates:
 
 ```bash
-pip install django      # for django-admin startproject
-brew install uv direnv  # macOS; see https://docs.astral.sh/uv/getting-started/installation/ for other platforms
+uvx --from 'cookiecutter==2.7.1' cookiecutter . --output-dir /tmp
 ```
 
-Python 3.14 is the project default.
+When running from another directory, replace `.` with the path to your local
+template repository. This also includes changes that have not been committed.
 
-To create a new project from this template:
+Choose a fresh project name for each working copy. Follow its generated README
+to install dependencies and start Django. Keep secrets, databases, virtual
+environments and generated assets in the working copy, outside the template.
+The source file `{{ '.envrc' }}` becomes `.envrc` only in the generated project,
+so direnv does not initialize an environment inside the raw template.
+
+Only the project directory is copied. This README, generation hooks, tests and
+local Beads/Graphify data stay outside new projects. General ignore rules and
+optional tool configuration are included so new projects can initialize their
+own tools. `assets/`, `templates/` and `scripts/` are copied byte-for-byte using
+Cookiecutter's `_copy_without_render` setting; Django, PUG and Vue syntax is not
+processed by Cookiecutter.
+
+Project metadata is rendered in `pyproject.toml` and `uv.lock`. When updating
+dependencies with the generated project's `scripts/uv-update`, bring the changed
+dependency pins and lockfile back to the template, keeping the templated package
+name and version `0.1.0`. Do not copy its secrets or runtime files back.
+
+## Validate changes
+
+With uv and Sass (`npm install -g sass`) available, run:
 
 ```bash
-django-admin startproject \
---template=https://github.com/kakulukia/django-default-project/zipball/master \
-<new_project_name>
+uv run --no-project --python 3.14 --with 'cookiecutter==2.7.1' python tests/test_template.py
 ```
 
-Then, navigate into your project:
+The test generates projects in a temporary directory, verifies metadata, optional
+URLs, unchanged frontend files, executable scripts and input validation, then
+installs the locked dependencies and runs the generated project's Django tests
+and Ruff checks. It supplies temporary test secrets and removes the generated
+projects afterward. It does not initialize Git, commit or deploy anything.
 
-```bash
-cd <new_project_name>
-```
-
-Before the first dependency sync, edit `pyproject.toml` to describe your new
-project. Django copies this file unchanged:
-
-- Set `project.name` to your new project name.
-- Choose your initial `project.version` and update `project.description`.
-- Replace `project.authors` and the repository/homepage under `project.urls`
-  with your own values; remove URLs you do not have yet.
-- Review `project.license` and adapt this README to your project.
-
-Then initialize the environment and repository. The first `uv sync` also updates
-the copied lockfile to match your new project metadata:
-
-```bash
-direnv allow        # creates .venv and runs uv sync automatically
-git init
-pre-commit install
-```
-
-After initial setup, customize your settings by copying one of the default environment files:
-
-```bash
-cp settings/andy.py settings/your_name.py
-```
-
-And set your environment variable to use your custom settings by default:
-
-```bash
-export DJANGO_SETTINGS_MODULE=settings.your_name
-```
-
-## Dependency Updates
-
-The bundled `scripts/uv-update` updates exact pins in `pyproject.toml`, then
-updates `uv.lock` and synchronizes the environment. Direct dependencies stay
-within their current major version; transitive dependencies follow their own
-requirements. Major upgrades are listed separately for manual review.
-
-Install its development tool dependency once (requires Python 3.11 or newer):
-
-```bash
-uv tool install --python 3.14 python-update-checker
-```
-
-Ensure `puc` is on your `PATH` (`uv tool update-shell` can configure this).
-
-Check for updates without changing files:
-
-```bash
-./scripts/uv-update --check
-```
-
-Update the pinned dependencies and the local environment:
-
-```bash
-./scripts/uv-update
-```
-
-To update a single dependency, use `./scripts/uv-update --package django`.
-Use `./scripts/uv-update --show-majors` to list only blocked major upgrades.
-Checks can exit with a non-zero status when updates are available.
-
-Run these commands from the project root. You can also pass the path to another
-project's `pyproject.toml`; its environment will be synchronized there.
-Review the diff and run the project tests after updating dependencies.
-
-## 1st Time Deployment
-
-**Required Components:**
-
-- A recent Ubuntu (or similar) server distribution.
-- **Nginx:**
-
-    ```bash
-    sudo apt install nginx
-    ```
-
-- **Node.js (latest LTS):**
-
-    ```bash
-    curl -fsSL https://fnm.vercel.app/install | bash
-
-    fnm install --lts  # or the latest LTS version - used for pm2 and sass
-    ```
-
-- **pm2 (process manager):**
-
-    ```bash
-    npm install -g pm2 sass
-    ```
-
-- Set up your project directory (e.g., under `/opt/www/<project_name>`):
-
-    ```bash
-    sudo mkdir -p /opt/www/<project_name>
-    sudo chown -R $USER:$USER /opt/www/<project_name>
-    cd /opt/www/<project_name>
-    ```
-
-- **uv** (Python version management + dependency installation):
-
-    ```bash
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-    ```
-
-- **Direnv Setup:**
-
-    ```bash
-    sudo apt install direnv
-    ```
-
-- Adjust the supplied Nginx configuration to your needs, link it to `sites-enabled`, and
-reload Nginx:
-
-    ```bash
-    sudo ln -s /opt/www/<project>/settings/deployment/project.nginx /etc/nginx/sites-enabled/<project>
-    sudo nginx -t
-    sudo nginx -s reload
-    ```
-
-- Run `direnv allow` to create the venv and install dependencies, then initialize secrets and the database:
-
-    ```bash
-    direnv allow
-    DJANGO_SETTINGS_MODULE=settings python manage.py migrate --noinput
-    ```
-
-- Test the Gunicorn configuration:
-
-    ```bash
-    .venv/bin/gunicorn --check-config \
-      --chdir /opt/www/<project> \
-      --env DJANGO_SETTINGS_MODULE=settings \
-      settings.wsgi:application
-    ```
-
-- Prepare static files and install the cron job for queued email before starting the processes:
-
-    ```bash
-    DJANGO_SETTINGS_MODULE=settings python manage.py collectstatic --noinput
-    DJANGO_SETTINGS_MODULE=settings python manage.py compress -e pug,html --force
-    DJANGO_SETTINGS_MODULE=settings python manage.py installtasks
-    ```
-
-- If everything works, start Gunicorn and the database task worker with PM2 and enable startup:
-
-    ```bash
-    cd settings/deployment
-    PROJECT_NAME=<project> DJANGO_SETTINGS_MODULE=settings pm2 start project.sh --name <project>
-    DJANGO_SETTINGS_MODULE=settings pm2 start worker.sh --name <project>-worker --kill-timeout 30000
-    pm2 save
-    pm2 startup
-    cd -
-    ```
-
-The worker executes tasks queued through `django.tasks`; the cron job handles
-queued email separately. Use the same settings module for management commands,
-Gunicorn and the worker. The worker has 30 seconds to finish its current task
-during a PM2 restart; increase `--kill-timeout` if your tasks can run longer.
-For an existing installation, add the worker process once before using the updated
-Fabric deployment commands, then run `pm2 save`.
-
-Your project should now be up and running. For deploying updates, you can use the provided fabfile.
-
-- Optionally, deploy an SSL certificate via Certbot:
-
-    ```bash
-    sudo apt install certbot python3-certbot-nginx
-    sudo certbot --nginx
-    ```
+The root pre-commit configuration checks generator files. Raw Jinja templates
+are excluded; the generated project retains its full pre-commit configuration.

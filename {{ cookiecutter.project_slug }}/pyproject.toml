@@ -1,8 +1,8 @@
 [project]
-name = "django-default-project"
-version = "2.0.0"
-description = "It's not always good to start from scratch .. lets have some sane defaults .."
-authors = [{name = "Andy Grabow", email = "andy@freilandkiwis.de"}]
+name = "{{ cookiecutter.project_slug }}"
+version = "0.1.0"
+description = {{ cookiecutter.description | tojson }}
+authors = [{name = {{ cookiecutter.author_name | tojson }}, email = {{ cookiecutter.author_email | tojson }}}]
 license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.14.6,<3.15"
@@ -28,9 +28,10 @@ dependencies = [
     # django-model-utils - use this if a status field is needed and maybe also a status_changed field
 ]
 
+{% if cookiecutter.repository_url %}
 [project.urls]
-repository = "https://github.com/kakulukia/django-default-project"
-homepage = "https://github.com/kakulukia/django-default-project"
+repository = {{ cookiecutter.repository_url | tojson }}
+{% endif %}
 
 [dependency-groups]
 dev = [
