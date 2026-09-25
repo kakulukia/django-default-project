@@ -4,12 +4,15 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
 from users.models import User
-from users.serializers import UserSerializer
+from users.serializers import UserCreateSerializer, UserSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.data.all()
     serializer_class = UserSerializer
+
+    def get_serializer_class(self):
+        return UserCreateSerializer if self.action == "create" else super().get_serializer_class()
 
     def get_permissions(self):
         if self.action == "create":

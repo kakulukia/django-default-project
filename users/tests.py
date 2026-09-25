@@ -81,6 +81,40 @@ class UserViewSetTest(TestCase):
         response = self.client.post("/api/users/", {"username": "newuser", "password": "Str0ngPass!"})
 
         self.assertEqual(response.status_code, 201)
+        user = User.data.get(pk=response.data["id"])
+        self.assertTrue(user.check_password("Str0ngPass!"))
+        self.assertNotIn("password", response.data)
+
+    def test_staff_can_create_user_without_password(self):
+        self.client.force_authenticate(self.staff_user)
+
+        response = self.client.post("/api/users/", {"username": "newuser"})
+
+        self.assertEqual(response.status_code, 201)
+        self.assertFalse(User.data.get(pk=response.data["id"]).has_usable_password())
+
+    def test_invalid_password_does_not_create_user(self):
+        self.client.force_authenticate(self.staff_user)
+
+        for password in ("", None, "short", "123456789", "newusername"):
+            with self.subTest(password=password):
+                response = self.client.post(
+                    "/api/users/", {"username": "newusername", "password": password}, format="json"
+                )
+
+                self.assertEqual(response.status_code, 400)
+                self.assertIn("password", response.data)
+                self.assertFalse(User.data.filter(username="newusername").exists())
+
+    def test_profile_update_does_not_change_password(self):
+        self.client.force_authenticate(self.user)
+
+        response = self.client.patch(f"/api/users/{self.user.pk}/", {"first_name": "Updated"})
+
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.first_name, "Updated")
+        self.assertTrue(self.user.check_password("password"))
 
 
 class UserEmailUserTest(TestCase):
