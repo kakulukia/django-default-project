@@ -23,7 +23,7 @@ dependencies = [
     "pillow==12.3.0",
     "pypugjs==7.0.0",
     "requests==2.34.2",
-    "sentry-sdk==2.70.0",
+    "sentry-sdk==2.71.0",
     "whitenoise==6.12.0",
     # django-model-utils - use this if a status field is needed and maybe also a status_changed field
 ]
@@ -39,7 +39,7 @@ dev = [
     "fab-classic==1.21.0",  # uv add --group dev "git+https://github.com/kakulukia/fab-classic.git#master" (ssh key fwding)
     "ipdb==0.13.13",
     "pre-commit==4.6.2",
-    "ruff==0.16.9",
+    "ruff==0.16.10",
 ]
 
 [tool.uv]
