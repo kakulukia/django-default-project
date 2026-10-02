@@ -6,7 +6,7 @@ from fabric.state import env
 
 env.shell = "/bin/zsh -c"
 
-APP_NAME = "django-default-project"
+APP_NAME = "{{ cookiecutter.project_slug }}"
 # APP_NAME is also used as user and
 # password for the database for local systems - get_new_db task
 
