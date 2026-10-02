@@ -113,7 +113,7 @@ uvx --from 'cookiecutter==2.7.1' cookiecutter . --output-dir /tmp/generated-proj
 
 Only the application directory is generated. Repository maintenance files and
 local Beads/Graphify data stay outside new projects. General ignore rules and
-optional tool configuration are included. `assets/`, `templates/` and `scripts/`
+optional tool setup instructions are included. `assets/`, `templates/` and `scripts/`
 are copied without rendering to preserve Django, PUG, Vue and shell syntax.
 The template's `{{ '.envrc' }}` filename becomes `.envrc` only after generation,
 so direnv does not initialize an environment inside the raw template.

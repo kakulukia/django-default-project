@@ -8,6 +8,7 @@ __pycache__/
 *.egg-info/
 
 # Tools
+.codegraph/
 .ruff_cache/
 .coverage
 htmlcov/

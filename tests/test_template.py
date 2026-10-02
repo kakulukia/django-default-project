@@ -44,14 +44,7 @@ class TemplateTest(unittest.TestCase):
         self.assertEqual(package["name"], metadata["name"])
         self.assertEqual(package["version"], metadata["version"])
 
-        for directory in (
-            "assets",
-            "templates",
-            "scripts",
-            ".claude",
-            ".codex",
-            ".codegraph",
-        ):
+        for directory in ("assets", "templates", "scripts"):
             for source in (TEMPLATE / directory).rglob("*"):
                 if source.is_file():
                     relative = source.relative_to(TEMPLATE)
@@ -74,6 +67,9 @@ class TemplateTest(unittest.TestCase):
         for name in (
             ".git",
             ".beads",
+            ".claude",
+            ".codex",
+            ".codegraph",
             "graphify-out",
             ".venv",
             "db.sqlite3",
