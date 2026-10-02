@@ -1,6 +1,6 @@
-# {{ cookiecutter.project_name }}
+# django-default-project
 
-{{ cookiecutter.description }}
+It's not always good to start from scratch .. lets have some sane defaults ..
 
 #### Django
 
@@ -53,11 +53,11 @@ interactive experience during development.
 The frontend setup is minimal and designed to add reactivity to your pages without the overhead
 of a full single-page application. It includes:
 
-- [Vue 3](https://vuejs.org/guide/introduction.html) – the core JavaScript framework.
-- [Vuetify](https://vuetifyjs.com/en/) – a Material Design component framework for Vue.
-- [Pinia](https://pinia.vuejs.org/) – state management.
-- [Axios](https://github.com/axios/axios) – for AJAX calls.
-- [Material Design Icons](https://pictogrammers.com/library/mdi/) – iconography for your UI.
+- [Vue 3](https://vuejs.org/guide/introduction.html): the core JavaScript framework.
+- [Vuetify](https://vuetifyjs.com/en/): a Material Design component framework for Vue.
+- [Pinia](https://pinia.vuejs.org/): state management.
+- [Axios](https://github.com/axios/axios): for AJAX calls.
+- [Material Design Icons](https://pictogrammers.com/library/mdi/): iconography for your UI.
 
 For more complex frontends, consider building a dedicated VueJS application (using `vue ui`) in
 conjunction with Django REST Framework. But for smaller projects, this template provides a
@@ -80,9 +80,8 @@ Create separate files for environment-specific settings (e.g., `settings/dev.py`
 overrides specific to that environment. `settings/dev.py` is the local development baseline.
 
 3. **Personalized Settings:**
-Your personal settings file, `settings/{{ cookiecutter.__author_settings }}.py`, is generated
-from the author's first name and imports `settings.dev`. Add your own overrides there.
-Set `DJANGO_SETTINGS_MODULE=settings.{{ cookiecutter.__author_settings }}` to use it.
+Your personal settings file, `settings/andy.py`, imports `settings.dev`. Add your own overrides there.
+Set `DJANGO_SETTINGS_MODULE=settings.andy` to use it.
 
 For production, review and commit the relevant values in `settings/common.py` or in a tracked
 environment-specific settings module:
@@ -114,7 +113,7 @@ tailor the settings as needed without interfering with the shared base configura
 #### Sentry
 
 [Sentry](https://sentry.io) error reporting is included but disabled by default. On first run,
-`manage.py` will prompt for a `SENTRY_DSN` — leave it empty to disable Sentry, or enter your
+`manage.py` will prompt for a `SENTRY_DSN`: leave it empty to disable Sentry, or enter your
 project DSN to enable it. `sentry_sdk.init()` is called automatically in `settings/common.py`
 when the DSN starts with `https://`.
 An empty answer is saved as disabled, so subsequent starts do not ask again.
@@ -163,7 +162,7 @@ From this project's directory:
 
 ```bash
 uv sync --locked
-export DJANGO_SETTINGS_MODULE=settings.{{ cookiecutter.__author_settings }}
+export DJANGO_SETTINGS_MODULE=settings.andy
 uv run python manage.py migrate
 uv run python manage.py runserver
 ```
@@ -172,23 +171,22 @@ On the first management command, follow the prompts to create local secrets.
 Leave `SENTRY_DSN` empty to disable Sentry. Secrets are ignored by Git.
 Open http://127.0.0.1:8000/ after starting the server.
 
-Initialize Git and the code-quality hooks when ready:
+Install the code-quality hooks when ready:
 
 ```bash
-git init
 uv run pre-commit install
 ```
 
 Optionally install direnv and run `direnv allow` to activate the environment
 automatically. Your personal development settings are in
-`settings/{{ cookiecutter.__author_settings }}.py`. Other developers can add their own
+`settings/andy.py`. Other developers can add their own
 settings module with `from .dev import *` and select it via `DJANGO_SETTINGS_MODULE`.
 Use the default `settings` module for production.
 
 Run the project tests with the development settings:
 
 ```bash
-DJANGO_SETTINGS_MODULE=settings.{{ cookiecutter.__author_settings }} uv run python manage.py test users utils
+DJANGO_SETTINGS_MODULE=settings.andy uv run python manage.py test users utils
 ```
 
 ## Dependency Updates
@@ -242,7 +240,7 @@ Review the diff and run the project tests after updating dependencies.
     ```bash
     curl -fsSL https://fnm.vercel.app/install | bash
 
-    fnm install --lts  # or the latest LTS version - used for pm2 and sass
+    fnm install --lts  # or the latest LTS version, used for pm2 and sass
     ```
 
 - **pm2 (process manager):**
@@ -251,12 +249,12 @@ Review the diff and run the project tests after updating dependencies.
     npm install -g pm2 sass
     ```
 
-- Set up your project directory (e.g., under `/opt/www/{{ cookiecutter.project_slug }}`):
+- Set up your project directory (e.g., under `/opt/www/django-default-project`):
 
     ```bash
-    sudo mkdir -p /opt/www/{{ cookiecutter.project_slug }}
-    sudo chown -R $USER:$USER /opt/www/{{ cookiecutter.project_slug }}
-    cd /opt/www/{{ cookiecutter.project_slug }}
+    sudo mkdir -p /opt/www/django-default-project
+    sudo chown -R $USER:$USER /opt/www/django-default-project
+    cd /opt/www/django-default-project
     ```
 
 - **uv** (Python version management + dependency installation):
@@ -275,7 +273,7 @@ Review the diff and run the project tests after updating dependencies.
 reload Nginx:
 
     ```bash
-    sudo ln -s /opt/www/{{ cookiecutter.project_slug }}/settings/deployment/project.nginx /etc/nginx/sites-enabled/{{ cookiecutter.project_slug }}
+    sudo ln -s /opt/www/django-default-project/settings/deployment/project.nginx /etc/nginx/sites-enabled/django-default-project
     sudo nginx -t
     sudo nginx -s reload
     ```
@@ -291,7 +289,7 @@ reload Nginx:
 
     ```bash
     .venv/bin/gunicorn --check-config \
-      --chdir /opt/www/{{ cookiecutter.project_slug }} \
+      --chdir /opt/www/django-default-project \
       --env DJANGO_SETTINGS_MODULE=settings \
       settings.wsgi:application
     ```
@@ -308,8 +306,8 @@ reload Nginx:
 
     ```bash
     cd settings/deployment
-    PROJECT_NAME={{ cookiecutter.project_slug }} DJANGO_SETTINGS_MODULE=settings pm2 start project.sh --name {{ cookiecutter.project_slug }}
-    DJANGO_SETTINGS_MODULE=settings pm2 start worker.sh --name {{ cookiecutter.project_slug }}-worker --kill-timeout 30000
+    PROJECT_NAME=django-default-project DJANGO_SETTINGS_MODULE=settings pm2 start project.sh --name django-default-project
+    DJANGO_SETTINGS_MODULE=settings pm2 start worker.sh --name django-default-project-worker --kill-timeout 30000
     pm2 save
     pm2 startup
     cd -

@@ -1,82 +1,110 @@
-# django-default-project
+# Django default project
 
-A Cookiecutter template for Django projects with uv, Django REST Framework,
-Django Tasks, PUG/Sass/Vue, and Fabric/PM2 deployment support.
+This repository maintains a runnable Django project and a Cookiecutter variant.
 
-## Create a project
+- `main`: develop and update the application in `project/`.
+- `feature/cookiecutter`: generate projects from `{{ cookiecutter.project_slug }}/`.
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then run:
+Both branches share the generator configuration, hooks, tests, quality
+configuration and update script in the repository root. The template branch
+only renames the application directory and adds project metadata placeholders.
 
-```bash
-uvx --from 'cookiecutter==2.7.1' cookiecutter gh:kakulukia/django-default-project
-```
+## Develop and update the application
 
-This command uses the published GitHub version. Local changes are only available
-when generating from your checkout, as described under **Work on the template**.
-The GitHub command requires the Cookiecutter conversion to have been published.
-
-Cookiecutter asks for the project title, a directory/package name (`project_slug`),
-a description, author name and email, and an optional repository URL. The slug
-must start with a lowercase letter and use lowercase letters, digits and single
-hyphens, for example `customer-portal`. New projects start at version `0.1.0`.
-
-The author's first name also determines a personal development settings file:
-`Alex Example` creates `settings/alex.py`, importing the shared `settings.dev`.
-Names are normalized (`Zoë` → `zoe`, `Jean-Luc` → `jean_luc`). If the name matches
-a shared settings module, `_local` is appended (`Dev` → `dev_local`).
-The generated README shows the resulting `DJANGO_SETTINGS_MODULE` value.
-
-The generated README contains the local setup and deployment instructions.
-Domain, server and production settings are configured later in that project.
-The MIT license metadata is inherited; review it for your own project.
-
-This replaces the former `django-admin startproject --template=…` workflow.
-Existing projects are unaffected; Cookiecutter creates new projects only.
-
-## Work on the template
-
-The application source lives in `{{ cookiecutter.project_slug }}/`. Edit it there,
-then run this command from the template repository to generate a disposable
-project for running Django or testing dependency updates:
+Run application commands inside `project/`:
 
 ```bash
-uvx --from 'cookiecutter==2.7.1' cookiecutter . --output-dir /tmp
+cd project
+uv sync --locked
+export DJANGO_SETTINGS_MODULE=settings.andy
+uv run python manage.py runserver
 ```
 
-When running from another directory, replace `.` with the path to your local
-template repository. This also includes changes that have not been committed.
+Update dependencies with the existing application script:
 
-Choose a fresh project name for each working copy. Follow its generated README
-to install dependencies and start Django. Keep secrets, databases, virtual
-environments and generated assets in the working copy, outside the template.
-The source file `{{ '.envrc' }}` becomes `.envrc` only in the generated project,
+```bash
+./scripts/uv-update
+```
+
+Review and test the application changes, then commit them on `main` before
+updating the template branch. Application setup and deployment instructions
+are in the README inside the application directory.
+
+The application's `.envrc` activates its own `project/.venv`. When using
+direnv, allow this file from `project/`. A virtual environment left in the
+repository root belongs to the previous layout.
+
+## Update the template branch
+
+From the repository root, after reviewing and committing changes on `main`:
+
+```bash
+./update-cookiecutter
+```
+
+The script requires local `main` and `feature/cookiecutter` branches, a clean
+working tree including untracked files, uv and Sass. It rebases the template
+branch onto local `main` and runs the template tests with Cookiecutter 2.7.1
+and Python 3.14. After successful validation it returns to the starting branch.
+
+The merge backend detects the application directory rename. The script enables
+directory rename handling for this rebase so new files added in `project/`
+also move into `{{ cookiecutter.project_slug }}/`. Review the resulting diff,
+especially changed project metadata and new files that need placeholders or
+must be copied without rendering.
+
+A rebase conflict stops before validation. Resolve the conflicts and run
+`git rebase --continue`, or use `git rebase --abort`, then rerun the script.
+A validation failure leaves the template branch checked out for inspection.
+
+Rebasing changes template commit IDs. Publishing is a separate step: review
+the branch before using an explicitly scoped `git push --force-with-lease`.
+
+## Generate a project
+
+Use the published template branch explicitly:
+
+```bash
+uvx --from 'cookiecutter==2.7.1' cookiecutter \
+  gh:kakulukia/django-default-project --checkout feature/cookiecutter
+```
+
+Cookiecutter asks for a project title, slug, description, author name and email,
+and an optional repository URL. The slug must start with a lowercase letter
+and use lowercase letters, digits and single hyphens, such as `customer-portal`.
+New projects start at version `0.1.0` and inherit MIT license metadata.
+
+The author's first name determines a personal settings file: `Alex Example`
+creates `settings/alex.py`, importing `settings.dev`. Names are normalized;
+reserved module names get a `_local` suffix. The generated README shows the
+resulting settings module and contains setup and deployment instructions.
+
+Publish the template branch before using this GitHub command. To check a local
+checkout of `feature/cookiecutter` without publishing:
+
+```bash
+uvx --from 'cookiecutter==2.7.1' cookiecutter . --output-dir /tmp/generated-projects
+```
+
+Only the application directory is generated. Repository maintenance files and
+local Beads/Graphify data stay outside new projects. General ignore rules and
+optional tool configuration are included. `assets/`, `templates/` and `scripts/`
+are copied without rendering to preserve Django, PUG, Vue and shell syntax.
+The template's `{{ '.envrc' }}` filename becomes `.envrc` only after generation,
 so direnv does not initialize an environment inside the raw template.
 
-Only the project directory is copied. This README, generation hooks, tests and
-local Beads/Graphify data stay outside new projects. General ignore rules and
-optional tool configuration are included so new projects can initialize their
-own tools. `assets/`, `templates/` and `scripts/` are copied byte-for-byte using
-Cookiecutter's `_copy_without_render` setting; Django, PUG and Vue syntax is not
-processed by Cookiecutter.
+## Check the maintenance workflow
 
-Project metadata is rendered in `pyproject.toml` and `uv.lock`. When updating
-dependencies with the generated project's `scripts/uv-update`, bring the changed
-dependency pins and lockfile back to the template, keeping the templated package
-name and version `0.1.0`. Do not copy its secrets or runtime files back.
+The Git workflow tests run on either branch:
 
-## Validate changes
+```bash
+python3 tests/test_update_cookiecutter.py
+```
 
-With uv and Sass (`npm install -g sass`) available, run:
+The generator tests run on `feature/cookiecutter`, where the template directory
+exists. They generate projects, check the locked dependencies, run the Django
+tests and validate the generated code:
 
 ```bash
 uv run --no-project --python 3.14 --with 'cookiecutter==2.7.1' python tests/test_template.py
 ```
-
-The test generates projects in a temporary directory, verifies metadata, optional
-URLs, unchanged frontend files, executable scripts and input validation, then
-installs the locked dependencies and runs the generated project's Django tests
-and Ruff checks. It supplies temporary test secrets and removes the generated
-projects afterward. It does not initialize Git, commit or deploy anything.
-
-The root pre-commit configuration checks generator files. Raw Jinja templates
-are excluded; the generated project retains its full pre-commit configuration.

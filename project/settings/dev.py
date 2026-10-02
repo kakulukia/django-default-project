@@ -33,6 +33,8 @@ DEBUG_TOOLBAR_PANELS = (
 )
 
 DEBUG_TOOLBAR_CONFIG = {
+    # Prevent unstyled toolbar content from flashing before its stylesheet loads.
+    "USE_SHADOW_DOM": False,
     "DISABLE_PANELS": (
         "debug_toolbar.panels.versions.VersionsPanel",
         "debug_toolbar.panels.timer.TimerPanel",
@@ -47,7 +49,7 @@ DEBUG_TOOLBAR_CONFIG = {
         "debug_toolbar.panels.logging.LoggingPanel",
         "debug_toolbar.panels.redirects.RedirectsPanel",
         "djdt_flamegraph.FlamegraphPanel",
-    )
+    ),
 }
 
 MIDDLEWARE += [  # noqa
