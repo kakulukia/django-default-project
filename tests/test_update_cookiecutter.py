@@ -32,6 +32,9 @@ class UpdateCookiecutterTest(unittest.TestCase):
                 "#!/usr/bin/env bash\n"
                 '[[ -z "${VIRTUAL_ENV+x}${UV_PROJECT_ENVIRONMENT+x}${PYTHONPATH+x}" ]] || exit 97\n'
                 'printf "validation\\n" >> "$UPDATE_TEST_LOG"\n'
+                'if [[ -n "${UPDATE_TEST_REMOTE_MAIN:-}" ]]; then\n'
+                '  git update-ref refs/remotes/origin/main "$UPDATE_TEST_REMOTE_MAIN"\n'
+                "fi\n"
                 'exit "${UPDATE_TEST_EXIT:-0}"\n',
             ),
             ("sass", "#!/usr/bin/env bash\nexit 0\n"),
@@ -41,7 +44,7 @@ class UpdateCookiecutterTest(unittest.TestCase):
             path.chmod(0o755)
         shutil.copy2(ROOT / "update-cookiecutter", self.repo / "update-cookiecutter")
         shutil.copy2(ROOT / ".gitignore", self.repo / ".gitignore")
-        self.git("init", "-b", "main")
+        self.git("init", "-b", "dev")
         self.git("config", "user.name", "Workflow test")
         self.git("config", "user.email", "workflow@example.invalid")
         self.git("config", "commit.gpgsign", "false")
@@ -50,11 +53,11 @@ class UpdateCookiecutterTest(unittest.TestCase):
         self.project.mkdir()
         (self.project / "module.py").write_text("value = 'original'\n")
         self.commit("Runnable project")
-        self.git("switch", "-c", "feature/cookiecutter")
+        self.git("switch", "-c", "main")
         self.template = self.repo / "{{ cookiecutter.project_slug }}"
         self.project.rename(self.template)
         self.commit("Cookiecutter layout")
-        self.git("switch", "main")
+        self.git("switch", "dev")
 
     def git(self, *arguments):
         return subprocess.run(
@@ -73,19 +76,48 @@ class UpdateCookiecutterTest(unittest.TestCase):
     def test_rebase_carries_application_changes_and_returns_to_original_branch(self):
         (self.project / "module.py").write_text("value = 'updated'\n")
         self.commit("Application update")
-        main = self.git("rev-parse", "main")
+        development = self.git("rev-parse", "dev")
+
+        result = self.update()
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(self.git("branch", "--show-current"), "dev")
+        self.assertEqual(self.git("rev-parse", "dev"), development)
+        self.git("merge-base", "--is-ancestor", "dev", "main")
+        self.assertEqual(self.git("show", "main:{{ cookiecutter.project_slug }}/module.py"), "value = 'updated'")
+        self.assertEqual(self.git("status", "--porcelain"), "")
+        self.assertEqual(self.log.read_text(), "validation\n")
+
+    def test_update_can_start_from_main(self):
+        (self.project / "module.py").write_text("value = 'updated'\n")
+        self.commit("Application update")
+        development = self.git("rev-parse", "dev")
+        self.git("switch", "main")
 
         result = self.update()
 
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual(self.git("branch", "--show-current"), "main")
-        self.assertEqual(self.git("rev-parse", "main"), main)
-        self.git("merge-base", "--is-ancestor", "main", "feature/cookiecutter")
-        self.assertEqual(
-            self.git("show", "feature/cookiecutter:{{ cookiecutter.project_slug }}/module.py"), "value = 'updated'"
-        )
+        self.assertEqual(self.git("rev-parse", "dev"), development)
+        self.assertEqual((self.template / "module.py").read_text(), "value = 'updated'\n")
         self.assertEqual(self.git("status", "--porcelain"), "")
-        self.assertEqual(self.log.read_text(), "validation\n")
+
+    def test_publish_command_keeps_original_lease_and_does_not_push(self):
+        remote = self.output / "remote.git"
+        self.git("init", "--bare", str(remote))
+        self.git("remote", "add", "origin", str(remote))
+        self.git("push", "origin", "main")
+        expected_main = self.git("rev-parse", "origin/main")
+        (self.project / "module.py").write_text("value = 'updated'\n")
+        self.commit("Application update")
+        self.env["UPDATE_TEST_REMOTE_MAIN"] = self.git("rev-parse", "dev")
+
+        result = self.update()
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn(f"git push --force-with-lease=refs/heads/main:{expected_main} origin main", result.stdout)
+        self.assertNotEqual(self.git("rev-parse", "origin/main"), expected_main)
+        self.assertEqual(self.git("ls-remote", "origin", "refs/heads/main").split()[0], expected_main)
 
     def test_new_application_files_follow_directory_rename(self):
         self.git("config", "merge.renames", "false")
@@ -96,10 +128,8 @@ class UpdateCookiecutterTest(unittest.TestCase):
         result = self.update()
 
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertEqual(
-            self.git("show", "feature/cookiecutter:{{ cookiecutter.project_slug }}/new_module.py"), "value = 'new'"
-        )
-        files = self.git("ls-tree", "-r", "--name-only", "feature/cookiecutter").splitlines()
+        self.assertEqual(self.git("show", "main:{{ cookiecutter.project_slug }}/new_module.py"), "value = 'new'")
+        files = self.git("ls-tree", "-r", "--name-only", "main").splitlines()
         self.assertFalse(any(name.startswith("project/") for name in files))
         self.assertEqual(self.git("config", "merge.renames"), "false")
         self.assertEqual(self.git("config", "merge.directoryRenames"), "false")
@@ -117,7 +147,7 @@ class UpdateCookiecutterTest(unittest.TestCase):
 
                 self.assertNotEqual(result.returncode, 0)
                 self.assertEqual(self.git("status", "--porcelain"), before)
-                self.assertEqual(self.git("branch", "--show-current"), "main")
+                self.assertEqual(self.git("branch", "--show-current"), "dev")
                 self.assertEqual((self.project / "module.py").read_text(), "value = 'local work'\n")
                 self.assertFalse(self.log.exists())
 
@@ -127,7 +157,7 @@ class UpdateCookiecutterTest(unittest.TestCase):
         result = self.update()
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertEqual(self.git("branch", "--show-current"), "main")
+        self.assertEqual(self.git("branch", "--show-current"), "dev")
         self.assertEqual((self.repo / "local.txt").read_text(), "local work\n")
         self.assertFalse(self.log.exists())
 
@@ -148,41 +178,51 @@ class UpdateCookiecutterTest(unittest.TestCase):
             self.assertEqual(secret.read_text(), "local_test_value = 'test-only'\n")
 
     def test_missing_template_branch_keeps_original_checkout(self):
-        self.git("branch", "-m", "feature/cookiecutter", "feature/other")
+        self.git("branch", "-m", "main", "feature/other")
 
         result = self.update()
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertEqual(self.git("branch", "--show-current"), "main")
+        self.assertEqual(self.git("branch", "--show-current"), "dev")
         self.assertEqual(self.git("status", "--porcelain"), "")
         self.assertFalse(self.log.exists())
 
-    def test_conflict_stops_before_validation_and_preserves_main(self):
-        self.git("switch", "feature/cookiecutter")
-        (self.template / "module.py").write_text("value = 'template'\n")
-        self.commit("Template edit")
-        self.git("switch", "main")
-        (self.project / "module.py").write_text("value = 'application'\n")
-        self.commit("Application edit")
-        main = self.git("rev-parse", "main")
+    def test_missing_development_branch_keeps_original_checkout(self):
+        self.git("branch", "-m", "dev", "feature/other")
 
         result = self.update()
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertEqual(self.git("rev-parse", "main"), main)
+        self.assertEqual(self.git("branch", "--show-current"), "feature/other")
+        self.assertEqual(self.git("status", "--porcelain"), "")
+        self.assertFalse(self.log.exists())
+
+    def test_conflict_stops_before_validation_and_preserves_development(self):
+        self.git("switch", "main")
+        (self.template / "module.py").write_text("value = 'template'\n")
+        self.commit("Template edit")
+        self.git("switch", "dev")
+        (self.project / "module.py").write_text("value = 'application'\n")
+        self.commit("Application edit")
+        development = self.git("rev-parse", "dev")
+
+        result = self.update()
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(self.git("rev-parse", "dev"), development)
         self.assertTrue((self.repo / ".git/rebase-merge").is_dir())
         self.assertIn("<<<<<<<", (self.template / "module.py").read_text())
         self.assertFalse(self.log.exists())
 
     def test_validation_failure_keeps_template_available_for_inspection(self):
         self.env["UPDATE_TEST_EXIT"] = "1"
-        main = self.git("rev-parse", "main")
+        development = self.git("rev-parse", "dev")
 
         result = self.update()
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertEqual(self.git("branch", "--show-current"), "feature/cookiecutter")
-        self.assertEqual(self.git("rev-parse", "main"), main)
+        self.assertEqual(self.git("branch", "--show-current"), "main")
+        self.assertEqual(self.git("rev-parse", "dev"), development)
         self.assertEqual(self.git("status", "--porcelain"), "")
         self.assertEqual(self.log.read_text(), "validation\n")
 

@@ -11,7 +11,7 @@ die() {
 
 if [[ $# -gt 0 ]]; then
   if [[ $# -eq 1 && "$1" == "--help" ]]; then
-    printf 'Usage: ./update-cookiecutter\nRebase feature/cookiecutter onto local main and run template tests.\n'
+    printf 'Usage: ./update-cookiecutter\nRebase main onto local dev and run template tests.\n'
     exit 0
   fi
   die "No arguments expected. Use --help for usage."
@@ -22,10 +22,11 @@ command -v sass >/dev/null || die "Sass is not installed."
 original_branch=$(git symbolic-ref --quiet --short HEAD) || die "Start from a local branch."
 [[ -z "$(git status --porcelain)" ]] || die "Review and commit all changes, including untracked files, first."
 git show-ref --verify --quiet refs/heads/main || die "Local main branch is missing."
-git show-ref --verify --quiet refs/heads/feature/cookiecutter || die "Local feature/cookiecutter branch is missing."
+git show-ref --verify --quiet refs/heads/dev || die "Local dev branch is missing."
+expected_main=$(git rev-parse --verify refs/remotes/origin/main 2>/dev/null || true)
 
-git switch feature/cookiecutter
-if ! git -c merge.renames=true -c merge.directoryRenames=true rebase --merge main; then
+git switch main
+if ! git -c merge.renames=true -c merge.directoryRenames=true rebase --merge dev; then
   die "Rebase failed. Resolve or abort it before rerunning this script."
 fi
 
@@ -35,4 +36,7 @@ if ! env -u VIRTUAL_ENV -u UV_PROJECT_ENVIRONMENT -u PYTHONPATH \
 fi
 
 git switch "$original_branch"
-printf 'Cookiecutter branch updated and validated. Review its diff before publishing.\n'
+printf 'Cookiecutter main updated and validated. Review its diff before publishing.\n'
+if [[ -n "$expected_main" ]]; then
+  printf 'Publish after review: git push --force-with-lease=refs/heads/main:%s origin main\n' "$expected_main"
+fi
