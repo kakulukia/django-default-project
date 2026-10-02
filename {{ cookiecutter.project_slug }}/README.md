@@ -1,6 +1,6 @@
-# django-default-project
+# {{ cookiecutter.project_name }}
 
-It's not always good to start from scratch .. lets have some sane defaults ..
+{{ cookiecutter.description }}
 
 #### Django
 
@@ -80,8 +80,8 @@ Create separate files for environment-specific settings (e.g., `settings/dev.py`
 overrides specific to that environment. `settings/dev.py` is the local development baseline.
 
 3. **Personalized Settings:**
-Your personal settings file, `settings/andy.py`, imports `settings.dev`. Add your own overrides there.
-Set `DJANGO_SETTINGS_MODULE=settings.andy` to use it.
+Your personal settings file, `settings/{{ cookiecutter.__author_settings }}.py`, imports `settings.dev`. Add your own overrides there.
+Set `DJANGO_SETTINGS_MODULE=settings.{{ cookiecutter.__author_settings }}` to use it.
 
 For production, review and commit the relevant values in `settings/common.py` or in a tracked
 environment-specific settings module:
@@ -162,7 +162,7 @@ From this project's directory:
 
 ```bash
 uv sync --locked
-export DJANGO_SETTINGS_MODULE=settings.andy
+export DJANGO_SETTINGS_MODULE=settings.{{ cookiecutter.__author_settings }}
 uv run python manage.py migrate
 uv run python manage.py runserver
 ```
@@ -179,14 +179,14 @@ uv run pre-commit install
 
 Optionally install direnv and run `direnv allow` to activate the environment
 automatically. Your personal development settings are in
-`settings/andy.py`. Other developers can add their own
+`settings/{{ cookiecutter.__author_settings }}.py`. Other developers can add their own
 settings module with `from .dev import *` and select it via `DJANGO_SETTINGS_MODULE`.
 Use the default `settings` module for production.
 
 Run the project tests with the development settings:
 
 ```bash
-DJANGO_SETTINGS_MODULE=settings.andy uv run python manage.py test users utils
+DJANGO_SETTINGS_MODULE=settings.{{ cookiecutter.__author_settings }} uv run python manage.py test users utils
 ```
 
 ## Dependency Updates
@@ -249,12 +249,12 @@ Review the diff and run the project tests after updating dependencies.
     npm install -g pm2 sass
     ```
 
-- Set up your project directory (e.g., under `/opt/www/django-default-project`):
+- Set up your project directory (e.g., under `/opt/www/{{ cookiecutter.project_slug }}`):
 
     ```bash
-    sudo mkdir -p /opt/www/django-default-project
-    sudo chown -R $USER:$USER /opt/www/django-default-project
-    cd /opt/www/django-default-project
+    sudo mkdir -p /opt/www/{{ cookiecutter.project_slug }}
+    sudo chown -R $USER:$USER /opt/www/{{ cookiecutter.project_slug }}
+    cd /opt/www/{{ cookiecutter.project_slug }}
     ```
 
 - **uv** (Python version management + dependency installation):
@@ -273,7 +273,7 @@ Review the diff and run the project tests after updating dependencies.
 reload Nginx:
 
     ```bash
-    sudo ln -s /opt/www/django-default-project/settings/deployment/project.nginx /etc/nginx/sites-enabled/django-default-project
+    sudo ln -s /opt/www/{{ cookiecutter.project_slug }}/settings/deployment/project.nginx /etc/nginx/sites-enabled/{{ cookiecutter.project_slug }}
     sudo nginx -t
     sudo nginx -s reload
     ```
@@ -289,7 +289,7 @@ reload Nginx:
 
     ```bash
     .venv/bin/gunicorn --check-config \
-      --chdir /opt/www/django-default-project \
+      --chdir /opt/www/{{ cookiecutter.project_slug }} \
       --env DJANGO_SETTINGS_MODULE=settings \
       settings.wsgi:application
     ```
@@ -306,8 +306,8 @@ reload Nginx:
 
     ```bash
     cd settings/deployment
-    PROJECT_NAME=django-default-project DJANGO_SETTINGS_MODULE=settings pm2 start project.sh --name django-default-project
-    DJANGO_SETTINGS_MODULE=settings pm2 start worker.sh --name django-default-project-worker --kill-timeout 30000
+    PROJECT_NAME={{ cookiecutter.project_slug }} DJANGO_SETTINGS_MODULE=settings pm2 start project.sh --name {{ cookiecutter.project_slug }}
+    DJANGO_SETTINGS_MODULE=settings pm2 start worker.sh --name {{ cookiecutter.project_slug }}-worker --kill-timeout 30000
     pm2 save
     pm2 startup
     cd -
