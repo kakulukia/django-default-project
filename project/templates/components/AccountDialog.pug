@@ -1,0 +1,158 @@
+v-dialog(:model-value="modelValue && ready" @update:model-value="$emit('update:modelValue', $event)" @after-leave="afterLeave" max-width="660" :aria-label="title" :persistent="busy && !passkeyAbort")
+  v-card.text-start
+    .d-flex.align-center.justify-space-between.pl-6.pr-2.py-1
+      h2.text-h6.ma-0(v-text="title")
+      v-btn(icon="mdi-close" variant="text" aria-label="Dialog schließen" @click="close" :disabled="busy && !passkeyAbort")
+    .pa-6.pt-4
+      form(v-if="view === 'login'" @submit.prevent="run(signIn)")
+        p.mb-4
+          | Du hast noch kein Konto bei uns? Dann
+          a.ml-1(href="#" @click.prevent="go('signup')") erstelle
+          |  bitte zunächst eins.
+        v-text-field(v-model="login" label="Nutzername oder E-Mail" autocomplete="username" variant="outlined" :disabled="busy")
+        v-text-field(v-model="password" label="Passwort" type="password" autocomplete="current-password" variant="outlined" :disabled="busy" hide-details)
+        .text-end.mt-2.mb-4
+          a(href="#" @click.prevent="go('reset')") Passwort vergessen?
+        .d-flex.justify-end.ga-2
+          v-btn(icon="mdi-fingerprint" color="primary" variant="tonal" rounded="sm" height="36" width="40" aria-label="Mit einem Passkey anmelden" :disabled="busy" @click="run(() => usePasskey('login'))")
+            v-icon mdi-fingerprint
+            v-tooltip(activator="parent" location="bottom") Mit einem Passkey anmelden
+          v-btn(type="submit" color="primary" :loading="busy") Anmelden
+
+      form(v-else-if="view === 'signup'" @submit.prevent="run(signUp)")
+        p.mb-4 Bestätige zuerst deine E-Mail-Adresse. Danach kannst du einen Passkey oder ein Passwort einrichten.
+        v-text-field(v-model="email" label="E-Mail-Adresse" type="email" autocomplete="email" variant="outlined" :disabled="busy")
+        .d-flex.justify-end.ga-2
+          v-btn(variant="text" :disabled="busy" @click="go('login')") Anmelden
+          v-btn(type="submit" color="primary" :loading="busy") Registrieren
+
+      form(v-else-if="view === 'verify'" @submit.prevent="run(verifyEmail)")
+        p.mb-4 Gib den Bestätigungscode aus deiner E-Mail ein. Der Code ist nur kurz gültig.
+        v-text-field(v-model="code" label="Code" autocomplete="one-time-code" variant="outlined" :disabled="busy")
+        .d-flex.flex-wrap.justify-end.ga-2
+          v-btn(variant="text" :disabled="busy" @click="run(resendCode)") Code erneut senden
+          v-btn(variant="outlined" :disabled="busy" @click="run(cancel)") Abbrechen
+          v-btn(type="submit" color="primary" :loading="busy") Bestätigen
+
+      template(v-else-if="view === 'credentials'")
+        p.mb-4 Deine E-Mail-Adresse ist bestätigt. Wähle, wie du dich künftig anmelden möchtest.
+        v-tabs.mb-4(v-model="credentialTab" color="primary" grow :disabled="busy")
+          v-tab(value="passkey" prepend-icon="mdi-fingerprint") Passkey
+          v-tab(value="password" prepend-icon="mdi-form-textbox-password") Passwort
+        form(v-if="credentialTab === 'passkey'" @submit.prevent="run(() => usePasskey('signup'))")
+          p.mb-4 Einfach anmelden mit Fingerabdruck, Gesichtserkennung oder Sicherheitsschlüssel.
+          v-text-field(v-model="name" label="Name" variant="outlined" :disabled="busy")
+          .d-flex.justify-end.ga-2
+            v-btn(variant="outlined" :disabled="busy" @click="run(cancel)") Abbrechen
+            v-btn(type="submit" color="primary" prepend-icon="mdi-fingerprint" :loading="busy") Passkey erstellen
+        form(v-else @submit.prevent="run(setSignupPassword)")
+          v-text-field(v-model="password" label="Passwort" type="password" autocomplete="new-password" variant="outlined" :disabled="busy")
+          v-text-field(v-model="password2" label="Passwort wiederholen" type="password" autocomplete="new-password" variant="outlined" :disabled="busy")
+          .d-flex.justify-end.ga-2
+            v-btn(variant="outlined" :disabled="busy" @click="run(cancel)") Abbrechen
+            v-btn(type="submit" color="primary" :loading="busy") Passwort speichern
+
+      form(v-else-if="view === 'reset'" @submit.prevent="run(resetPasswordRequest)")
+        p.mb-4 Passwort vergessen? Gib deine E-Mail-Adresse unten ein, dann schicken wir dir einen Link, unter dem du dein Passwort zurücksetzen kannst.
+        v-text-field(v-model="email" label="E-Mail-Adresse" type="email" autocomplete="email" variant="outlined" :disabled="busy")
+        .d-flex.justify-end.ga-2
+          v-btn(variant="outlined" :disabled="busy" @click="go('login')") Zurück
+          v-btn(type="submit" color="primary" :loading="busy") Passwort zurücksetzen
+      form(v-else-if="view === 'resetPassword'" @submit.prevent="run(saveResetPassword)")
+        v-text-field(v-model="password" label="Passwort" type="password" autocomplete="new-password" variant="outlined" :disabled="busy")
+        v-text-field(v-model="password2" label="Passwort wiederholen" type="password" autocomplete="new-password" variant="outlined" :disabled="busy")
+        .d-flex.justify-end.ga-2
+          v-btn(variant="outlined" :disabled="busy" @click="close") Abbrechen
+          v-btn(type="submit" color="primary" :loading="busy") Passwort speichern
+
+      template(v-else-if="view === 'emails'")
+        .d-flex.align-center.flex-wrap.ga-2.mb-2(v-for="address in emails" :key="address.email")
+          span.flex-grow-1.text-break(v-text="address.email")
+          span.d-flex(role="img" :aria-label="address.verified ? 'Bestätigt' : 'Nicht bestätigt'")
+            v-icon(:icon="address.verified ? 'mdi-check-circle' : 'mdi-alert-circle-outline'" :color="address.verified ? 'success' : 'warning'" size="small")
+            v-tooltip(activator="parent" location="bottom") [[ address.verified ? 'Bestätigt' : 'Nicht bestätigt' ]]
+          .d-flex.ga-1
+            .d-flex.align-center.justify-center(v-if="address.primary" style="width: 40px; height: 40px" role="img" aria-label="Primär")
+              v-icon(icon="mdi-star" color="primary" size="small")
+              v-tooltip(activator="parent" location="bottom") Primär
+            v-btn(v-else icon="mdi-star-outline" size="small" variant="text" color="primary" aria-label="Als primäre Adresse festlegen" :disabled="busy" @click="run(() => emailAction('patch', address.email))")
+              v-icon mdi-star-outline
+              v-tooltip(activator="parent" location="bottom") Als primäre Adresse festlegen
+            v-btn(icon="mdi-email-sync-outline" size="small" variant="text" color="primary" aria-label="Bestätigungs-Mail nochmal verschicken" :disabled="busy || address.verified" @click="run(() => emailAction('put', address.email))")
+              v-icon mdi-email-sync-outline
+              v-tooltip(activator="parent" location="bottom") Bestätigungs-Mail nochmal verschicken
+            v-btn(icon="mdi-delete-outline" size="small" variant="text" color="error" aria-label="Entfernen" :disabled="busy" @click="confirmAction = { type: 'email', email: address.email }")
+              v-icon mdi-delete-outline
+              v-tooltip(activator="parent" location="bottom") Entfernen
+        form.mt-4(@submit.prevent="run(() => emailAction('post', email))")
+          h3.text-subtitle-1.mb-4 E-Mail-Adresse hinzufügen
+          v-text-field(v-model="email" label="E-Mail-Adresse" type="email" autocomplete="email" variant="outlined" :disabled="busy")
+          .d-flex.justify-end
+            v-btn(type="submit" color="primary" :loading="busy") E-Mail hinzufügen
+
+      template(v-else-if="view === 'passkeys'")
+        p.mb-4(v-if="!authenticators.length") Du hast noch keinen Passkey eingerichtet.
+        form.d-flex.align-start.ga-2(v-for="authenticator in authenticators" :key="authenticator.id" @submit.prevent="run(() => renamePasskey(authenticator))")
+          v-text-field(v-model="authenticator.name" label="Name" variant="outlined" density="compact" :disabled="busy")
+          v-btn(type="submit" icon="mdi-content-save-outline" size="small" variant="text" color="primary" aria-label="Name speichern" :disabled="busy")
+            v-icon mdi-content-save-outline
+            v-tooltip(activator="parent" location="bottom") Name speichern
+          v-btn(icon="mdi-delete-outline" size="small" variant="text" color="error" aria-label="Passkey entfernen" :disabled="busy" @click="confirmAction = { type: 'passkey', id: authenticator.id }")
+            v-icon mdi-delete-outline
+            v-tooltip(activator="parent" location="bottom") Passkey entfernen
+        form.mt-4(@submit.prevent="run(() => usePasskey('add'))")
+          v-text-field(v-model="name" label="Neuer Passkey" variant="outlined" :disabled="busy")
+          .d-flex.justify-end
+            v-btn(type="submit" color="primary" prepend-icon="mdi-fingerprint" :loading="busy") Passkey erstellen
+
+      template(v-else-if="view === 'totp'")
+        template(v-if="totpActive")
+          p.d-flex.align-center.ga-2.mb-4
+            v-icon(icon="mdi-shield-check" color="success")
+            | Die Zwei-Faktor-Authentifizierung ist aktiviert.
+          p.mb-4 Nach der Anmeldung mit deinem Passwort benötigst du zusätzlich einen Code aus deiner Authenticator-App.
+          .d-flex.justify-end
+            v-btn(color="error" variant="outlined" :disabled="busy" @click="confirmAction = { type: 'totp' }") Deaktivieren
+        form(v-else-if="totpSetup" @submit.prevent="run(activateTotp)")
+          p.mb-4 Scanne den QR-Code mit deiner Authenticator-App. Gib anschließend den aktuellen Code ein, um die Zwei-Faktor-Authentifizierung zu aktivieren.
+          .d-flex.flex-wrap.align-center.ga-4.mb-4
+            img(:src="'data:image/svg+xml,' + encodeURIComponent(totpSetup.qr_svg)" width="180" height="180" alt="QR-Code für die Authenticator-App")
+            .flex-grow-1(style="flex-basis: 240px; min-width: 0")
+              p.text-body-2.mb-2 Alternativ kannst du diesen Einrichtungsschlüssel manuell eingeben:
+              code.text-break(v-text="totpSetup.secret")
+          v-text-field(v-model="code" label="Authenticator-Code" autocomplete="one-time-code" inputmode="numeric" variant="outlined" :disabled="busy")
+          .d-flex.justify-end.ga-2
+            v-btn(variant="outlined" :disabled="busy" @click="close") Abbrechen
+            v-btn(type="submit" color="primary" :loading="busy") Aktivieren
+
+      form(v-else-if="view === 'reauthenticate'" @submit.prevent="run(reauthenticate)")
+        p.mb-4 Bitte bestätige deine Anmeldung, um diese Aktion durchzuführen.
+        v-text-field(v-model="password" label="Passwort" type="password" autocomplete="current-password" variant="outlined" :disabled="busy")
+        .d-flex.justify-end.ga-2
+          v-btn(icon="mdi-fingerprint" variant="tonal" color="primary" height="36" width="40" aria-label="Mit einem Passkey bestätigen" :disabled="busy" @click="run(() => usePasskey('reauthenticate'))")
+            v-icon mdi-fingerprint
+            v-tooltip(activator="parent" location="bottom") Mit einem Passkey bestätigen
+          v-btn(type="submit" color="primary" :loading="busy") Bestätigen
+      form(v-else-if="view === 'mfa'" @submit.prevent="run(() => mfaMethod === 'passkey' ? usePasskey('mfa') : authenticateCode())")
+        p.mb-4(v-if="mfaMethod === 'passkey'") Bestätige deine Anmeldung mit deinem Passkey.
+        p.mb-4(v-else-if="mfaMethod === 'totp'") Gib den aktuellen Code aus deiner Authenticator-App ein.
+        p.mb-4(v-else) Gib einen deiner gespeicherten Wiederherstellungscodes ein. Jeder Code kann nur einmal verwendet werden.
+        v-text-field(v-if="mfaMethod !== 'passkey'" v-model="code" :label="mfaMethod === 'totp' ? 'Authenticator-Code' : 'Wiederherstellungscode'" autocomplete="one-time-code" variant="outlined" :disabled="busy")
+        .d-flex.flex-wrap.justify-end.ga-2
+          v-btn(v-if="mfaTypes.includes('webauthn') && mfaMethod !== 'passkey'" variant="text" :disabled="busy" @click="selectMfaMethod('passkey')") Passkey verwenden
+          v-btn(v-if="mfaTypes.includes('totp') && mfaMethod !== 'totp'" variant="text" :disabled="busy" @click="selectMfaMethod('totp')") Authenticator-App verwenden
+          v-btn(v-if="mfaTypes.includes('recovery_codes') && mfaMethod !== 'recovery_codes'" variant="text" :disabled="busy" @click="selectMfaMethod('recovery_codes')") Wiederherstellungscode verwenden
+          v-btn(type="submit" color="primary" :prepend-icon="mfaMethod === 'passkey' ? 'mdi-fingerprint' : undefined" :loading="busy") [[ mfaMethod === 'passkey' ? 'Mit Passkey bestätigen' : 'Bestätigen' ]]
+      template(v-if="view === 'passkeys' || (view === 'totp' && totpActive)")
+        v-divider.my-4
+        h3.text-subtitle-1.mb-2 Wiederherstellungscodes
+        p.mb-4 Bewahre die Codes sicher auf. Jeder Code kann nur einmal verwendet werden.
+        .d-flex.flex-wrap.justify-end.ga-2
+          v-btn(variant="outlined" :disabled="busy" @click="run(() => showRecoveryCodes())") Codes anzeigen
+          v-btn(color="primary" :disabled="busy || (view === 'passkeys' && !authenticators.length)" @click="confirmAction = { type: 'codes' }") Neue Codes erzeugen
+        pre.mt-4(v-if="recoveryCodes.length" v-text="recoveryCodes.join('\n')" aria-label="Wiederherstellungscodes")
+      v-alert.mt-4(v-if="confirmAction" type="warning" variant="tonal")
+        p.mb-3 [[ confirmAction.type === 'codes' ? 'Vorhandene Wiederherstellungscodes werden ersetzt. Fortfahren?' : confirmAction.type === 'totp' ? 'Zwei-Faktor-Authentifizierung wirklich deaktivieren?' : 'Diesen Eintrag wirklich entfernen?' ]]
+        .d-flex.flex-wrap.justify-end.ga-2
+          v-btn(variant="outlined" :disabled="busy" @click="confirmAction = null") Abbrechen
+          v-btn(color="primary" :loading="busy" @click="run(() => confirmAction.type === 'email' ? emailAction('delete', confirmAction.email) : confirmAction.type === 'passkey' ? removePasskey(confirmAction.id) : confirmAction.type === 'totp' ? deactivateTotp() : showRecoveryCodes(true))") Bestätigen

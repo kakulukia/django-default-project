@@ -1,0 +1,4 @@
+.v-application a:not(.v-btn),
+.v-overlay-container a:not(.v-btn) {
+  color: rgb(var(--v-theme-primary));
+}

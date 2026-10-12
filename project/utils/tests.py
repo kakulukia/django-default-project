@@ -63,6 +63,36 @@ class ProjectSettingsTest(SimpleTestCase):
 
 
 class CoreUrlsTest(TestCase):
+    def test_both_signup_urls_start_with_email_only(self):
+        for url in ("/accounts/signup/", "/accounts/signup/passkey/"):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(set(response.context["form"].fields), {"email"})
+                self.assertContains(response, 'action="/accounts/signup/"')
+                self.assertNotContains(response, 'name="password1"')
+
+    def test_account_dialog_allows_only_same_origin_frames(self):
+        for url in (
+            "/",
+            "/accounts/login/",
+            "/accounts/signup/",
+            "/accounts/signup/passkey/",
+            "/accounts/2fa/webauthn/signup/",
+            "/accounts/password/reset/",
+            "/accounts/2fa/",
+        ):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.headers["X-Frame-Options"], "SAMEORIGIN")
+        for url in ("/admin/login/", "/api/users/", "/accounts/nonexistent/"):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.headers["X-Frame-Options"], "DENY")
+        response = self.client.post("/accounts/signup/passkey/", {"email": "invalid"})
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["form"].errors)
+        self.assertEqual(response.headers["X-Frame-Options"], "SAMEORIGIN")
+
     def test_index_returns_200(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)

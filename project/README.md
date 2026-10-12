@@ -51,43 +51,127 @@ interactive experience during development.
 
 #### Accounts and Passkeys
 
-[django-allauth](https://docs.allauth.org/en/latest/) provides the standard account
-pages at `/accounts/`. The demo links to login, signup and account management.
+[django-allauth](https://docs.allauth.org/en/latest/) provides the Headless JSON API
+at `/_allauth/browser/v1/`. The demo uses native Vue/Vuetify forms for login,
+signup, password reset, email addresses, passkeys, authenticator-app 2FA and recovery codes.
 Password login accepts email or the existing username; Django admin remains at `/admin/`.
+The footer logout button and account menu sign out immediately, without confirmation.
+Transient account errors and status messages use the shared notification mechanism,
+including cancelled passkey requests. Notifications remain visible above open dialogs.
+Verified email addresses cannot request another verification code.
+Mandatory email verification also prevents removing the last address or the
+last verified address, including when signing in by username.
+The account menu includes **Zwei-Faktor-Authentifizierung**. Its QR code is generated
+locally. Activation requires a valid code from the authenticator app; opening the
+setup alone does not enable 2FA. Recovery codes and deactivation are available there.
 Axes continues to protect password authentication.
+Sign-in uses Django's persistent session lifetime, currently 14 days, without a
+remember-me checkbox. `SESSION_COOKIE_AGE` controls the lifetime; ordinary reads
+do not extend it because `SESSION_SAVE_EVERY_REQUEST` remains disabled.
 
 Passkey login is enabled using allauth's MFA/WebAuthn support. To try it:
 
 1. Run the local migrations, start the server and open `http://localhost:8000/`
    (or the port used by your development server).
-2. Choose **Registrieren** and enter your email address. No username or password
-   is required for passkey signup.
-3. Enter the email verification code, then create a passkey using your device's
-   biometrics, PIN or security key. Stay in the same browser during these steps.
-4. Open **Passkeys verwalten** to manage keys and generate recovery codes.
+2. Choose **Registrieren** and enter only your email address.
+3. Enter the email verification code. Stay in the same browser during these steps.
+4. Use the default **Passkey** tab and choose **Passkey erstellen**, using your
+   device's biometrics, PIN or security key, or switch to **Passwort** to set a password.
+   You remain signed out until you have set up one of these methods.
+5. Open **Passkeys** from the footer's account menu to manage keys and generate recovery codes.
    Save the recovery codes before signing out.
-5. Sign out and use the passkey button on the login page. Password signup remains
-   available under **Other options**; these accounts can add a passkey after email
-   verification through **Passkeys verwalten**.
+6. Sign out and use the fingerprint button or password in the login dialog.
+   Password accounts can add a passkey later through **Passkeys**.
 
-The existing post_office backend queues email. In development, run
-`python manage.py send_queued_mail --settings=settings.andy` to print queued
-messages, including verification codes, to that command's console.
-Production requires a configured email backend and the queued-email job described
-below.
+`POST /_allauth/browser/v1/auth/signup` starts allauth's email-only passkey signup
+stage. After verification, the user can finish with a passkey or choose a password
+through `POST /_allauth/browser/v1/auth/signup/password`. This small additional
+endpoint uses allauth's standard password form and validators. The verification,
+current-session and timeout checks remain in allauth; there is no separate
+credential token. Standalone forms at `/accounts/`, including both signup URLs,
+remain available as a fallback.
+
+In development, Post Office prints emails immediately by default, including
+verification codes and password-reset links, to the development server's console
+and keeps them in the admin. No mail worker is required for these messages.
+Previously queued messages can still be printed with
+`python manage.py send_queued_mail --settings=settings.andy`.
+Production queues email and requires a configured email backend and the
+queued-email job described below.
 
 Use the same hostname for registration and login. WebAuthn requires HTTPS in
 production; local testing works on `localhost`. Insecure origins remain disabled.
 The Site record (`SITE_ID = 1`) should have your application's domain and name.
 New accounts require email verification before login or passkey enrollment,
 including staff and superusers. Existing accounts with an email address must
-verify it when signing in through allauth. The account pages use allauth's standard
-templates; project-specific styling can override `allauth/layouts/` and
-`allauth/elements/`.
+verify it when signing in through allauth. The dialog uses the existing Vuetify
+theme and Django session cookies with CSRF protection. App/token API clients are
+disabled. Allauth validates credentials, permissions and authentication stages;
+the frontend handles JSON responses and invokes the browser's WebAuthn API.
 Allauth's MFA applies to its account flow; the separate Django admin login does
 not acquire MFA enforcement from this integration.
+Passwordless passkeys are alternative logins. Adding one does not require a
+second factor after password login. The account adapter changes only the login
+stage decision; explicitly configured TOTP and non-passwordless WebAuthn keys
+still require a second factor. Credential validation and recent-authentication
+checks for account management remain in allauth.
+When password login requires a second factor, the dialog selects a registered
+passkey first. It shows an authenticator code field only for configured TOTP;
+recovery codes appear only after the user explicitly chooses that alternative.
+
+##### Invitations and local email preview
+
+Prepare an invitation without sending it:
+
+```shell
+python manage.py invite_user person@example.com --base-url http://localhost:8001 --settings=settings.andy
+```
+
+This creates the `account_invitation` Post Office template if missing, queues the
+rendered email and prints its contents and admin link. Customize the template at
+`/admin/post_office/emailtemplate/`; existing customizations are preserved.
+The invitation opens `/?account=signup&email=...` with the email prefilled. It grants
+no access and still requires email verification. Existing users can follow the
+login link instead. It is not an invitation-only registration system.
+
+Invitation, verification and reset emails are visible at
+`/admin/post_office/email/`. To inspect an email without dispatching it:
+
+```shell
+python manage.py show_email EMAIL_ID --settings=settings.andy
+```
+
+For a new installation, configure the Site name/domain and sender address.
+The `--base-url` option includes a development server's port; without it the
+invitation uses the current Site and `SECURE_SSL_REDIRECT`. To deliver email,
+configure `POST_OFFICE["BACKENDS"]["default"]` with your SMTP backend and credentials,
+then enable the existing queued-email job. Development uses the console backend.
+
+##### Password reset
+
+The login dialog requests a reset through the JSON API. allauth prepares an email with
+a time-limited, single-use reset link and validates the new password. A passkey
+account can use this flow to set its first password. Existing passkeys remain
+registered; a reset does not recreate a lost passkey. Unknown email addresses get
+the same completion view. Reset emails from the dialog link to
+`/?account=reset&key=...`; the dialog validates the key and submits the new password.
+Resetting a password does not automatically sign in
+the user or skip configured MFA. Registration and reset email wording comes from
+allauth's translated templates; the invitation template is editable in Post Office.
 
 #### Frontend
+
+The demo footer's lock icon opens the native account dialog. Its template is
+loaded once with the demo; subsequent account steps exchange JSON without an
+iframe, template navigation or page reload. Login/logout updates the shared store
+and footer immediately. When signed in, the footer shows a logout icon with a
+hover/keyboard menu for passkeys, email addresses and authenticator-app 2FA. The dialog waits for its
+initial JSON data before opening and keeps its contents mounted during closing.
+It closes with its close button, Escape or a click outside; pending submissions
+remain protected from accidental dismissal. Standalone account pages continue
+to use Django forms and allauth's WebAuthn scripts.
+The adjacent user icon shows or hides the expanded user section. It starts hidden
+and retains the existing API permissions.
 
 The frontend setup is minimal and designed to add reactivity to your pages without the overhead
 of a full single-page application. It includes:
@@ -255,6 +339,7 @@ Run the project tests with the development settings:
 
 ```bash
 DJANGO_SETTINGS_MODULE=settings.andy uv run python manage.py test users utils
+node --test tests/frontend/*.test.mjs
 ```
 
 ## Dependency Updates

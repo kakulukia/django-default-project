@@ -1,0 +1,46 @@
+{% load static i18n allauth %}
+<!doctype html>
+<html lang="{{ LANGUAGE_CODE|default:'de' }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block head_title %}Django Demo{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vuetify.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/materialdesignicons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
+    {% block extra_head %}{% endblock %}
+  </head>
+  <body>
+    <div id="account-app">
+      <div id="account-content" class="account-content">
+        {% for message in messages %}
+          <div data-account-alert="{{ message.tags }}" role="status">{{ message }}</div>
+        {% endfor %}
+        <nav class="d-flex flex-wrap ga-2 account-nav" aria-label="Konto">
+          {% if user.is_authenticated %}
+            {% url 'mfa_index' as passkeys_url %}
+            {% element button href=passkeys_url tags="link" %}Passkeys{% endelement %}
+            {% url 'account_email' as email_url %}
+            {% element button href=email_url tags="link" %}E-Mail-Adresse{% endelement %}
+            {% url 'account_logout' as logout_url %}
+            {% element button href=logout_url tags="link" %}Abmelden{% endelement %}
+          {% else %}
+            {% url 'account_login' as login_url %}
+            {% element button href=login_url tags="link" %}Anmelden{% endelement %}
+            {% url 'account_signup' as registration_url %}
+            {% element button href=registration_url tags="link" %}Registrieren{% endelement %}
+          {% endif %}
+        </nav>
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+    <script src="{% static 'js/vendor/vue.global.js' %}"></script>
+    <script src="{% static 'js/vendor/vuetify.min.js' %}"></script>
+    {% include 'includes/app_config.html' %}
+    <script type="module" src="{% static 'js/accounts.js' %}"></script>
+    {% block extra_body %}{% endblock %}
+  </body>
+</html>

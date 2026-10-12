@@ -1,0 +1,15 @@
+{% if attrs.form.non_field_errors %}
+  <div data-account-alert="error" role="alert">{{ attrs.form.non_field_errors }}</div>
+{% endif %}
+{% for field in attrs.form %}
+  {% if field.is_hidden %}
+    {{ field }}
+  {% else %}
+    <div data-account-field>
+      <label for="{{ field.id_for_label }}">{% if attrs.login and field.name == "login" %}Nutzername oder E-Mail{% else %}{{ field.label }}{% endif %}</label>
+      {{ field }}
+      {{ field.errors }}
+      {% if field.help_text %}<div class="text-caption" data-account-help id="{{ field.auto_id }}_helptext">{{ field.help_text|safe }}</div>{% endif %}
+    </div>
+  {% endif %}
+{% endfor %}

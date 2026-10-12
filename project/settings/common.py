@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     # 3rd party apps
     "allauth",
     "allauth.account",
+    "allauth.headless",
     "allauth.mfa",
     "axes",
     "compressor",
@@ -82,6 +83,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "utils.middleware.AccountFrameMiddleware",
     "axes.middleware.AxesMiddleware",
 ]
 AUTHENTICATION_BACKENDS = [
@@ -94,12 +96,21 @@ LOGIN_URL = "account_login"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 ACCOUNT_LOGIN_METHODS = {"email", "username"}
+ACCOUNT_ADAPTER = "users.account_adapter.AccountAdapter"
+ACCOUNT_SESSION_REMEMBER = True
+# Password fields also enable password login; SignupByPasskeyView keeps registration email-only.
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_EMAIL_VERIFICATION_BY_CODE_ENABLED = True
 MFA_SUPPORTED_TYPES = ["totp", "webauthn", "recovery_codes"]
 MFA_PASSKEY_LOGIN_ENABLED = True
 MFA_PASSKEY_SIGNUP_ENABLED = True
+HEADLESS_CLIENTS = ("browser",)
+HEADLESS_ADAPTER = "users.account_api.AccountHeadlessAdapter"
+HEADLESS_FRONTEND_URLS = {
+    "account_signup": "/?account=signup",
+    "account_reset_password_from_key": "/?account=reset&key={key}",
+}
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -182,6 +193,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AXES_FAILURE_LIMIT = 2
 AXES_CACHE = "axes_cache"
 AXES_LOCKOUT_PARAMETERS = ["ip_address", ["username", "user_agent"]]
+AXES_LOCKOUT_TEMPLATE = "account/lockout.html"
 
 
 # Internationalization

@@ -4,9 +4,14 @@ const UserChange = {
   data() {
     return {
       users: [],
-      showUsers: false,
       username: '',
     }
+  },
+  watch: {
+    'store.user.id'() {
+      if (this.store.user) this.loadUsers()
+      else this.users = []
+    },
   },
   methods: {
     updateUser(user) {
@@ -31,7 +36,7 @@ const UserChange = {
   },
   mounted() {
     this.waitUntilUserQueryDone().then(() => {
-      this.loadUsers()
+      if (this.store.user) this.loadUsers()
     })
   },
 }

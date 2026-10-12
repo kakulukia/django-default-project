@@ -1,0 +1,52 @@
+{% extends "account/base_manage_email.html" %}
+{% load allauth i18n %}
+{% block head_title %}{% translate "Email Addresses" %}{% endblock %}
+{% block content %}
+  {% element h1 %}{% translate "Email Addresses" %}{% endelement %}
+  {% url 'account_email' as email_url %}
+  {% if emailaddresses %}
+    <div class="d-flex flex-column ga-2">
+      {% for emailaddress in emailaddresses %}
+        <form method="post" action="{{ email_url }}" data-account-email
+              data-confirm-remove="{% translate 'Do you really want to remove the selected email address?' %}">
+          {% csrf_token %}
+          <input type="hidden" name="email" value="{{ emailaddress.email }}">
+          <div class="d-flex align-center flex-wrap ga-2">
+            <span class="account-email-address flex-grow-1">{{ emailaddress.email }}</span>
+            {% if emailaddress.verified %}
+              <span class="mdi mdi-check-circle text-success" role="img" aria-label="{% translate 'Verified' %}" title="{% translate 'Verified' %}"></span>
+            {% else %}
+              <span class="mdi mdi-alert-circle-outline text-warning" role="img" aria-label="{% translate 'Unverified' %}" title="{% translate 'Unverified' %}"></span>
+            {% endif %}
+            <div class="d-flex ga-1 ml-auto">
+              {% if emailaddress.primary %}
+                <span class="d-inline-flex align-center justify-center text-primary" style="width: 40px; height: 40px;" role="img"
+                      aria-label="{% translate 'Primary' %}" title="{% translate 'Primary' %}">
+                  <span class="mdi mdi-star" aria-hidden="true"></span>
+                </span>
+              {% else %}
+                {% element button tags="link" type="submit" name="action_primary" icon="mdi-star-outline" %}{% translate 'Make Primary' %}{% endelement %}
+              {% endif %}
+              {% element button tags="link" type="submit" name="action_send" icon="mdi-email-sync-outline" disabled=emailaddress.verified %}{% translate 'Re-send Verification' %}{% endelement %}
+              {% element button tags="link,danger" type="submit" name="action_remove" icon="mdi-delete-outline" %}{% translate 'Remove' %}{% endelement %}
+            </div>
+          </div>
+        </form>
+      {% endfor %}
+    </div>
+  {% else %}
+    {% include "account/snippets/warn_no_email.html" %}
+  {% endif %}
+  {% if can_add_email %}
+    {% element h2 %}{% translate "Add Email Address" %}{% endelement %}
+    {% element form form=form method="post" action=email_url tags="email,add" %}
+      {% slot body %}
+        {% csrf_token %}
+        {% element fields form=form %}{% endelement %}
+      {% endslot %}
+      {% slot actions %}
+        {% element button name="action_add" type="submit" %}{% translate "Add Email" %}{% endelement %}
+      {% endslot %}
+    {% endelement %}
+  {% endif %}
+{% endblock %}

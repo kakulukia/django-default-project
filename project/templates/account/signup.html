@@ -1,0 +1,19 @@
+{% extends "account/base_entrance.html" %}
+{% load allauth i18n %}
+{% block head_title %}{% translate "Signup" %}{% endblock %}
+{% block content %}
+  {% element h1 %}{% translate "Signup" %}{% endelement %}
+  <p>Bestätige zuerst deine E-Mail-Adresse. Danach kannst du einen Passkey oder ein Passwort einrichten.</p>
+  {% url 'account_signup' as action_url %}
+  {% element form form=form method="post" action=action_url tags="entrance,signup" %}
+    {% slot body %}
+      {% csrf_token %}
+      {% element fields form=form %}{% endelement %}
+      {{ redirect_field }}
+    {% endslot %}
+    {% slot actions %}
+      {% element button type="submit" tags="prominent,signup" %}{% translate "Signup" %}{% endelement %}
+    {% endslot %}
+  {% endelement %}
+  <p>Du hast bereits ein Konto? <a href="{% url 'account_login' %}">Anmelden</a></p>
+{% endblock %}

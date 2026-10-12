@@ -1,0 +1,47 @@
+{% extends "account/base_entrance.html" %}
+{% load allauth i18n %}
+{% block head_title %}Anmeldung einrichten{% endblock %}
+{% block content %}
+  <h1>Anmeldung einrichten</h1>
+  <p>Deine E-Mail-Adresse ist bestätigt. Wähle, wie du dich künftig anmelden möchtest.</p>
+  <div data-account-credential-tabs data-selected-method="{% if password_form.is_bound %}password{% else %}passkey{% endif %}"></div>
+  <div id="credential-passkey" role="tabpanel" aria-labelledby="credential-passkey-tab" data-account-credential-panel="passkey" {% if password_form.is_bound %}hidden{% endif %}>
+    <p class="text-body-2"><span class="font-weight-medium">Empfohlen:</span> Einfach anmelden mit Fingerabdruck, Gesichtserkennung oder Sicherheitsschlüssel.</p>
+    {% url 'mfa_signup_webauthn' as action_url %}
+    {% element form form=form method="post" action=action_url %}
+      {% slot body %}
+        {% csrf_token %}
+        {% element fields form=form %}{% endelement %}
+      {% endslot %}
+      {% slot actions %}
+        {% element button type="submit" form="logout-from-stage" tags="link,cancel" %}{% translate "Cancel" %}{% endelement %}
+        {% element button id="mfa_webauthn_signup" type="button" tags="prominent" %}Passkey erstellen{% endelement %}
+      {% endslot %}
+    {% endelement %}
+  </div>
+  <div id="credential-password" role="tabpanel" aria-labelledby="credential-password-tab" data-account-credential-panel="password" {% if not password_form.is_bound %}hidden{% endif %}>
+    {% element form form=password_form method="post" action=action_url %}
+      {% slot body %}
+        {% csrf_token %}
+        {% element fields form=password_form %}{% endelement %}
+      {% endslot %}
+      {% slot actions %}
+        {% element button type="submit" form="logout-from-stage" tags="link,cancel" %}{% translate "Cancel" %}{% endelement %}
+        {% element button type="submit" name="method" value="password" tags="outline" %}Passwort speichern{% endelement %}
+      {% endslot %}
+    {% endelement %}
+  </div>
+  <form id="logout-from-stage" method="post" action="{% url 'account_logout' %}">
+    <input type="hidden" name="next" value="{% url 'account_login' %}">
+    {% csrf_token %}
+  </form>
+  {% include "mfa/webauthn/snippets/scripts.html" %}
+  {{ js_data|json_script:"js_data" }}
+  <script data-allauth-onload="allauth.webauthn.forms.signupForm" type="application/json">{
+    "ids": {
+      "signup": "mfa_webauthn_signup",
+      "credential": "{{ form.credential.auto_id }}",
+      "data": "js_data"
+    }
+  }</script>
+{% endblock %}

@@ -1,0 +1,46 @@
+.account-content > * + *,
+[data-account-credential-panel] > * + * {
+  margin-top: 16px;
+}
+
+.account-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.account-content form:is(#resend, #logout-from-stage) {
+  display: none;
+}
+
+.account-content h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.account-content h2 {
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.account-content ul {
+  padding-inline-start: 24px;
+}
+
+.account-embedded #djDebug {
+  display: none;
+}
+
+.account-embedded .account-nav {
+  display: none !important;
+}
+
+.account-embedded .account-nav:first-child + * {
+  margin-top: 0;
+}
+
+.account-email-address {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}

@@ -1,0 +1,10 @@
+{% load allauth %}
+<form method="{{ attrs.method }}"
+      {% if attrs.action %}action="{{ attrs.action }}"{% endif %}>
+  {% slot body %}{% endslot %}
+  {% if slots.actions %}
+    <div data-account-actions class="d-flex flex-wrap justify-end ga-2">
+      {% slot actions %}{% endslot %}
+    </div>
+  {% endif %}
+</form>
