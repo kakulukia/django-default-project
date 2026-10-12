@@ -14,6 +14,7 @@ with a robust set of third-party packages to help you start quickly and maintain
 [project]
 dependencies = [
     "django>=6.0",
+    "django-allauth[mfa]",
     "django-axes",
     "django-compressor",
     "django-extensions",
@@ -47,6 +48,44 @@ dev = [
 Furthermore, this template includes a Hello World example utilizing PUG templates, SASS styles, and
 VueJS. The example even features [Chuck Norris facts](https://api.chucknorris.io) to provide a fun,
 interactive experience during development.
+
+#### Accounts and Passkeys
+
+[django-allauth](https://docs.allauth.org/en/latest/) provides the standard account
+pages at `/accounts/`. The demo links to login, signup and account management.
+Password login accepts email or the existing username; Django admin remains at `/admin/`.
+Axes continues to protect password authentication.
+
+Passkey login is enabled using allauth's MFA/WebAuthn support. To try it:
+
+1. Run the local migrations, start the server and open `http://localhost:8000/`
+   (or the port used by your development server).
+2. Choose **Registrieren** and enter your email address. No username or password
+   is required for passkey signup.
+3. Enter the email verification code, then create a passkey using your device's
+   biometrics, PIN or security key. Stay in the same browser during these steps.
+4. Open **Passkeys verwalten** to manage keys and generate recovery codes.
+   Save the recovery codes before signing out.
+5. Sign out and use the passkey button on the login page. Password signup remains
+   available under **Other options**; these accounts can add a passkey after email
+   verification through **Passkeys verwalten**.
+
+The existing post_office backend queues email. In development, run
+`python manage.py send_queued_mail --settings=settings.andy` to print queued
+messages, including verification codes, to that command's console.
+Production requires a configured email backend and the queued-email job described
+below.
+
+Use the same hostname for registration and login. WebAuthn requires HTTPS in
+production; local testing works on `localhost`. Insecure origins remain disabled.
+The Site record (`SITE_ID = 1`) should have your application's domain and name.
+New accounts require email verification before login or passkey enrollment,
+including staff and superusers. Existing accounts with an email address must
+verify it when signing in through allauth. The account pages use allauth's standard
+templates; project-specific styling can override `allauth/layouts/` and
+`allauth/elements/`.
+Allauth's MFA applies to its account flow; the separate Django admin login does
+not acquire MFA enforcement from this integration.
 
 #### Frontend
 

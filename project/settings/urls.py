@@ -16,7 +16,7 @@ urlpatterns = [
     path("admin/", include("loginas.urls")),
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
-    # path("accounts/", include("django.contrib.auth.urls")),  # add this if you want to use the default auth urls
+    path("accounts/", include("allauth.urls")),
     # application urls
     path("", TemplateView.as_view(template_name="index.pug")),
 ]

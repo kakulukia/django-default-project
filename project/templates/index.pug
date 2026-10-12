@@ -9,15 +9,24 @@ block content
     h1(v-text='title')
     .joke(v-text="joke")
 
+    .mt-8.d-flex.justify-center.ga-3.flex-wrap
+      -if user.is_authenticated
+        v-btn(href="{% url 'mfa_index' %}" color="primary") Passkeys verwalten
+        v-btn(href="{% url 'account_email' %}" variant="outlined") E-Mail-Adresse
+        v-btn(href="{% url 'account_logout' %}" variant="text") Abmelden
+      -else
+        v-btn(href="{% url 'account_login' %}" color="primary") Anmelden
+        v-btn(href="{% url 'account_signup_by_passkey' %}" variant="outlined") Registrieren
+
     .mt-16
       user-change
 
 block footer
-  .container
-    .v-row
-      .v-col-3
-        v-text-field#title(v-model='title' density="compact")
-      .v-col-auto
+  v-container
+    v-row.align-center
+      v-col(cols="12" sm="6" md="4" lg="3")
+        v-text-field#title(v-model='title' density="compact" hide-details)
+      v-col(cols="auto")
         v-btn(:loading="isLoading" color="primary"
           @click="loadJoke()")
             v-icon.mr-1 mdi-autorenew
