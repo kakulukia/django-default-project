@@ -1,8 +1,13 @@
+import re
+from pathlib import Path
 from unittest.mock import patch
+from urllib.parse import unquote, urljoin, urlsplit
 
 from django.conf import settings
+from django.contrib.staticfiles import finders
 from django.core.management import call_command
 from django.tasks import TaskResultStatus
+from django.template.loader import render_to_string
 from django.test import SimpleTestCase, TestCase, TransactionTestCase
 
 from utils.tasks import calculate_meaning_of_life
@@ -61,6 +66,31 @@ class CoreUrlsTest(TestCase):
     def test_index_returns_200(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
+
+    def test_frontend_assets_and_css_dependencies_are_local_and_complete(self):
+        for template in ("index.pug", "500.pug"):
+            with self.subTest(template=template):
+                assets = re.findall(
+                    r"<(?:script|link)\b[^>]*\b(?:src|href)=[\"\']([^\"\']+)",
+                    render_to_string(template),
+                )
+                self.assertTrue(assets, template)
+                checked = set()
+                while assets:
+                    asset = assets.pop()
+                    if asset in checked:
+                        continue
+                    checked.add(asset)
+                    parsed = urlsplit(asset)
+                    self.assertFalse(parsed.scheme or parsed.netloc, asset)
+                    self.assertTrue(parsed.path.startswith(settings.STATIC_URL), asset)
+                    path = finders.find(unquote(parsed.path.removeprefix(settings.STATIC_URL)))
+                    self.assertIsNotNone(path, asset)
+                    if parsed.path.endswith(".css"):
+                        for dependency in re.findall(r"url\(\s*([^)]*?)\s*\)", Path(path).read_text()):
+                            dependency = dependency.strip("\"'")
+                            if not dependency.startswith("data:"):
+                                assets.append(urljoin(asset, dependency))
 
     def test_admin_redirects_anonymous_to_login(self):
         response = self.client.get("/admin/")

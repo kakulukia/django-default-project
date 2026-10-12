@@ -59,6 +59,35 @@ of a full single-page application. It includes:
 - [Axios](https://github.com/axios/axios): for AJAX calls.
 - [Material Design Icons](https://pictogrammers.com/library/mdi/): iconography for your UI.
 
+The browser distributions are stored locally, without an npm build or runtime CDN.
+Stable releases checked against the npm registry on 2026-10-12:
+
+| Package | Version | Upstream package |
+| --- | --- | --- |
+| Vue | 3.5.43 | [vue](https://www.npmjs.com/package/vue/v/3.5.43) |
+| Vuetify | 4.2.4 | [vuetify](https://www.npmjs.com/package/vuetify/v/4.2.4) |
+| Pinia | 4.0.3 | [pinia](https://www.npmjs.com/package/pinia/v/4.0.3) |
+| Axios | 1.20.0 | [axios](https://www.npmjs.com/package/axios/v/1.20.0) |
+| Material Design Icons font | 7.4.47 | [@mdi/font](https://www.npmjs.com/package/@mdi/font/v/7.4.47) |
+| Moment | 2.31.0 | [moment](https://www.npmjs.com/package/moment/v/2.31.0) |
+
+For updates, use the official npm release archives and verify their `dist.integrity`
+before copying the browser files into `assets/js/vendor/` and `assets/css/`.
+`vue.global.js` contains Vue's production build with the template compiler;
+Pinia uses its production IIFE build. Update Vuetify's JavaScript and CSS together.
+Referenced source maps are included; Moment's map embeds its original source.
+The MDI stylesheet references the local WOFF2 font. The light theme is explicitly
+selected in `assets/js/bootstrap.js`; Vuetify 4 otherwise follows the system theme.
+Review the [Vuetify upgrade guide](https://vuetifyjs.com/en/getting-started/upgrade-guide/)
+when changing major versions.
+
+Barrio (demo heading) and Raleway (error page) are also served locally through
+`assets/css/fonts.css`, using the full fonts from the official
+[Google Fonts repository](https://github.com/google/fonts).
+Upstream package licenses and font licenses are included in `assets/licenses/`.
+The demo's Chuck Norris API request is an external service call, independent of
+these locally served frontend dependencies.
+
 For more complex frontends, consider building a dedicated VueJS application (using `vue ui`) in
 conjunction with Django REST Framework. But for smaller projects, this template provides a
 lightweight solution that allows you to add interactivity without the need to deal with ~900

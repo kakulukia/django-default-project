@@ -10,7 +10,7 @@ html(lang='{{ LANGUAGE_CODE }}')
       block title
         | Give me a title
 
-    link(href="https://fonts.googleapis.com/css?family=Barrio", rel="stylesheet")
+    link(href='{% static "css/fonts.css" %}', rel="stylesheet", type="text/css")
     link(href='{% static "css/vuetify.min.css" %}', rel="stylesheet", type="text/css")
     link(href='{% static "css/materialdesignicons.min.css" %}', rel="stylesheet", type="text/css")
     link(rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}")

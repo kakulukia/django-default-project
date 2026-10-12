@@ -12,6 +12,7 @@ const appOptions = window.__VUE_APP_OPTIONS__ || {}
 
 const vuetify = createVuetify({
   theme: {
+    defaultTheme: 'light',
     themes: {
       light: config.theme.light,
     },
