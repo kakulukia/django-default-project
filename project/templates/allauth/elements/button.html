@@ -1,6 +1,6 @@
 {% load allauth %}
-<span data-account-button="{% if 'outline' in attrs.tags %}outlined{% elif 'link' in attrs.tags or 'cancel' in attrs.tags or attrs.value == 'cancel' %}text{% else %}primary{% endif %}"
-      data-account-color="{% if 'danger' in attrs.tags %}error{% else %}primary{% endif %}"
+<span data-account-button
+      data-account-color="{% if 'danger' in attrs.tags %}error{% elif 'cancel' in attrs.tags or attrs.value == 'cancel' %}secondary{% elif 'primary' in attrs.tags or 'prominent' in attrs.tags or attrs.icon or 'fingerprint' in attrs.tags %}primary{% elif 'secondary' in attrs.tags or 'outline' in attrs.tags or 'link' in attrs.tags %}secondary{% else %}primary{% endif %}"
       data-account-action="{% if 'cancel' in attrs.tags or attrs.value == 'cancel' %}cancel{% elif 'outline' in attrs.tags or 'link' in attrs.tags or 'secondary' in attrs.tags or 'danger' in attrs.tags or 'fingerprint' in attrs.tags %}secondary{% else %}primary{% endif %}"
       {% if 'large' in attrs.tags %}data-account-size="large"{% endif %}
       {% if attrs.icon %}data-account-icon="{{ attrs.icon }}" data-account-size="small" data-account-tooltip-location="bottom"

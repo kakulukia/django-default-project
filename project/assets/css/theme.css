@@ -2,3 +2,11 @@
 .v-overlay-container a:not(.v-btn) {
   color: rgb(var(--v-theme-primary));
 }
+
+.v-btn--variant-tonal.text-secondary {
+  --v-activated-opacity: 0.06;
+}
+
+.v-btn--variant-tonal.text-secondary .v-btn__underlay {
+  background: rgb(0 0 0 / 87%);
+}

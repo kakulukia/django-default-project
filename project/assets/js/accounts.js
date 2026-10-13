@@ -2,7 +2,7 @@ const { createApp, h, ref } = Vue
 const { createVuetify } = Vuetify
 const { VApp, VMain, VContainer, VCard, VBtn, VTextField, VCheckbox, VAlert, VIcon, VTooltip, VTabs, VTab } = Vuetify.components
 const config = JSON.parse(document.getElementById('app-config').textContent)
-const vuetify = createVuetify({ theme: { defaultTheme: 'light', themes: { light: config.theme.light } } })
+const vuetify = createVuetify({ defaults: config.defaults, theme: { defaultTheme: 'light', themes: { light: config.theme.light } } })
 const content = document.getElementById('account-content').innerHTML
 const embedded = window.self !== window.top
 const webauthnError = ref('')
@@ -17,7 +17,7 @@ createApp({
     h(VContainer, { class: embedded ? 'pa-0' : 'py-8', style: { maxWidth: embedded ? '100%' : '472px' } }, () => [
       !embedded ? h('header', { class: 'd-flex align-center justify-space-between mb-4' }, [
         h('span', { class: 'text-subtitle-1 font-weight-medium' }, 'Django Demo'),
-        h(VBtn, { href: '/', variant: 'text', size: 'small' }, () => 'Zur Demo'),
+        h(VBtn, { href: '/', color: 'secondary', size: 'small' }, () => 'Zur Demo'),
       ]) : null,
       h(VCard, { class: 'pa-6', rounded: 'lg', elevation: embedded ? 0 : 2 }, () => [
         webauthnError.value ? h(VAlert, { type: 'error', variant: 'tonal', role: 'alert', class: 'mb-4' }, () => webauthnError.value) : null,
@@ -65,7 +65,6 @@ document.querySelectorAll('[data-account-button]').forEach((container, index) =>
   const props = Object.fromEntries([...button.attributes].map(attribute => [attribute.name, attribute.value]))
   const label = button.innerHTML
   props.color = container.dataset.accountColor
-  props.variant = container.dataset.accountButton === 'primary' ? 'flat' : container.dataset.accountButton
   props.size = container.dataset.accountSize
   if (container.dataset.accountIcon) {
     if (props.size === 'small') props.icon = true

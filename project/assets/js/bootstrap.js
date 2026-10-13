@@ -12,6 +12,7 @@ const { createPinia } = Pinia
 const appOptions = window.__VUE_APP_OPTIONS__ || {}
 
 const vuetify = createVuetify({
+  defaults: config.defaults,
   theme: {
     defaultTheme: 'light',
     themes: {
