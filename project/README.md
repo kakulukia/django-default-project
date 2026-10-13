@@ -55,7 +55,10 @@ interactive experience during development.
 at `/_allauth/browser/v1/`. The demo uses native Vue/Vuetify forms for login,
 signup, password reset, email addresses, passkeys, authenticator-app 2FA and recovery codes.
 Password login accepts email or the existing username; Django admin remains at `/admin/`.
-The footer logout button and account menu sign out immediately, without confirmation.
+Click or tap the footer logout button to open the account menu. Hold it for one
+second to sign out while a circular progress indicator fills around the button.
+Releasing early opens the menu; moving away cancels the hold. The menu's logout
+action signs out immediately, without confirmation, and is also keyboard accessible.
 Transient account errors and status messages use the shared notification mechanism,
 including cancelled passkey requests. Notifications remain visible above open dialogs.
 Verified email addresses cannot request another verification code.

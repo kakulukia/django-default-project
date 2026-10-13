@@ -27,16 +27,26 @@ block footer
           |  get me another joke
     v-col.ml-auto(cols="auto")
       .d-flex.ga-2
-        v-menu(v-if="store.user" v-model="showAccountMenu" open-on-hover :open-on-click="false" :open-on-focus="false" location="top end")
+        v-menu(v-if="store.user" v-model="showAccountMenu" :open-on-hover="logoutHoldFrame === null" :open-on-click="false" :open-on-focus="false" location="top end")
             template(v-slot:activator="{ props }")
-              v-btn(
-                v-bind="props" icon="mdi-logout" color="primary"
-                :variant="showAccount ? 'elevated' : 'tonal'"
-                :loading="isSigningOut"
-                aria-label="Abmelden und Kontomenü öffnen"
-                title="Abmelden; Kontomenü per Hover oder Pfeiltaste"
-                @click="$event.pointerType === 'touch' ? showAccountMenu = true : signOut()"
-              )
+              .position-relative
+                v-btn.logout-hold-button(
+                  v-bind="props" icon="mdi-logout" color="primary"
+                  :variant="showAccount ? 'elevated' : 'tonal'"
+                  :loading="isSigningOut"
+                  aria-label="Kontomenü öffnen; zum Abmelden eine Sekunde gedrückt halten"
+                  title="Kurz drücken: Kontomenü. Eine Sekunde halten: Abmelden."
+                  @pointerdown="startLogoutHold"
+                  @pointermove="moveLogoutHold"
+                  @pointerup="endLogoutHold"
+                  @pointercancel="cancelLogoutHold"
+                  @lostpointercapture="logoutHoldFrame !== null && cancelLogoutHold()"
+                  @contextmenu.prevent
+                  @blur="cancelLogoutHold"
+                  @click="clickLogout"
+                )
+                  v-icon mdi-logout
+                v-progress-circular.logout-hold-ring(v-if="logoutHoldFrame !== null" :model-value="logoutHoldProgress" :size="56" :width="3" color="primary" aria-hidden="true")
             v-list(density="compact" aria-label="Kontoverwaltung")
               v-list-item(prepend-icon="mdi-fingerprint" title="Passkeys" @click="openAccount('passkeys')")
               v-list-item(prepend-icon="mdi-email-outline" title="E-Mail-Adressen" @click="openAccount('emails')")
