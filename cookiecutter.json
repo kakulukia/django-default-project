@@ -10,6 +10,8 @@
   "_copy_without_render": [
     "assets",
     "templates",
-    "scripts"
+    "scripts",
+    "users/test_account_email.py",
+    "users/management/commands/invite_user.py"
   ]
 }

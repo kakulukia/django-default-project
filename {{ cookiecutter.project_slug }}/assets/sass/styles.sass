@@ -20,7 +20,8 @@ footer
   position: fixed
   top: 10px
   right: 10px
-  z-index: 99
+  z-index: 3000
+  max-width: calc(100vw - 20px)
 
 // MAINTANANCE MODE
 body.maintenance
@@ -66,18 +67,30 @@ body.maintenance
 input#title
   text-align: right
 
+.logout-hold-button
+  touch-action: none
+  user-select: none
+  -webkit-touch-callout: none
+
+.logout-hold-ring
+  position: absolute
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)
+  pointer-events: none
+
+  .v-progress-circular__overlay
+    transition: none
+
+body:has(.v-dialog.v-overlay--active) #djDebug
+  display: none
+
 .userChange
-  width: 500px
-
-  .bar .v-icon
-    transition: transform 0.3s ease-in-out
-    &.show
-      transform: rotate(90deg)
-
+  width: min(500px, 100%)
 
   .user
     display: grid
-    grid-template-columns: 1fr 50px
+    grid-template-columns: minmax(0, 1fr) auto
     align-items: center
     grid-gap: 10px
 

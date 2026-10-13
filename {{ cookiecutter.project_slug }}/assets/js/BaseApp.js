@@ -7,14 +7,16 @@ export default {
       if (!notification?.action) return
 
       if (notification.action === 'redirectToLogin') {
-        window.location.href = '/admin/login/?next=' + window.location
+        app.config.globalProperties.redirectToLogin()
       }
     }
 
     app.config.globalProperties.moment = value => moment(value).format('YYYY-MM-DD HH:mm')
 
     app.config.globalProperties.redirectToLogin = () => {
-      window.location.href = '/admin/login/?next=' + window.location
+      if (window.dispatchEvent(new Event('account-login', { cancelable: true }))) {
+        window.location.href = '/accounts/login/?next=' + encodeURIComponent(window.location.href)
+      }
     }
 
     app.config.globalProperties.waitUntilUserQueryDone = () => {

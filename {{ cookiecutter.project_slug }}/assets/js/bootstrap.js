@@ -1,6 +1,7 @@
 import { useAppStore } from './store.js'
 import BaseApp from './BaseApp.js'
 import UserChange from './components/UserChange.js'
+import AccountDialog from './components/AccountDialog.js'
 
 const config = JSON.parse(document.getElementById('app-config').textContent)
 
@@ -33,4 +34,5 @@ app.use(pinia)
 app.use(vuetify)
 app.use(BaseApp, { api, store, config })
 app.component('user-change', UserChange)
+app.component('account-dialog', AccountDialog)
 app.mount('#app')

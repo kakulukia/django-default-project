@@ -1,0 +1,8 @@
+{% extends "allauth/layouts/base.html" %}
+{% block head_title %}Anmeldung gesperrt{% endblock %}
+{% block content %}
+  <h1>Anmeldung gesperrt</h1>
+  <div data-account-alert="error" role="alert">
+    Zu viele fehlgeschlagene Anmeldeversuche. Bitte wende dich an die Administration, um den Zugang zu entsperren.
+  </div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% load allauth %}
+<section>
+  <h2>{% slot title %}{% endslot %}</h2>
+  {% slot body %}{% endslot %}
+  {% if slots.actions %}
+    <div data-account-actions class="d-flex flex-wrap justify-end ga-2">
+      {% for action in slots.actions %}{{ action }}{% endfor %}
+    </div>
+  {% endif %}
+</section>

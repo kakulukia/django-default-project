@@ -9,23 +9,73 @@ block content
     h1(v-text='title')
     .joke(v-text="joke")
 
-    .mt-16
-      user-change
+    v-expand-transition
+      #demo-users.w-100(v-if="showUsers")
+        .pt-8.px-4.d-flex.justify-center
+          user-change
+
+    account-dialog(v-model="showAccount" :initial-view="accountView" :reset-key="accountResetKey" @authenticated="accountAuthenticated")
 
 block footer
-  .container
-    .v-row
-      .v-col-3
-        v-text-field#title(v-model='title' density="compact")
-      .v-col-auto
-        v-btn(:loading="isLoading" color="primary"
-          @click="loadJoke()")
-            v-icon.mr-1 mdi-autorenew
-            |  get me another joke
+  v-row.align-center.px-3
+    v-col(cols="12" sm="6" md="4" lg="3")
+      v-text-field#title(v-model='title' density="compact" hide-details)
+    v-col(cols="auto")
+      v-btn(:loading="isLoading" color="primary"
+        @click="loadJoke()")
+          v-icon.mr-1 mdi-autorenew
+          |  get me another joke
+    v-col.ml-auto(cols="auto")
+      .d-flex.ga-2
+        v-menu(v-if="store.user" v-model="showAccountMenu" :open-on-hover="logoutHoldFrame === null" :open-on-click="false" :open-on-focus="false" location="top end")
+            template(v-slot:activator="{ props }")
+              .position-relative
+                v-btn.logout-hold-button(
+                  v-bind="props" icon="mdi-logout" color="primary"
+                  :variant="showAccount ? 'elevated' : 'tonal'"
+                  :loading="isSigningOut"
+                  aria-label="Kontomenü öffnen; zum Abmelden eine Sekunde gedrückt halten"
+                  title="Kurz drücken: Kontomenü. Eine Sekunde halten: Abmelden."
+                  @pointerdown="startLogoutHold"
+                  @pointermove="moveLogoutHold"
+                  @pointerup="endLogoutHold"
+                  @pointercancel="cancelLogoutHold"
+                  @lostpointercapture="logoutHoldFrame !== null && cancelLogoutHold()"
+                  @contextmenu.prevent
+                  @blur="cancelLogoutHold"
+                  @click="clickLogout"
+                )
+                  v-icon mdi-logout
+                v-progress-circular.logout-hold-ring(v-if="logoutHoldFrame !== null" :model-value="logoutHoldProgress" :size="56" :width="3" color="primary" aria-hidden="true")
+            v-list(density="compact" aria-label="Kontoverwaltung")
+              v-list-item(prepend-icon="mdi-fingerprint" title="Passkeys" @click="openAccount('passkeys')")
+              v-list-item(prepend-icon="mdi-email-outline" title="E-Mail-Adressen" @click="openAccount('emails')")
+              v-list-item(prepend-icon="mdi-shield-key-outline" title="Zwei-Faktor-Authentifizierung" @click="openAccount('totp')")
+              v-list-item(prepend-icon="mdi-logout" title="Abmelden" :disabled="isSigningOut" @click="signOut")
+        v-btn(v-else
+            icon="mdi-lock" color="primary"
+            :variant="showAccount ? 'elevated' : 'tonal'"
+            :aria-expanded="showAccount"
+            aria-label="Anmeldung und Konto öffnen"
+            title="Anmeldung und Konto öffnen"
+            @click="openAccount('login')"
+          )
+        v-btn(
+          icon="mdi-account-group" color="primary"
+          :variant="showUsers ? 'flat' : 'tonal'"
+          :aria-pressed="showUsers"
+          :aria-expanded="showUsers"
+          aria-controls="demo-users"
+          aria-label="Benutzerverwaltung ein- oder ausblenden"
+          title="Benutzerverwaltung ein- oder ausblenden"
+          @click="showUsers = !showUsers"
+        )
 
 block components
   script(type="text/x-template" id="user-change-template")
     -include 'components/UserChange.pug'
+  script(type="text/x-template" id="account-dialog-template")
+    -include 'components/AccountDialog.pug'
 
 block vue
   script(type="module").
