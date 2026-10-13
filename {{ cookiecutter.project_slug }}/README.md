@@ -342,7 +342,10 @@ Run the project tests with the development settings:
 
 ```bash
 DJANGO_SETTINGS_MODULE=settings.{{ cookiecutter.__author_settings }} uv run python manage.py test users utils
+node --test tests/frontend/*.test.mjs
 ```
+
+The frontend logic tests use Node.js and its built-in test runner.
 
 ## Dependency Updates
 

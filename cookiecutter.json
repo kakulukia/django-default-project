@@ -11,6 +11,7 @@
     "assets",
     "templates",
     "scripts",
+    "tests",
     "users/test_account_email.py",
     "users/management/commands/invite_user.py"
   ]

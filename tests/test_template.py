@@ -44,7 +44,7 @@ class TemplateTest(unittest.TestCase):
         self.assertEqual(package["name"], metadata["name"])
         self.assertEqual(package["version"], metadata["version"])
 
-        for directory in ("assets", "templates", "scripts"):
+        for directory in ("assets", "templates", "scripts", "tests"):
             for source in (TEMPLATE / directory).rglob("*"):
                 if source.is_file():
                     relative = source.relative_to(TEMPLATE)
@@ -76,10 +76,18 @@ class TemplateTest(unittest.TestCase):
             "my_secrets/secrets.py",
             "cookiecutter.json",
             "hooks",
-            "tests",
             "misc",
         ):
             self.assertFalse((project / name).exists(), name)
+        frontend_tests = sorted((project / "tests").rglob("*.mjs"))
+        self.assertEqual(
+            {
+                path.relative_to(project / "tests").as_posix()
+                for path in (project / "tests").rglob("*")
+                if path.is_file()
+            },
+            {"frontend/account-dialog.test.mjs", "frontend/index.test.mjs"},
+        )
         self.assertIn('APP_NAME = "my-project"', (project / "fabfile.py").read_text())
         self.assertIn(
             "${PROJECT_NAME:-my-project}",
@@ -126,6 +134,7 @@ class TemplateTest(unittest.TestCase):
                 "utils",
                 "--noinput",
             ],
+            ["node", "--test", *map(str, frontend_tests)],
             ["uv", "run", "--locked", "ruff", "check", "."],
             ["uv", "run", "--locked", "ruff", "format", "--check", "."],
         ):
